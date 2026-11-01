@@ -858,7 +858,7 @@
     <string name="category_icon_circle">Círculo</string>
     <string name="category_icon_info">Información</string>
     <string name="category_icon_schedule">Horario</string>
-    <string name="category_icon_day">Limpiar día</string>
+    <string name="category_icon_day">Día despejado</string>
     <string name="category_icon_bedtime">Hora de dormir</string>
     <string name="category_dw_disabled">Bienestar digital está apagado</string>
     <string name="category_open_dw">Abrir Bienestar digital</string>
