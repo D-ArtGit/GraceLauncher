@@ -236,7 +236,6 @@
     <string name="usage_hide_zero">Ocultar valores zero</string>
     <string name="usage_percentage_short">Partilhar</string>
     <string name="homepage_widgets">Widgets</string>
-    <string name="homepage_app_group"></string>
     <string name="homepage_add_categories">Adicionar categorias</string>
     <string name="homepage_edit_item">Editar %1$s</string>
     <string name="homepage_empty">Nada selecionado</string>
