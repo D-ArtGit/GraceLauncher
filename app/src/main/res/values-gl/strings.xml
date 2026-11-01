@@ -849,7 +849,7 @@
     <string name="category_icon_circle">Círculo</string>
     <string name="category_icon_info">Información</string>
     <string name="category_icon_schedule">Horario</string>
-    <string name="category_icon_day">Limpar día</string>
+    <string name="category_icon_day">Día despexado</string>
     <string name="category_icon_bedtime">Hora de durmir</string>
     <string name="category_dw_disabled">O benestar dixital está desactivado</string>
     <string name="category_open_dw">Abrir benestar dixital</string>
