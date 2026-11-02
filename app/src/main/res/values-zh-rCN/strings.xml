@@ -871,13 +871,4 @@
     <string name="list_symbol_horizontal_offset">符号水平偏移</string>
     <string name="alphabet_touch_area">显示触控区域</string>
     <string name="alphabet_touch_width">右侧触控宽度</string>
-    <string name="clock_lucky" translatable="false"></string>
-    <string name="clock_monoton" translatable="false"></string>
-    <string name="clock_plaster" translatable="false"></string>
-    <string name="clock_week" translatable="false"></string>
-    <string name="clock_bokor" translatable="false"></string>
-    <string name="clock_double_plaster" translatable="false"></string>
-    <string name="font_josefin" translatable="false"></string>
-    <string name="clock_sacramento" translatable="false"></string>
-    <string name="clock_sacramento_week" translatable="false"></string>
 </resources>
