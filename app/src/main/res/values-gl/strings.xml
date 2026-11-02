@@ -563,7 +563,7 @@
     <string name="font_delete">Eliminar</string>
     <string name="font_delete_title">Eliminar tipos de letra?</string>
     <string name="font_delete_summary">Eliminar %1$d tipos de letra importados? Os compoñentes que os utilizan volverán ao tipo de letra predeterminado.</string>
-    <string name="settings_favorites_app_list">Favoritos e lista de aplicacións</string>
+    <string name="settings_favorites_app_list">Lista de aplicacións</string>
     <string name="list_app_spacing">Espazado entre aplicacións</string>
     <string name="list_side_padding">Marxes laterais da listaxe</string>
     <string name="list_icon_name_gap">Espazado da icona e do nome</string>
@@ -857,4 +857,11 @@
     <string name="app_list_add_grace">Lanzador Grace</string>
     <string name="alphabet_show_in">Amosar en</string>
     <string name="list_symbol_horizontal_offset">Desprazamento horizontal do símbolo</string>
+    <string name="list_appearance_tab_list">Lista</string>
+    <string name="list_appearance_tab_notification">Notificación</string>
+    <string name="list_preview_folder">Cartafol</string>
+    <string name="list_preview_notification_title">Proba</string>
+    <string name="list_preview_notification_text">Esta é unha mensaxe de proba para comprobar como se mostran as notificacións.</string>
+    <string name="alphabet_touch_area">Amosar a área táctil</string>
+    <string name="alphabet_touch_width">Anchura do toque dereito</string>
 </resources>
