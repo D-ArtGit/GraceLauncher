@@ -160,7 +160,6 @@ fun AppDrawerScreen(
                                 else -> item.section
                             },
                             modifier = Modifier.testTag("section:${item.section}"), icon = category?.icon,
-                            symbol = item.section != FolderSection && item.section != GraceSection,
                         )
                     }
                     is DrawerItem.App -> LauncherAppRow(

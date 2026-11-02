@@ -21,15 +21,14 @@ import androidx.compose.ui.unit.sp
 import com.galaxyrio.gracelauncher.data.CategoryIcon
 import com.galaxyrio.gracelauncher.ui.theme.LocalLauncherAppearance
 
-/** The real drawer and appearance preview share the same letter and category-symbol geometry. */
+/** The real drawer and appearance preview share one offset for every section heading. */
 @Composable
-internal fun AppListSectionHeader(label: String, modifier: Modifier = Modifier, icon: CategoryIcon? = null,
-    symbol: Boolean = true) {
+internal fun AppListSectionHeader(label: String, modifier: Modifier = Modifier, icon: CategoryIcon? = null) {
     val labelStyle = listLabelStyle()
     val style = TextStyle(fontFamily = labelStyle.fontFamily, fontSize = 18.sp, lineHeight = 24.sp,
         fontWeight = FontWeight.Normal, shadow = LocalLauncherAppearance.current.textShadow)
     val headerModifier = modifier.height(44.dp)
-        .absoluteOffset(x = if (symbol) LocalListAppearance.current.symbolHorizontalOffset.dp else 0.dp)
+        .absoluteOffset(x = LocalListAppearance.current.symbolHorizontalOffset.dp)
         .padding(start = LauncherLayout.ContentInset, end = LauncherLayout.ContentInset, top = 12.dp)
         .semantics { heading() }
     if (icon == null) Text(label, headerModifier, color = labelStyle.color, style = style)
