@@ -96,7 +96,6 @@
     <string name="private_space_security_required">Настройте блокировку экрана устройства, чтобы включить защиту паролем</string>
     <string name="private_space_unlock_edit">Разблокируйте для редактирования</string>
     <string name="private_space_lock">Заблокировать личное пространство</string>
-
     <!-- Core -->
     <string name="app_name">Grace Launcher</string>
     <string name="alphabet_scroller">Быстрая прокрутка по алфавиту</string>
@@ -179,7 +178,6 @@
     <string name="connect_calendar">Подключить календарь</string>
     <string name="calendar_error">Не удалось загрузить календарь</string>
     <string name="no_upcoming_events">В ближайшие 14 дней событий нет</string>
-
     <!-- Search and app drawer -->
     <string name="search_apps">Поиск приложений</string>
     <string name="search_no_results">Подходящие приложения не найдены</string>
@@ -189,7 +187,6 @@
     <string name="hide_recently_installed">Скрыть недавно установленные</string>
     <string name="add_to_folder">Добавить в папку</string>
     <string name="create_app_folder">Новая папка в списке приложений</string>
-
     <!-- Favorites -->
     <string name="favorites_selected">Выбранное</string>
     <string name="favorites_all_apps">Все приложения</string>
@@ -201,13 +198,11 @@
     <string name="favorites_reorder">Изменить положение «%1$s»</string>
     <string name="favorites_move_up">Переместить вверх</string>
     <string name="favorites_move_down">Переместить вниз</string>
-
     <!-- Folders -->
     <string name="open_folder">Открыть папку</string>
     <string name="folder_actions">Действия с папкой</string>
     <string name="edit_folder">Изменить папку</string>
     <string name="empty_folder">В этой папке нет приложений</string>
-
     <!-- Notifications -->
     <string name="notification_dismiss">Смахнуть</string>
     <string name="notification_now">сейчас</string>
@@ -216,7 +211,6 @@
     <string name="notification_days">%1$d дн.</string>
     <string name="notification_unavailable">Это уведомление больше недоступно</string>
     <string name="notification_allow">Показывать уведомления приложений</string>
-
     <!-- Media -->
     <string name="media_service_name">Уведомления и медиа Grace Launcher</string>
     <string name="media_player_summary">Показывать воспроизведение на главном экране</string>
@@ -231,7 +225,6 @@
     <string name="media_open_player">Открыть «%1$s»</string>
     <string name="media_unknown_title">Сейчас воспроизводится</string>
     <string name="media_control_unavailable">Плеер больше недоступен</string>
-
     <!-- Settings -->
     <string name="settings_title">Настройки</string>
     <string name="settings_back">Назад</string>
@@ -263,7 +256,7 @@
         <item quantity="one">Скрыто %1$d приложение</item>
         <item quantity="few">Скрыто %1$d приложения</item>
         <item quantity="many">Скрыто %1$d приложений</item>
-        <item quantity="other">Скрыто %1$d приложения</item>
+        <item quantity="other">Скрыто %1$d приложений</item>
     </plurals>
     <string name="settings_hide_apps_description">Скрывать приложения только из списка. Они остаются доступны в избранном, папках, всплывающих меню и поиске.</string>
     <string name="settings_folders">Папки</string>
@@ -271,7 +264,7 @@
         <item quantity="one">%1$d папка</item>
         <item quantity="few">%1$d папки</item>
         <item quantity="many">%1$d папок</item>
-        <item quantity="other">%1$d папки</item>
+        <item quantity="other">%1$d папок</item>
     </plurals>
     <string name="settings_folder_empty">Храните связанные приложения вместе. Создайте первую папку.</string>
     <string name="settings_folder_create">Создать папку</string>
@@ -288,7 +281,7 @@
         <item quantity="one">%1$d элемент · %2$s</item>
         <item quantity="few">%1$d элемента · %2$s</item>
         <item quantity="many">%1$d элементов · %2$s</item>
-        <item quantity="other">%1$d элемента · %2$s</item>
+        <item quantity="other">%1$d элементов · %2$s</item>
     </plurals>
     <string name="settings_folder_delete">Удалить папку</string>
     <string name="settings_folder_delete_confirmation">Удалить «%1$s» и её виджеты? Приложения внутри останутся установленными.</string>
@@ -363,7 +356,6 @@
     <string name="settings_storage_loading">Загрузка настроек…</string>
     <string name="settings_storage_load_error">Не удалось загрузить настройки. Перезапустите лаунчер, чтобы повторить попытку.</string>
     <string name="settings_storage_save_error">Не удалось сохранить изменение. Повторите попытку.</string>
-
     <!-- Icon display -->
     <string name="icon_display_section">Отображение значков</string>
     <string name="icon_display_full">Полные значки</string>
@@ -380,7 +372,6 @@
     <string name="icon_dot_color_theme">Цвет темы</string>
     <string name="icon_dot_color_custom">Свой цвет</string>
     <string name="icon_dot_size">Размер точки</string>
-
     <!-- Icon packs -->
     <string name="icon_pack_system">Системные значки</string>
     <string name="icon_pack_enabled">Включённые наборы значков</string>
@@ -458,7 +449,6 @@
     <string name="icon_pack_unavailable">Набор значков недоступен · используются системные значки</string>
     <string name="icon_pack_missing">%1$s недоступен. Будут использованы другие включённые наборы или системные значки.</string>
     <string name="icon_pack_load_failed">Не удалось загрузить наборы значков. Повторите попытку.</string>
-
     <!-- Weather settings -->
     <string name="weather_settings_enabled_summary">Главный экран и повестка · Breezy Weather</string>
     <string name="weather_settings_disabled_summary">По желанию · требуется Breezy Weather</string>
@@ -489,15 +479,14 @@
         <item quantity="one">%1$d день</item>
         <item quantity="few">%1$d дня</item>
         <item quantity="many">%1$d дней</item>
-        <item quantity="other">%1$d дня</item>
+        <item quantity="other">%1$d дней</item>
     </plurals>
     <plurals name="weather_settings_days_summary">
         <item quantity="one">Прогноз максимум на %1$d день. Доступность прогнозов зависит от выбранного места и источника в Breezy Weather.</item>
         <item quantity="few">Прогноз максимум на %1$d дня. Доступность прогнозов зависит от выбранного места и источника в Breezy Weather.</item>
         <item quantity="many">Прогноз максимум на %1$d дней. Доступность прогнозов зависит от выбранного места и источника в Breezy Weather.</item>
-        <item quantity="other">Прогноз максимум на %1$d дня. Доступность прогнозов зависит от выбранного места и источника в Breezy Weather.</item>
+        <item quantity="other">Прогноз максимум на %1$d дней. Доступность прогнозов зависит от выбранного места и источника в Breezy Weather.</item>
     </plurals>
-
     <!-- Weather UI -->
     <string name="weather_current_description">%1$s, %2$s</string>
     <string name="weather_daily_description">%1$s, максимум %2$s, минимум %3$s</string>
@@ -520,7 +509,6 @@
     <string name="weather_update_unknown">время обновления неизвестно</string>
     <string name="weather_via_breezy">Погода из Breezy Weather</string>
     <string name="weather_agenda_action">%1$s. Открыть повестку и погоду</string>
-
     <!-- Licenses -->
     <string name="licenses_app_license">GNU GPLv3</string>
     <string name="licenses_app_summary">Grace Launcher — свободное программное обеспечение под лицензией GNU General Public License версии 3. Распространяется без гарантий. Сторонние компоненты сохраняют собственные лицензии.</string>
@@ -529,7 +517,7 @@
         <item quantity="one">%1$d библиотека</item>
         <item quantity="few">%1$d библиотеки</item>
         <item quantity="many">%1$d библиотек</item>
-        <item quantity="other">%1$d библиотеки</item>
+        <item quantity="other">%1$d библиотек</item>
     </plurals>
     <string name="licenses_search">Поиск библиотек</string>
     <string name="licenses_clear_search">Очистить поиск</string>
@@ -547,7 +535,6 @@
     <string name="licenses_full_text">Полный текст</string>
     <string name="licenses_named_full_text">%1$s · Полный текст</string>
     <string name="licenses_link_unavailable">Нет приложения для открытия этой ссылки.</string>
-
     <!-- Clock style -->
     <string name="clock_style_apply">Применить</string>
     <string name="clock_layout">Расположение часов</string>
@@ -569,7 +556,6 @@
     <string name="clock_show_colon">Показывать двоеточие</string>
     <string name="clock_show_colon_summary">Разделять часы и минуты двоеточием</string>
     <string name="clock_reset_value">Сбросить «%1$s» к значению по умолчанию</string>
-
     <!-- Search -->
     <string name="settings_search">Поиск</string>
     <string name="search_settings_summary">Приложения, контакты и подсказки</string>
@@ -603,7 +589,6 @@
     <string name="search_hidden_apps_summary">Включать приложения, скрытые из списка</string>
     <string name="search_clear_query">Очистить поиск</string>
     <string name="app_selection_fast_scroll">Быстрая прокрутка приложений</string>
-
     <!-- Home widgets -->
     <string name="widget_home_menu">Виджет Grace</string>
     <string name="widget_add">Добавить свой виджет</string>
@@ -630,7 +615,7 @@
         <item quantity="one">%d виджет</item>
         <item quantity="few">%d виджета</item>
         <item quantity="many">%d виджетов</item>
-        <item quantity="other">%d виджета</item>
+        <item quantity="other">%d виджетов</item>
     </plurals>
     <string name="pin_item_title">Добавить на главный экран</string>
     <string name="pin_item_add">Добавить</string>
@@ -638,7 +623,6 @@
     <string name="pin_widget_message">Добавить виджет «%1$s» на главный экран?</string>
     <string name="pin_item_expired">Этот запрос больше недоступен. Повторите попытку из приложения.</string>
     <string name="pin_item_error">Не удалось добавить ярлык. Повторите попытку.</string>
-
     <!-- Font library and favorites/app-list appearance -->
     <string name="font_follow_manager">По умолчанию · Менеджер шрифтов</string>
     <string name="font_add">Добавить шрифт</string>
@@ -705,4 +689,221 @@
     <string name="app_stack_expand">Развернуть группу приложений</string>
     <string name="app_stack_collapse">Свернуть группу приложений</string>
     <string name="app_stack_empty">Выберите приложения или ярлыки ниже.</string>
+    <string name="lab_popup"></string>
+    <string name="wallpaper_color_access_unavailable"></string>
+    <string name="category_icon_circle"></string>
+    <string name="lab_accessibility"></string>
+    <string name="lab_popup_distance_summary"></string>
+    <string name="widget_bind_error"></string>
+    <string name="settings_wallpaper_designer"></string>
+    <string name="category_icon"></string>
+    <string name="clock_color_month"></string>
+    <string name="app_category_music"></string>
+    <string name="alphabet_show_in"></string>
+    <string name="popup_multiple_app_previews_summary"></string>
+    <string name="material_color_surface_container_highest"></string>
+    <string name="material_color_scrim"></string>
+    <string name="font_color_edit"></string>
+    <string name="material_color_primary"></string>
+    <string name="material_color_on_error_container"></string>
+    <string name="settings_wallpaper"></string>
+    <string name="homepage_widgets"></string>
+    <string name="homepage_adjust_height"></string>
+    <string name="lab_popup_angle_summary"></string>
+    <string name="usage_percentage_short"></string>
+    <string name="material_color_surface_container_low"></string>
+    <string name="clock_lucky" translatable="false"></string>
+    <string name="font_color_saved"></string>
+    <string name="usage_access_required"></string>
+    <string name="clock_color_day"></string>
+    <string name="app_category_pinned"></string>
+    <string name="list_symbol_horizontal_offset"></string>
+    <string name="clock_monoton" translatable="false"></string>
+    <string name="app_category_delete"></string>
+    <string name="category_dynamic_rule"></string>
+    <string name="usage_week"></string>
+    <string name="lab_dismiss_threshold"></string>
+    <string name="lab_swipe_dismiss"></string>
+    <string name="app_list_add_grace"></string>
+    <string name="category_icon_notifications"></string>
+    <string name="category_notification_silent"></string>
+    <string name="app_category_time"></string>
+    <string name="category_icon_keep"></string>
+    <string name="settings_open_home_summary"></string>
+    <string name="settings_grace_button_summary"></string>
+    <string name="category_icon_info"></string>
+    <string name="category_open_dw"></string>
+    <string name="popup_widget_background"></string>
+    <string name="list_preview_notification_second_text"></string>
+    <string name="usage_none"></string>
+    <string name="usage_last_refresh"></string>
+    <string name="material_color_on_tertiary_container"></string>
+    <string name="usage_weekly"></string>
+    <string name="usage_minutes"></string>
+    <string name="settings_components"></string>
+    <string name="material_color_on_secondary_container"></string>
+    <string name="clock_color_minute_tens"></string>
+    <string name="category_rule_notifications"></string>
+    <string name="app_list_edit"></string>
+    <string name="alphabet_touch_area"></string>
+    <string name="usage_value"></string>
+    <string name="material_color_surface_container_high"></string>
+    <string name="homepage_edit_item"></string>
+    <string name="lab_degrees"></string>
+    <string name="category_app_count"></string>
+    <string name="list_appearance_tab_notification"></string>
+    <string name="material_color_outline_variant"></string>
+    <string name="usage_access_explanation"></string>
+    <string name="category_rule_frequent"></string>
+    <string name="material_color_on_background"></string>
+    <string name="clock_plaster" translatable="false"></string>
+    <string name="wallpaper_color_access_title"></string>
+    <string name="list_preview_notification_second_title"></string>
+    <string name="icon_designer_apply_to_shortcuts"></string>
+    <string name="favorites_lock_editing"></string>
+    <string name="app_category_headphones"></string>
+    <string name="clock_color_weekday"></string>
+    <string name="usage_enable"></string>
+    <string name="usage_percentage"></string>
+    <string name="material_color_surface_dim"></string>
+    <string name="clock_color_minute_ones"></string>
+    <string name="wallpaper_color_access_decline"></string>
+    <string name="app_category_delete_confirmation"></string>
+    <string name="usage_failed"></string>
+    <string name="material_color_error_container"></string>
+    <string name="media_keep_while_playing_summary"></string>
+    <string name="homepage_add_categories"></string>
+    <string name="app_category_unavailable"></string>
+    <string name="clock_show_clock"></string>
+    <string name="category_manual"></string>
+    <string name="choose_default_launcher"></string>
+    <string name="font_color_follow_wallpaper"></string>
+    <string name="category_placement"></string>
+    <string name="lab_popup_distance"></string>
+    <string name="settings_choose_wallpaper"></string>
+    <string name="wallpaper_brightness_auto"></string>
+    <string name="clock_weather_icons_monochrome"></string>
+    <string name="clock_week" translatable="false"></string>
+    <string name="usage_refreshing"></string>
+    <string name="material_color_on_secondary"></string>
+    <string name="font_color_material"></string>
+    <string name="grace_widget_baseline"></string>
+    <string name="clock_show_battery"></string>
+    <string name="category_home"></string>
+    <string name="wallpaper_color_access_summary"></string>
+    <string name="material_color_on_primary"></string>
+    <string name="list_appearance_tab_list"></string>
+    <string name="app_category_name"></string>
+    <string name="font_color_default"></string>
+    <string name="material_color_primary_container"></string>
+    <string name="clock_color_date_group"></string>
+    <string name="app_list_bottom_folders"></string>
+    <string name="usage_never"></string>
+    <string name="clock_show_date"></string>
+    <string name="usage_refresh_now"></string>
+    <string name="digital_wellbeing"></string>
+    <string name="material_color_on_tertiary"></string>
+    <string name="material_color_on_primary_container"></string>
+    <string name="material_color_secondary_container"></string>
+    <string name="settings_screens"></string>
+    <string name="wallpaper_color_access_allow"></string>
+    <string name="usage_hours"></string>
+    <string name="category_icon_day"></string>
+    <string name="material_color_inverse_surface"></string>
+    <string name="usage_day"></string>
+    <string name="usage_refresh_frequency"></string>
+    <string name="clock_show_weekday"></string>
+    <string name="usage_access"></string>
+    <string name="lab_dismiss_resistance"></string>
+    <string name="app_category_start"></string>
+    <string name="grace_widgets_title"></string>
+    <string name="font_color_theme"></string>
+    <string name="usage_sort"></string>
+    <string name="category_notification_levels"></string>
+    <string name="app_category_condition"></string>
+    <string name="font_color_add"></string>
+    <string name="list_preview_notification_first_title"></string>
+    <string name="category_dynamic"></string>
+    <string name="material_color_inverse_on_surface"></string>
+    <string name="lab_dp"></string>
+    <string name="material_color_secondary"></string>
+    <string name="popup_widget_full_width"></string>
+    <string name="wallpaper_brightness_dark"></string>
+    <string name="material_color_surface_container_lowest"></string>
+    <string name="lab_prefer_non_accessibility"></string>
+    <string name="category_notification_normal"></string>
+    <string name="material_color_background"></string>
+    <string name="material_color_surface_bright"></string>
+    <string name="clock_bokor" translatable="false"></string>
+    <string name="app_category_end"></string>
+    <string name="widget_configuration_launch_error"></string>
+    <string name="material_color_on_surface"></string>
+    <string name="clock_color_weather"></string>
+    <string name="material_color_tertiary_container"></string>
+    <string name="category_icon_music"></string>
+    <string name="alphabet_touch_width"></string>
+    <string name="clock_color_hour_ones"></string>
+    <string name="list_preview_folder"></string>
+    <plurals name="app_category_item_count">
+    </plurals>
+    <string name="settings_feed_screen"></string>
+    <string name="popup_multiple_app_previews"></string>
+    <string name="material_color_error"></string>
+    <string name="material_color_on_error"></string>
+    <string name="category_icon_bedtime"></string>
+    <string name="font_color_wallpaper"></string>
+    <string name="lab_dismiss_threshold_summary"></string>
+    <string name="clock_tab_presets"></string>
+    <string name="widget_settings_button"></string>
+    <string name="usage_daily"></string>
+    <string name="material_color_surface_variant"></string>
+    <string name="settings_home_screen"></string>
+    <string name="clock_double_plaster" translatable="false"></string>
+    <string name="list_preview_notification_first_text"></string>
+    <string name="category_inclusion"></string>
+    <string name="home_gesture_alphabet_double_tap"></string>
+    <string name="homepage_empty"></string>
+    <string name="font_josefin" translatable="false"></string>
+    <string name="clock_sacramento" translatable="false"></string>
+    <string name="settings_tablets_foldables"></string>
+    <string name="app_category_always"></string>
+    <string name="clock_tab_style"></string>
+    <string name="popup_widget_content_scale"></string>
+    <string name="app_list_grace_settings"></string>
+    <string name="clock_color_hour_tens"></string>
+    <string name="material_color_surface_container"></string>
+    <string name="settings_debug"></string>
+    <string name="popups_title"></string>
+    <string name="homepage_app_group"></string>
+    <string name="settings_agenda"></string>
+    <string name="clock_weather_icons"></string>
+    <string name="app_category_notification"></string>
+    <string name="popup_single_line_previews"></string>
+    <string name="wallpaper_brightness_light"></string>
+    <string name="lab_prefer_non_accessibility_summary"></string>
+    <string name="lab_dismiss_resistance_summary"></string>
+    <string name="popup_single_line_previews_summary"></string>
+    <string name="category_dw_disabled"></string>
+    <string name="settings_open_home"></string>
+    <string name="material_color_inverse_primary"></string>
+    <string name="settings_status_screen"></string>
+    <string name="category_notification_high"></string>
+    <string name="material_color_outline"></string>
+    <string name="lab_popup_angle"></string>
+    <string name="material_color_surface_tint"></string>
+    <string name="clock_show_leading_zero"></string>
+    <string name="clock_sacramento_week" translatable="false"></string>
+    <string name="app_category_create"></string>
+    <string name="app_categories_title"></string>
+    <string name="material_color_tertiary"></string>
+    <string name="usage_show_favorites"></string>
+    <string name="usage_hide_zero"></string>
+    <string name="usage_month"></string>
+    <string name="category_icon_schedule"></string>
+    <string name="material_color_surface"></string>
+    <string name="clock_color_battery"></string>
+    <string name="usage_less_minute"></string>
+    <string name="material_color_on_surface_variant"></string>
+    <string name="media_keep_while_playing"></string>
+    <string name="clock_show_weather"></string>
 </resources>
