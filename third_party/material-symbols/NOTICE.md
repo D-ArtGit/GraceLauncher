@@ -170,3 +170,10 @@ The category chooser also reuses the existing `ms_music_note.xml` and
 `ms_info.xml` resources attributed above, and `ms_schedule.xml` from the official
 Material Symbols [Schedule SVG](https://raw.githubusercontent.com/google/material-design-icons/master/symbols/web/schedule/materialsymbolsoutlined/schedule_24px.svg).
 The None option draws no icon.
+
+### Touch-area preview icon added 2026-11-02
+
+- `ms_touch_app.xml`: https://raw.githubusercontent.com/google/material-design-icons/master/symbols/android/touch_app/materialsymbolsoutlined/touch_app_24px.xml
+  (Official Material Symbols Outlined Android vector, optical size 24, weight 400,
+  grade 0 and fill 0. The original path and 960px viewport are retained; the root
+  tint is removed and the path fill is black, with Compose supplying its color.)

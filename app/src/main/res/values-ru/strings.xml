@@ -656,7 +656,6 @@
     <string name="list_show_names">Показывать названия приложений</string>
     <string name="list_names_in_folders">Применять и внутри папок</string>
     <string name="list_left_alphabet">Управлять алфавитом слева</string>
-    <string name="list_left_alphabet_summary">Проводите вдоль левого края, чтобы управлять алфавитом справа</string>
     <string name="shortcuts_folders_title">Ярлыки и папки</string>
     <string name="shortcuts_folders_enable">Включить всплывающие меню приложений</string>
     <string name="popup_swipe_left_first">Свайп влево для открытия первого элемента</string>
@@ -672,7 +671,6 @@
     <string name="alphabet_top">Верхнее положение</string>
     <string name="alphabet_bottom">Нижнее положение</string>
     <string name="alphabet_free_movement">Свободное перемещение</string>
-    <string name="alphabet_free_movement_summary">Перетащите за любой край алфавита, чтобы переместить его. Отпустите, чтобы вернуть на место.</string>
     <string name="alphabet_automatic_spacing">Автоматически · интервал %1$d dp</string>
     <string name="settings_palette_style">Стиль палитры</string>
     <string name="palette_tonal_spot">Приглушённая палитра</string>

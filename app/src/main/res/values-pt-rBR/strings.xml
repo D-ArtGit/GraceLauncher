@@ -657,7 +657,6 @@
     <string name="list_show_names">Mostrar nomes de aplicativos</string>
     <string name="list_names_in_folders">Aplicar também dentro das pastas</string>
     <string name="list_left_alphabet">Utilizar o alfabeto na esquerda</string>
-    <string name="list_left_alphabet_summary">Deslize o dedo pela borda esquerda para controlar o alfabeto à direita</string>
     <string name="shortcuts_folders_title">Atalhos e pastas</string>
     <string name="popups_title">Janelas flutuantes</string>
     <string name="shortcuts_folders_enable">Ativar janela flutuante de aplicativos</string>
@@ -678,7 +677,6 @@
     <string name="alphabet_top">Posição superior</string>
     <string name="alphabet_bottom">Posição inferior</string>
     <string name="alphabet_free_movement">Movimentação livre</string>
-    <string name="alphabet_free_movement_summary">Arraste para além de qualquer fim para mover o alfabeto. Solte para voltar.</string>
     <string name="alphabet_automatic_spacing">Automático · espaçamento de %1$d dp</string>
     <string name="settings_palette_style">Estilo da paleta</string>
     <string name="palette_tonal_spot">Ponto tonal</string>

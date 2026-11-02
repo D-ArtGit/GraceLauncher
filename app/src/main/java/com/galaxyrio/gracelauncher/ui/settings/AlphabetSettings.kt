@@ -27,6 +27,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.galaxyrio.gracelauncher.R
@@ -176,11 +177,11 @@ internal fun AlphabetSettings(uiState: LauncherUiState, actions: LauncherActions
                             }
                         }
                         item("free") {
-                            SettingsToggleItem(stringResource(R.string.alphabet_free_movement), stringResource(R.string.alphabet_free_movement_summary),
+                            SettingsToggleItem(stringResource(R.string.alphabet_free_movement), null,
                                 draft.freeMovement, 6, 9, "alphabet_free_movement", enabled = enabled) { value -> change { it.copy(freeMovement = value) } }
                         }
                         item("left") {
-                            SettingsToggleItem(stringResource(R.string.list_left_alphabet), stringResource(R.string.list_left_alphabet_summary),
+                            SettingsToggleItem(stringResource(R.string.list_left_alphabet), null,
                                 uiState.settings.listAppearance.leftAlphabet, 7, 9, "list_left_alphabet", enabled = enabled) { value ->
                                 actions.updateSettings { current -> current.copy(listAppearance = current.listAppearance.copy(leftAlphabet = value)) }
                             }
@@ -230,6 +231,7 @@ private fun AlphabetPreview(uiState: LauncherUiState, draft: AlphabetAppearance,
     var previewTop by remember { mutableFloatStateOf(0f) }
     var positioned by remember { mutableStateOf(false) }
     var selected by remember { mutableStateOf<String?>(null) }
+    var showTouchArea by rememberSaveable { mutableStateOf(false) }
     BoxWithConstraints(modifier.testTag("alphabet_preview").onGloballyPositioned {
         previewTop = with(density) { it.positionInWindow().y.toDp().value }
         positioned = true
@@ -245,8 +247,13 @@ private fun AlphabetPreview(uiState: LauncherUiState, draft: AlphabetAppearance,
             if (positioned) AlphabetRail(model.letters, selected, layout.heightDp.dp,
                 onLetterSelected = { selected = it }, alphabet = draft,
                 categorySections = model.categorySections,
+                showRightTouchArea = showTouchArea,
                 topOffset = (viewportTop + layout.topDp - previewTop).dp, touchHeight = maxHeight,
                 modifier = Modifier.align(AbsoluteAlignment.TopRight))
+        }
+        FilledTonalIconToggleButton(checked = showTouchArea, onCheckedChange = { showTouchArea = it },
+            modifier = Modifier.align(AbsoluteAlignment.BottomLeft).padding(8.dp).testTag("alphabet_touch_area_toggle")) {
+            Icon(painterResource(R.drawable.ms_touch_app), stringResource(R.string.alphabet_touch_area), Modifier.size(24.dp))
         }
     }
 }

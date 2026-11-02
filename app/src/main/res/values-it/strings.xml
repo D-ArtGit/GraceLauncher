@@ -563,7 +563,6 @@
     <string name="alphabet_top">Posizione superiore</string>
     <string name="alphabet_bottom">Posizione inferiore</string>
     <string name="alphabet_free_movement">Movimento libero</string>
-    <string name="alphabet_free_movement_summary">Trascina oltre un’estremità per spostare l’alfabeto. Rilascia per tornare alla posizione iniziale.</string>
     <string name="alphabet_automatic_spacing">Automatico · spaziatura di %1$d dp</string>
     <string name="work_profile_enable">Abilita raggruppamento Profilo di lavoro</string>
     <string name="settings_lab">Lab</string>
@@ -596,7 +595,6 @@
     <string name="list_color_default">Segui il colore del font predefinito</string>
     <string name="list_show_names">Mostra nomi delle app</string>
     <string name="list_left_alphabet">Usa l\'alfabeto da sinistra</string>
-    <string name="list_left_alphabet_summary">Scorri lungo il bordo sinistro per controllare l\'alfabeto a destra</string>
     <string name="icon_suggestion_power">Accensione e spegnimento</string>
     <string name="grace_button_position_size">Posizione e dimensione</string>
     <string name="grace_button_alignment">Allineamento</string>

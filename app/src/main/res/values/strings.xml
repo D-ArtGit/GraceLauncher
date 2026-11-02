@@ -716,7 +716,6 @@
     <string name="list_show_names">Show app names</string>
     <string name="list_names_in_folders">Also apply inside folders</string>
     <string name="list_left_alphabet">Use from the left</string>
-    <string name="list_left_alphabet_summary">Slide along the left edge to control the alphabet on the right</string>
     <string name="shortcuts_folders_title">Shortcuts &amp; folders</string>
     <string name="popups_title">Pop-ups</string>
     <string name="shortcuts_folders_enable">Enable app pop-ups</string>
@@ -737,7 +736,6 @@
     <string name="alphabet_top">Upper position</string>
     <string name="alphabet_bottom">Lower position</string>
     <string name="alphabet_free_movement">Free movement</string>
-    <string name="alphabet_free_movement_summary">Drag beyond either end to move the alphabet. Release to return.</string>
     <string name="alphabet_automatic_spacing">Automatic · %1$d dp spacing</string>
     <string name="settings_palette_style">Palette style</string>
     <string name="palette_tonal_spot">Tonal spot</string>
@@ -898,4 +896,5 @@
     <string name="app_list_add_grace">Grace launcher</string>
     <string name="alphabet_show_in">Show in</string>
     <string name="list_symbol_horizontal_offset">Symbol horizontal offset</string>
+    <string name="alphabet_touch_area">Show touch area</string>
 </resources>

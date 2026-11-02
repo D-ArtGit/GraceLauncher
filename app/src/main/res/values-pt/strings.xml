@@ -246,7 +246,7 @@
     <string name="app_category_condition">Mostrar</string>
     <string name="app_category_always">Sempre</string>
     <string name="app_category_headphones">Ao conectar os auscultadores</string>
-    <string name="app_category_time">Limite diário</string>
+    <string name="app_category_time">Intervalo horário diário</string>
     <string name="app_category_start">Hora inicial</string>
     <string name="app_category_end">Hora final</string>
     <string name="app_category_delete">Eliminar categoria</string>
@@ -382,5 +382,5 @@
     <string name="settings_blur_wallpaper">Desfocar papel de parede</string>
     <string name="settings_blur_wallpaper_summary">Desfocar papel de parede na lista de aplicações</string>
     <string name="settings_wallpaper_blur_amount">Intensidade</string>
-    <string name="settings_blur_unavailable">O escurecimento do papel de parede não está disponível neste dispositivo ou nas atuais definições do sistema.</string>
+    <string name="settings_blur_unavailable">A desfocagem do papel de parede não está disponível neste dispositivo ou nas atuais definições do sistema.</string>
 </resources>

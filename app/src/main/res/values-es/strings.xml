@@ -574,7 +574,6 @@
     <string name="list_color_default">Seguir el color de texto predeterminado</string>
     <string name="list_show_names">Mostrar nombre de aplicaciones</string>
     <string name="list_left_alphabet">Utilizar desde la izquierda</string>
-    <string name="list_left_alphabet_summary">Desliza el dedo por el borde izquierdo para controlar el alfabeto de la derecha</string>
     <string name="search_settings_summary">Aplicaciones, contactos y sugerencias</string>
     <string name="settings_wallpaper_dim_color">Color de superposición</string>
     <string name="settings_wallpaper_dim_color_auto">Tinte primario automático</string>
@@ -595,7 +594,6 @@
     <string name="alphabet_top">Posición superior</string>
     <string name="alphabet_bottom">Posición inferior</string>
     <string name="alphabet_free_movement">Movimiento libre</string>
-    <string name="alphabet_free_movement_summary">Arrastra más allá de cualquiera de los extremos para mover el alfabeto. Suelta para volver.</string>
     <string name="alphabet_automatic_spacing">Automático · %1$d dp espaciado</string>
     <string name="grace_button_position_size">Posición y tamaño</string>
     <string name="grace_button_alignment">Alineación</string>
@@ -858,7 +856,7 @@
     <string name="category_icon_circle">Círculo</string>
     <string name="category_icon_info">Información</string>
     <string name="category_icon_schedule">Horario</string>
-    <string name="category_icon_day">Limpiar día</string>
+    <string name="category_icon_day">Día despejado</string>
     <string name="category_icon_bedtime">Hora de dormir</string>
     <string name="category_dw_disabled">Bienestar digital está apagado</string>
     <string name="category_open_dw">Abrir Bienestar digital</string>

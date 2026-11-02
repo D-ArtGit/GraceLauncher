@@ -109,10 +109,12 @@ fun AlphabetRail(
     onDoubleTap: ((Offset) -> Unit)? = null,
     doubleTapIntervalMs: Int? = null,
     categorySections: Map<String, AppCategory> = emptyMap(),
+    showRightTouchArea: Boolean = false,
 ) {
     if (letters.isEmpty()) return
     val appearance = LocalLauncherAppearance.current
     val textColor = resolvedFontColor(alphabet?.fontColor, onWallpaper = onWallpaper)
+    val indicatorColor = if (alphabet?.indicatorShape == IconShape.None) textColor else MaterialTheme.colorScheme.onPrimary
     val fontSize = (alphabet?.fontSize ?: 14).sp
     val fontFamily = if (alphabet != null) rememberAppFontFamily(alphabet.fontId) else MaterialTheme.typography.bodyLarge.fontFamily
     val freeMovement by rememberUpdatedState(alphabet?.freeMovement == true)
@@ -247,6 +249,7 @@ fun AlphabetRail(
             .testTag("alphabet_left_touch").then(touchSurface(true)).clearAndSetSemantics {})
         Box(
             Modifier.align(Alignment.TopEnd).width(48.dp).height(touchHeight)
+                .then(if (showRightTouchArea) Modifier.background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)) else Modifier)
                 .onGloballyPositioned { rightTouchOrigin = it.positionInRoot() }
                 .testTag("alphabet_rail")
                 .semantics { contentDescription = railDescription }
@@ -349,15 +352,15 @@ fun AlphabetRail(
                         LauncherIcon(
                             LauncherSymbol.Star,
                             Modifier.size(28.dp).testTag("alphabet_indicator_star"),
-                            tint = MaterialTheme.colorScheme.onPrimary,
+                            tint = indicatorColor,
                         )
                     } else if (letter == GraceSection) {
-                        Box(Modifier.size(16.dp).background(MaterialTheme.colorScheme.onPrimary, CircleShape))
+                        Box(Modifier.size(16.dp).background(indicatorColor, CircleShape))
                     } else if (category != null) {
                         CategoryIndicator(category.icon, Modifier.size(28.dp).testTag("alphabet_indicator_category"),
-                            tint = MaterialTheme.colorScheme.onPrimary)
+                            tint = indicatorColor)
                     } else {
-                        CenteredIndicatorGlyph(letter, MaterialTheme.colorScheme.onPrimary, fontFamily)
+                        CenteredIndicatorGlyph(letter, indicatorColor, fontFamily)
                     }
                 }
             }

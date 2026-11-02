@@ -621,7 +621,6 @@
     <string name="list_show_names">Afficher les noms des applications</string>
     <string name="list_names_in_folders">Appliquer également dans les dossiers</string>
     <string name="list_left_alphabet">Utiliser depuis la gauche</string>
-    <string name="list_left_alphabet_summary">Faites glisser le long du bord gauche pour contrôler l\'alphabet situé à droite</string>
     <string name="shortcuts_folders_title">Raccourcis et dossiers</string>
     <string name="shortcuts_folders_enable">Activer les fenêtres contextuelles des applications</string>
     <string name="popup_swipe_left_first">Glisser vers la gauche pour ouvrir le premier élément</string>
@@ -637,7 +636,6 @@
     <string name="alphabet_top">Position haute</string>
     <string name="alphabet_bottom">Position basse</string>
     <string name="alphabet_free_movement">Déplacement libre</string>
-    <string name="alphabet_free_movement_summary">Faites glisser au-delà de l\'une ou l\'autre extrémité pour déplacer l\'alphabet. Relâchez pour le remettre en place.</string>
     <string name="alphabet_automatic_spacing">Automatique · espacement de %1$d dp</string>
     <string name="settings_palette_style">Style de la palette</string>
     <string name="palette_tonal_spot">Tonalité ponctuelle</string>
@@ -761,7 +759,7 @@
     <string name="font_color_add">Ajouter une couleur</string>
     <string name="font_color_saved">Couleurs de polices sauvegardées</string>
     <string name="font_color_edit">Modifier</string>
-    <string name="font_color_material">Couleurs du matériel</string>
+    <string name="font_color_material">Couleurs Material</string>
     <string name="material_color_primary">Principale</string>
     <string name="material_color_on_primary">Sur le principal</string>
     <string name="material_color_primary_container">Contenant principal</string>
@@ -797,13 +795,13 @@
     <string name="material_color_inverse_surface">Surface inversée</string>
     <string name="material_color_inverse_on_surface">Inverser sur la surface</string>
     <string name="material_color_inverse_primary">Inverser le principal</string>
-    <string name="material_color_surface_tint">Assombrissement de la surface</string>
+    <string name="material_color_surface_tint">Teinte de surface</string>
     <string name="font_color_wallpaper">Couleur de police du fond d\'écran</string>
     <string name="font_color_follow_wallpaper">Appliquer la couleur de police du fond d\'écran</string>
     <string name="wallpaper_brightness_auto">Automatique</string>
     <string name="wallpaper_brightness_dark">Fond d\'écran sombre</string>
     <string name="wallpaper_brightness_light">Fond d\'écran lumineux</string>
-    <string name="wallpaper_color_access_unavailable">Utiliser les couleurs du fond d\'écran sombre tant que la détection automatique est autorisée</string>
+    <string name="wallpaper_color_access_unavailable">Utilise les couleurs adaptées à un fond d\'écran sombre tant que la détection automatique n\'est pas autorisée</string>
     <string name="wallpaper_color_access_title">Autoriser la détection automatique de la couleur du fond d\'écran ?</string>
     <string name="wallpaper_color_access_summary">Autoriser GraceLauncher à utiliser les couleurs fournies par Android pour les textes ? En cas de refus, utilisation automatique du fond d\'écran sombre.</string>
     <string name="wallpaper_color_access_allow">Autoriser</string>
@@ -818,10 +816,10 @@
     <string name="clock_show_weather">Afficher la météo</string>
     <string name="clock_weather_icons">Icônes météo</string>
     <string name="clock_weather_icons_monochrome">Monochrome</string>
-    <string name="clock_color_hour_tens">format 24 heures</string>
-    <string name="clock_color_hour_ones">Format 12 heures</string>
-    <string name="clock_color_minute_tens">Minutes avec les dizaines</string>
-    <string name="clock_color_minute_ones">minutes sans les décimales</string>
+    <string name="clock_color_hour_tens">Chiffre des dizaines des heures</string>
+    <string name="clock_color_hour_ones">Chiffre des unités des heures</string>
+    <string name="clock_color_minute_tens">Chiffre des dizaines des minutes</string>
+    <string name="clock_color_minute_ones">Chiffre des unités des minutes</string>
     <string name="clock_color_weekday">Jour de la semaine</string>
     <string name="clock_color_date_group">Date</string>
     <string name="clock_color_month">Mois</string>
@@ -850,7 +848,7 @@
     <string name="category_icon_circle">Cercle</string>
     <string name="category_icon_info">Informations</string>
     <string name="category_icon_schedule">Plannification</string>
-    <string name="category_icon_day">Libérer la journée</string>
+    <string name="category_icon_day">Journée ensoleillée</string>
     <string name="category_icon_bedtime">L\'heure d\'aller se coucher</string>
     <string name="category_dw_disabled">Bien-être digital éteint</string>
     <string name="category_open_dw">Ouvrir bien-être digital</string>
@@ -859,7 +857,7 @@
     <string name="app_list_grace_settings">Paramètres de GraceLauncher</string>
     <string name="app_list_add_grace">Grace Launcher</string>
     <string name="alphabet_show_in">Montrer dans</string>
-    <string name="list_symbol_horizontal_offset">Symbole de décalage horizontal</string>
+    <string name="list_symbol_horizontal_offset">Décalage horizontal du symbole</string>
     <string name="lab_dismiss_threshold">Dépasser le seuil</string>
     <string name="material_color_scrim">Scrim</string>
 </resources>

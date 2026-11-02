@@ -697,7 +697,6 @@
     <string name="list_show_names">显示应用名称</string>
     <string name="list_names_in_folders">同时影响文件夹内部</string>
     <string name="list_left_alphabet">从左侧使用</string>
-    <string name="list_left_alphabet_summary">沿左侧边缘滑动，操作右侧的字母表</string>
     <string name="shortcuts_folders_title">快捷方式与文件夹</string>
     <string name="popups_title">弹出窗口</string>
     <string name="shortcuts_folders_enable">启用应用弹出窗口</string>
@@ -718,7 +717,6 @@
     <string name="alphabet_top">上限位置</string>
     <string name="alphabet_bottom">下限位置</string>
     <string name="alphabet_free_movement">字母表自由移动</string>
-    <string name="alphabet_free_movement_summary">滑过任一端点时带动字母表平移，松手后回到起始位置</string>
     <string name="alphabet_automatic_spacing">自动排列 · %1$d dp 间距</string>
     <string name="settings_palette_style">调色板风格</string>
     <string name="palette_tonal_spot">色调点缀 (Tonal spot)</string>
@@ -879,4 +877,5 @@
     <string name="app_list_add_grace">Grace 启动器</string>
     <string name="alphabet_show_in">显示在</string>
     <string name="list_symbol_horizontal_offset">符号水平偏移</string>
+    <string name="alphabet_touch_area">显示触控区域</string>
 </resources>

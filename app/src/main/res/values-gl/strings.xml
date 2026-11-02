@@ -571,7 +571,6 @@
     <string name="list_color_default">Segundo a cor do texto predeterminado</string>
     <string name="list_show_names">Amosar os nomes das aplicacións</string>
     <string name="list_left_alphabet">Usar dende a esquerda</string>
-    <string name="list_left_alphabet_summary">Esvara o dedo polo bordo esquerdo para controlar o alfabeto da dereita</string>
     <string name="shortcuts_folders_title">Atallos e cartafoles</string>
     <string name="shortcuts_folders_enable">Activar as fiestras emerxentes da aplicación</string>
     <string name="popup_swipe_left_first">Esvara cara á esquerda para abrir o primeiro elemento</string>
@@ -587,7 +586,6 @@
     <string name="alphabet_top">Posición superior</string>
     <string name="alphabet_bottom">Posición inferior</string>
     <string name="alphabet_free_movement">Libre movemento</string>
-    <string name="alphabet_free_movement_summary">Arrastra máis alá de calquera dos extremos para mover o alfabeto. Solta para volver á posición inicial.</string>
     <string name="alphabet_automatic_spacing">Automático · Espazado de %1$d dp</string>
     <string name="grace_button_position_size">Posición e tamaño</string>
     <string name="grace_button_alignment">Aliñamento</string>
@@ -849,7 +847,7 @@
     <string name="category_icon_circle">Círculo</string>
     <string name="category_icon_info">Información</string>
     <string name="category_icon_schedule">Horario</string>
-    <string name="category_icon_day">Limpar día</string>
+    <string name="category_icon_day">Día despexado</string>
     <string name="category_icon_bedtime">Hora de durmir</string>
     <string name="category_dw_disabled">O benestar dixital está desactivado</string>
     <string name="category_open_dw">Abrir benestar dixital</string>

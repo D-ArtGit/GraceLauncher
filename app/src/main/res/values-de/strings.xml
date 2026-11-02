@@ -642,7 +642,6 @@
     <string name="icon_suggestion_power">Ein-/Ausschalter</string>
     <string name="popup_widget_content_scale">Inhaltsskalierung · %1$d%%</string>
     <string name="list_left_alphabet">Alphabet links nutzen</string>
-    <string name="list_left_alphabet_summary">Am linken Rand entlang gleiten, um das Alphabet rechts zu kontrollieren</string>
     <string name="settings_alphabet">A-Z-Liste</string>
     <string name="alphabet_letter_color">Buchstabenfarbe</string>
     <string name="alphabet_indicator_shape">Form der Positionsanzeige</string>
@@ -651,7 +650,6 @@
     <string name="settings_none">Keine</string>
     <string name="favorites_add_app_stack">App-Leiste hinzufügen</string>
     <string name="alphabet_free_movement">Frei bewegen</string>
-    <string name="alphabet_free_movement_summary">An einem Ende ziehen, um das Alphabet zu bewegen. Loslassen, um zurück zu kehren.</string>
     <string name="alphabet_automatic_spacing">Automatisch · %1$d dp Abstand</string>
     <string name="settings_palette_style">Farbpaletten-Stil</string>
     <string name="palette_tonal_spot">Farbfleck</string>
