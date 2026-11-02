@@ -820,4 +820,10 @@
     <string name="clock_color_day">Giorno</string>
     <string name="clock_color_battery">Percentuale della batteria</string>
     <string name="clock_color_weather">Testo del meteo</string>
+    <string name="app_category_notification">Notifiche</string>
+    <string name="category_inclusion">Includi app</string>
+    <string name="category_manual">Selezione manuale</string>
+    <string name="category_dynamic">Selezione dinamica</string>
+    <string name="category_dynamic_rule">Regola dinamica</string>
+    <string name="category_rule_notifications">App con notifiche</string>
 </resources>
