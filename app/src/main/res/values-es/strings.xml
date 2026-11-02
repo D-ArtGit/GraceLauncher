@@ -566,7 +566,7 @@
     <string name="font_delete">Eliminar</string>
     <string name="font_delete_title">¿Eliminar fuentes?</string>
     <string name="font_delete_summary">¿Eliminar %1$d fuentes importadas? Los componentes que las utilizan volverán a la fuente predeterminada.</string>
-    <string name="settings_favorites_app_list">Favoritos y lista de aplicaciones</string>
+    <string name="settings_favorites_app_list">Lista de aplicaciones</string>
     <string name="list_app_spacing">Espacio entre aplicaciones</string>
     <string name="list_side_padding">Márgenes laterales de la lista</string>
     <string name="list_icon_name_gap">Espacio entre icono y nombre</string>
@@ -866,4 +866,11 @@
     <string name="app_list_add_grace">Grace Launcher</string>
     <string name="alphabet_show_in">Mostrar en</string>
     <string name="list_symbol_horizontal_offset">Desplazamiento horizontal del símbolo</string>
+    <string name="list_appearance_tab_list">Lista</string>
+    <string name="list_appearance_tab_notification">Notificación</string>
+    <string name="list_preview_folder">Carpeta</string>
+    <string name="list_preview_notification_title">Prueba</string>
+    <string name="list_preview_notification_text">Este es un mensaje de prueba para comprobar cómo se muestran las notificaciones.</string>
+    <string name="alphabet_touch_area">Mostrar área táctil</string>
+    <string name="alphabet_touch_width">Ancho de toque derecho</string>
 </resources>
