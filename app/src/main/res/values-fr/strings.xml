@@ -34,7 +34,7 @@
     <string name="grace_button_quick_settings">Ouvrir les paramètres rapides</string>
     <string name="grace_action_unavailable">Cette action n’est pas disponible sur cet appareil.</string>
     <string name="grace_accessibility_description">Utilisez le bouton Grace ou les gestes sur l’écran d’accueil pour verrouiller l’écran, ouvrir les notifications ou les paramètres. Aucun contenu affiché à l’écran n’est lu ni enregistré.</string>
-    <string name="grace_accessibility_explanation">Ces actions nécessitent l\'accès aux services d\'accessibilité d\'Android, et non les droits root. Dans les paramètres système, activez Grace Launcher dans les applications installées ou les services téléchargés. Grace effectue uniquement l\'action que vous déclenchez ; l\'application ne lit pas le contenu de l\'écran et ne surveille pas votre activité. Vous pouvez révoquer cet accès à tout moment.</string>
+    <string name="grace_accessibility_explanation">Ces actions nécessitent l\'accès aux services d\'accessibilité d\'Android, et non les droits root. Dans les paramètres système, activez Grace Launcher dans les applications installées ou les services téléchargés. Grace effectue uniquement l\'action que vous déclenchez ; l\'application ne lit pas le contenu de l\'écran et ne surveille pas votre activité. Vous pouvez révoquer cet accès à tout moment.</string>
     <string name="grace_accessibility_required">L\'accès aux services d\'accessibilité est nécessaire pour les actions système.</string>
     <string name="shortcuts_title">Raccourcis</string>
     <string name="shortcuts_search">Rechercher des raccourcis</string>
@@ -269,7 +269,7 @@
         <item quantity="other">%1$d éléments · %2$s</item>
     </plurals>
     <string name="settings_folder_delete">Supprimer le dossier</string>
-    <string name="settings_folder_delete_confirmation">Supprimer « %1$s » et ses widgets ? Les applications qu\'il contient resteront installées.</string>
+    <string name="settings_folder_delete_confirmation">Supprimer « %1$s » et ses widgets ? Les applications qu\'il contient resteront installées.</string>
     <plurals name="settings_select_count">
         <item quantity="one">%1$d sélectionné</item>
         <item quantity="many">%1$d sélectionnés</item>
@@ -371,7 +371,7 @@
     <string name="icon_designer_data_empty">Aucun modèle d\'icône enregistré</string>
     <string name="icon_designer_select_data">Sélectionner des modèles d\'icônes</string>
     <string name="icon_designer_delete_data">Supprimer les modèles d\'icônes sélectionnés</string>
-    <string name="icon_designer_unsaved_title">Enregistrer les modifications ?</string>
+    <string name="icon_designer_unsaved_title">Enregistrer les modifications ?</string>
     <string name="icon_designer_unsaved_message">Vos modifications d\'icône n\'ont pas été enregistrées.</string>
     <string name="icon_designer_discard">Abandonner</string>
     <string name="icon_designer_add_tray">Ajouter un fond</string>
@@ -409,7 +409,7 @@
     <string name="icon_designer_cookie_sides">Cookie · %1$d côtés</string>
     <string name="icon_designer_color">Couleur</string>
     <string name="icon_designer_invert_background">Inverser la détection de l\'arrière-plan de l\'icône</string>
-    <string name="icon_designer_invert_background_summary">Pour les images simples uniquement : utiliser les zones claires comme symbole plutôt que les zones sombres</string>
+    <string name="icon_designer_invert_background_summary">Pour les images simples uniquement : utiliser les zones claires comme symbole plutôt que les zones sombres</string>
     <string name="icon_designer_tray_color">Couleur du fond</string>
     <string name="icon_designer_symbol_color">Couleur du symbole</string>
     <string name="icon_designer_original_color">Couleur d\'origine</string>
@@ -420,14 +420,14 @@
     <string name="icon_designer_size">Taille du symbole</string>
     <string name="icon_designer_rotation">Rotation</string>
     <string name="icon_designer_effects">Effets</string>
-    <string name="icon_designer_drag_symbol">%1$s · Faites glisser pour déplacer ; utilisez deux doigts pour redimensionner et faire pivoter</string>
+    <string name="icon_designer_drag_symbol">%1$s · Faites glisser pour déplacer ; utilisez deux doigts pour redimensionner et faire pivoter</string>
     <string name="icon_designer_color_done">Terminé</string>
     <string name="icon_designer_reset">Réinitialiser</string>
     <string name="icon_designer_saturation_brightness">Saturation et luminosité</string>
     <string name="icon_designer_hue">Teinte</string>
     <string name="icon_designer_saturation">Saturation</string>
     <string name="icon_designer_brightness">Luminosité</string>
-    <string name="icon_color_relative_summary">0 conserve la couleur d\'origine. Les ajustements suivent les changements de couleur ultérieurs ; la saturation et la luminosité sont exprimées en points de pourcentage.</string>
+    <string name="icon_color_relative_summary">0 conserve la couleur d\'origine. Les ajustements suivent les changements de couleur ultérieurs ; la saturation et la luminosité sont exprimées en points de pourcentage.</string>
     <string name="icon_designer_hex">Couleur hexadécimale</string>
     <string name="icon_designer_color_presets">Couleurs prédéfinies</string>
     <string name="icon_pack_description">Les icônes des packs activés sont utilisées dans l’ordre indiqué, puis celles du système. Les icônes personnalisées par application sont prioritaires.</string>
@@ -450,7 +450,7 @@
     <string name="weather_settings_incompatible">Recherchez les mises à jour de Grace Launcher et de Breezy Weather afin d\'utiliser des versions compatibles pour le partage des données météo.</string>
     <string name="weather_settings_unavailable">Breezy Weather n\'a pas pu partager ses données. Ouvrez l\'application pour vérifier les prévisions, puis réessayez.</string>
     <string name="weather_settings_ready">Connecté à Breezy Weather.</string>
-    <string name="weather_settings_update_notifier">Pour les mises à jour automatiques : Breezy Weather → Paramètres → Modules externes → Location Update Notifier → Grace Launcher.</string>
+    <string name="weather_settings_update_notifier">Pour les mises à jour automatiques : Breezy Weather → Paramètres → Modules externes → Location Update Notifier → Grace Launcher.</string>
     <string name="weather_settings_install">Installer Breezy Weather</string>
     <string name="weather_settings_allow">Autoriser l\'accès à la météo</string>
     <string name="weather_settings_open">Ouvrir Breezy Weather</string>
@@ -471,8 +471,8 @@
         <item quantity="other">Afficher jusqu’à %1$d jours. Les prévisions disponibles dépendent du lieu et de la source sélectionnés dans Breezy Weather.</item>
     </plurals>
     <string name="weather_current_description">%1$s, %2$s</string>
-    <string name="weather_daily_description">%1$s, maximale : %2$s, minimale : %3$s</string>
-    <string name="weather_hour_description">%1$s : %2$s, %3$s</string>
+    <string name="weather_daily_description">%1$s, maximale : %2$s, minimale : %3$s</string>
+    <string name="weather_hour_description">%1$s : %2$s, %3$s</string>
     <string name="weather_clear">Ciel dégagé</string>
     <string name="weather_partly_cloudy">Partiellement nuageux</string>
     <string name="weather_cloudy">Nuageux</string>
@@ -601,8 +601,8 @@
     </plurals>
     <string name="pin_item_title">Ajouter à l\'écran d\'accueil</string>
     <string name="pin_item_add">Ajouter</string>
-    <string name="pin_shortcut_message">Ajouter « %1$s » à l\'écran d\'accueil et à la liste des applications ?</string>
-    <string name="pin_widget_message">Ajouter le widget « %1$s » à l\'écran d\'accueil ?</string>
+    <string name="pin_shortcut_message">Ajouter « %1$s » à l\'écran d\'accueil et à la liste des applications ?</string>
+    <string name="pin_widget_message">Ajouter le widget « %1$s » à l\'écran d\'accueil ?</string>
     <string name="pin_item_expired">Cette demande n\'est plus disponible. Veuillez réessayer depuis l\'application.</string>
     <string name="pin_item_error">Impossible d\'ajouter ce raccourci. Veuillez réessayer.</string>
     <string name="font_add">Ajouter une police</string>
@@ -610,8 +610,8 @@
     <string name="font_follow_manager">Par défaut · Gestionnaire de polices</string>
     <string name="font_search">Rechercher des polices</string>
     <string name="font_delete">Supprimer</string>
-    <string name="font_delete_title">Supprimer les polices ?</string>
-    <string name="font_delete_summary">Supprimer les %1$d polices importées ? Les composants qui les utilisent reviendront à la police par défaut.</string>
+    <string name="font_delete_title">Supprimer les polices ?</string>
+    <string name="font_delete_summary">Supprimer les %1$d polices importées ? Les composants qui les utilisent reviendront à la police par défaut.</string>
     <string name="settings_favorites_app_list">Favoris et liste des applications</string>
     <string name="list_app_spacing">Espacement des applications</string>
     <string name="list_side_padding">Marges latérales de la liste</string>
@@ -666,7 +666,7 @@
     <string name="app_stack_rename">Renommer le groupe d\'applications</string>
     <string name="app_stack_placement">Afficher le groupe d\'applications dans</string>
     <string name="app_stack_delete">Supprimer le groupe d\'applications</string>
-    <string name="app_stack_delete_confirmation">Supprimer « %1$s » ? Les applications qu\'il contient resteront installées.</string>
+    <string name="app_stack_delete_confirmation">Supprimer « %1$s » ? Les applications qu\'il contient resteront installées.</string>
     <string name="app_stack_expand">Développer le groupe d\'applications</string>
     <string name="app_stack_collapse">Réduire le groupe d\'applications</string>
     <string name="app_stack_empty">Choisissez des applications ou des raccourcis ci-dessous.</string>
@@ -680,7 +680,7 @@
     <string name="choose_default_launcher">Choisir le lanceur par défaut</string>
     <string name="lab_accessibility">Accessibilité</string>
     <string name="lab_prefer_non_accessibility">Éviter l\'accès aux services d\'accessibilité si possible</string>
-    <string name="lab_prefer_non_accessibility_summary">Essayer d’utiliser les API système pour les notifications et le centre de contrôle sans accès aux services d\'accessibilité. Les résultats varient selon l\'appareil. Aucun basculement automatique n\'est prévu : désactivez cette option manuellement si elle ne fonctionne pas. Le verrouillage de l\'écran nécessite toujours l\'accès aux services d\'accessibilité. Aucun accès root ni accès administrateur de l\'appareil n\'est utilisé.</string>
+    <string name="lab_prefer_non_accessibility_summary">Essayer d’utiliser les API système pour les notifications et le centre de contrôle sans accès aux services d\'accessibilité. Les résultats varient selon l\'appareil. Aucun basculement automatique n\'est prévu : désactivez cette option manuellement si elle ne fonctionne pas. Le verrouillage de l\'écran nécessite toujours l\'accès aux services d\'accessibilité. Aucun accès root ni accès administrateur de l\'appareil n\'est utilisé.</string>
     <string name="settings_debug">Débogage</string>
     <string name="settings_open_home">Accéder directement à l\'écran d\'accueil</string>
     <string name="settings_open_home_summary">Accéder directement à l\'écran d\'accueil sans définir Grace comme lanceur par défaut</string>
@@ -711,7 +711,7 @@
     <string name="usage_refresh_frequency">Fréquence de rafraîchissement automatique</string>
     <string name="usage_refresh_now">Actualiser maintenant</string>
     <string name="usage_refreshing">Actualisation…</string>
-    <string name="usage_last_refresh">Dernier rafraîchissement : %1$s</string>
+    <string name="usage_last_refresh">Dernier rafraîchissement : %1$s</string>
     <string name="usage_failed">Les données d\'utilisation ne peuvent pas être actualisées. Vérifier les autorisarions aux statistiques d\'utilisation et recommencer.</string>
     <string name="usage_minutes">%1$d min</string>
     <string name="usage_hours">%1$d h %2$d m</string>
@@ -740,7 +740,7 @@
     <string name="app_category_start">Début</string>
     <string name="app_category_end">Fin</string>
     <string name="app_category_delete">Supprimer catégorie</string>
-    <string name="app_category_delete_confirmation">Supprimer “%1$s” ? Les applications, dossiers et raccourcis seront conservés.</string>
+    <string name="app_category_delete_confirmation">Supprimer “%1$s” ? Les applications, dossiers et raccourcis seront conservés.</string>
     <string name="app_category_unavailable">Cette catégorie n\'est plus disponible.</string>
     <string name="settings_tablets_foldables">Tablettes &amp; appareils pliants</string>
     <string name="settings_wallpaper">Fond d\'écran</string>
@@ -752,8 +752,8 @@
     <string name="settings_home_screen">Ecran d\'accueil</string>
     <string name="settings_feed_screen">Ecran de défilement</string>
     <string name="settings_status_screen">Statuts</string>
-    <string name="lab_dismiss_resistance_summary">Partagés par les notifications et le player média. Une valeur plus haute créée plus de résistance ; 0% suis le mouvement du doigt.</string>
-    <string name="lab_dismiss_threshold_summary">Distance avant que la résistance ne lâche. Partagée par les notifications et le player média  ; limitée par la largeur disponible.</string>
+    <string name="lab_dismiss_resistance_summary">Partagés par les notifications et le player média. Une valeur plus haute créée plus de résistance ; 0% suis le mouvement du doigt.</string>
+    <string name="lab_dismiss_threshold_summary">Distance avant que la résistance ne lâche. Partagée par les notifications et le player média ; limitée par la largeur disponible.</string>
     <string name="font_color_default">Couleur de police par défaut</string>
     <string name="font_color_theme">Couleur de police du thème</string>
     <string name="font_color_add">Ajouter une couleur</string>
@@ -802,8 +802,8 @@
     <string name="wallpaper_brightness_dark">Fond d\'écran sombre</string>
     <string name="wallpaper_brightness_light">Fond d\'écran lumineux</string>
     <string name="wallpaper_color_access_unavailable">Utilise les couleurs adaptées à un fond d\'écran sombre tant que la détection automatique n\'est pas autorisée</string>
-    <string name="wallpaper_color_access_title">Autoriser la détection automatique de la couleur du fond d\'écran ?</string>
-    <string name="wallpaper_color_access_summary">Autoriser GraceLauncher à utiliser les couleurs fournies par Android pour les textes ? En cas de refus, utilisation automatique du fond d\'écran sombre.</string>
+    <string name="wallpaper_color_access_title">Autoriser la détection automatique de la couleur du fond d\'écran ?</string>
+    <string name="wallpaper_color_access_summary">Autoriser GraceLauncher à utiliser les couleurs fournies par Android pour les textes ? En cas de refus, utilisation automatique du fond d\'écran sombre.</string>
     <string name="wallpaper_color_access_allow">Autoriser</string>
     <string name="wallpaper_color_access_decline">Pas maintenant</string>
     <string name="clock_tab_presets">Réglages prédifinis</string>
@@ -841,7 +841,7 @@
     <string name="category_notification_silent">Silencieux</string>
     <string name="category_notification_normal">Normal</string>
     <string name="category_notification_high">Haute</string>
-    <string name="category_app_count">Nombre d\'applications : %1$d</string>
+    <string name="category_app_count">Nombre d\'applications : %1$d</string>
     <string name="category_icon_music">Note de musique</string>
     <string name="category_icon_keep">Garder</string>
     <string name="category_icon_notifications">Notifications non-lues</string>

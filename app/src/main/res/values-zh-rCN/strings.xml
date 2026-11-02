@@ -182,7 +182,6 @@
     <string name="connect_calendar">连接日历</string>
     <string name="calendar_error">无法加载日历</string>
     <string name="no_upcoming_events">未来 14 天没有日程</string>
-
     <!-- 搜索与应用列表 -->
     <string name="search_apps">搜索应用</string>
     <string name="search_no_results">没有匹配的应用</string>
@@ -192,7 +191,6 @@
     <string name="hide_recently_installed">隐藏最近安装</string>
     <string name="add_to_folder">添加到文件夹</string>
     <string name="create_app_folder">在应用列表中新建文件夹</string>
-
     <!-- 收藏 -->
     <string name="favorites_selected">已选择</string>
     <string name="favorites_all_apps">所有应用</string>
@@ -225,13 +223,11 @@
     <plurals name="app_category_item_count">
         <item quantity="other">%1$d 个项目</item>
     </plurals>
-
     <!-- 文件夹 -->
     <string name="open_folder">打开文件夹</string>
     <string name="folder_actions">文件夹操作</string>
     <string name="edit_folder">编辑文件夹</string>
     <string name="empty_folder">文件夹中暂无应用</string>
-
     <!-- 通知 -->
     <string name="notification_dismiss">清除</string>
     <string name="notification_now">刚刚</string>
@@ -240,7 +236,6 @@
     <string name="notification_days">%1$d天前</string>
     <string name="notification_unavailable">这条通知已不可用</string>
     <string name="notification_allow">显示应用通知</string>
-
     <!-- 媒体 -->
     <string name="media_service_name">Grace Launcher 通知与媒体</string>
     <string name="media_player_summary">在主屏幕显示播放控件</string>
@@ -255,7 +250,6 @@
     <string name="media_open_player">打开%1$s</string>
     <string name="media_unknown_title">正在播放</string>
     <string name="media_control_unavailable">播放器已不可用</string>
-
     <!-- 设置 -->
     <string name="settings_title">设置</string>
     <string name="settings_back">返回</string>
@@ -413,7 +407,6 @@
     <string name="settings_storage_loading">正在载入设置…</string>
     <string name="settings_storage_load_error">无法读取设置，请重新打开启动器后重试。</string>
     <string name="settings_storage_save_error">未能保存更改，请重试。</string>
-
     <!-- 图标包 -->
     <string name="icon_pack_system">系统图标</string>
     <string name="icon_pack_enabled">启用的图标包</string>
@@ -507,7 +500,6 @@
     <string name="icon_pack_unavailable">图标包不可用 · 已使用系统图标</string>
     <string name="icon_pack_missing">%1$s 不可用，将按顺序使用其他图标包或系统图标。</string>
     <string name="icon_pack_load_failed">无法读取图标包，请重试。</string>
-
     <!-- 天气设置 -->
     <string name="weather_settings_enabled_summary">桌面与日程 · Breezy Weather</string>
     <string name="weather_settings_disabled_summary">可选功能 · 需要 Breezy Weather</string>
@@ -540,7 +532,6 @@
     <plurals name="weather_settings_days_summary">
         <item quantity="other">最多显示 %1$d 天。可用预报取决于 Breezy Weather 中所选的地点和数据源。</item>
     </plurals>
-
     <!-- 天气界面 -->
     <string name="weather_current_description">%1$s，%2$s</string>
     <string name="weather_daily_description">%1$s，最高 %2$s，最低 %3$s</string>
@@ -563,7 +554,6 @@
     <string name="weather_update_unknown">暂无更新时间</string>
     <string name="weather_via_breezy">天气来自 Breezy Weather</string>
     <string name="weather_agenda_action">%1$s。打开日程和天气</string>
-
     <!-- 许可证 -->
     <string name="licenses_app_license">GNU GPLv3</string>
     <string name="licenses_app_summary">Grace Launcher 是自由软件，采用 GNU 通用公共许可证第 3 版发布，不提供担保。第三方组件保留各自的许可证。</string>
@@ -587,7 +577,6 @@
     <string name="licenses_full_text">完整文本</string>
     <string name="licenses_named_full_text">%1$s · 完整文本</string>
     <string name="licenses_link_unavailable">没有可打开此链接的应用。</string>
-
     <!-- Clock style -->
     <string name="clock_style_apply">应用</string>
     <string name="clock_layout">时钟样式</string>
@@ -609,7 +598,6 @@
     <string name="clock_show_colon">显示冒号</string>
     <string name="clock_show_colon_summary">在小时和分钟之间显示冒号</string>
     <string name="clock_reset_value">恢复%1$s的默认值</string>
-
     <!-- Search -->
     <string name="settings_search">搜索</string>
     <string name="search_settings_summary">应用、联系人与搜索建议</string>
@@ -643,7 +631,6 @@
     <string name="search_hidden_apps_summary">包含从应用列表中隐藏的应用</string>
     <string name="search_clear_query">清空搜索</string>
     <string name="app_selection_fast_scroll">快速滚动应用列表</string>
-
     <!-- Home widgets -->
     <string name="widget_home_menu">Grace 小组件</string>
     <string name="widget_add">添加自定义小组件</string>
