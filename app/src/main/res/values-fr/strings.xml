@@ -680,7 +680,7 @@
     <string name="choose_default_launcher">Choisir le lanceur par défaut</string>
     <string name="lab_accessibility">Accessibilité</string>
     <string name="lab_prefer_non_accessibility">Éviter l\'accès aux services d\'accessibilité si possible</string>
-    <string name="lab_prefer_non_accessibility_summary">Essayer d’utiliser les API système pour les notifications et le centre de contrôle sans accès aux services d\'accessibilité. Les résultats varient selon l\'appareil. Aucun basculement automatique n\'est prévu : désactivez cette option manuellement si elle ne fonctionne pas. Le verrouillage de l\'écran nécessite toujours l\'accès aux services d\'accessibilité. Aucun accès root ni accès administrateur de l\'appareil n\'est utilisé.</string>
+    <string name="lab_prefer_non_accessibility_summary">Essayer d’utiliser les API système pour les notifications et le centre de contrôle sans accès aux services d\'accessibilité. Les résultats varient selon l\'appareil. Aucun basculement automatique n\'est prévu : désactivez cette option manuellement si elle ne fonctionne pas. Le verrouillage de l\'écran nécessite toujours l\'accès aux services d\'accessibilité. Aucun accès root ni accès administrateur de l\'appareil n\'est utilisé.</string>
     <string name="settings_debug">Débogage</string>
     <string name="settings_open_home">Accéder directement à l\'écran d\'accueil</string>
     <string name="settings_open_home_summary">Accéder directement à l\'écran d\'accueil sans définir Grace comme lanceur par défaut</string>
@@ -711,7 +711,7 @@
     <string name="usage_refresh_frequency">Fréquence de rafraîchissement automatique</string>
     <string name="usage_refresh_now">Actualiser maintenant</string>
     <string name="usage_refreshing">Actualisation…</string>
-    <string name="usage_last_refresh">Dernier rafraîchissement : %1$s</string>
+    <string name="usage_last_refresh">Dernier rafraîchissement : %1$s</string>
     <string name="usage_failed">Les données d\'utilisation ne peuvent pas être actualisées. Vérifier les autorisarions aux statistiques d\'utilisation et recommencer.</string>
     <string name="usage_minutes">%1$d min</string>
     <string name="usage_hours">%1$d h %2$d m</string>
@@ -740,7 +740,7 @@
     <string name="app_category_start">Début</string>
     <string name="app_category_end">Fin</string>
     <string name="app_category_delete">Supprimer catégorie</string>
-    <string name="app_category_delete_confirmation">Supprimer “%1$s” ? Les applications, dossiers et raccourcis seront conservés.</string>
+    <string name="app_category_delete_confirmation">Supprimer “%1$s” ? Les applications, dossiers et raccourcis seront conservés.</string>
     <string name="app_category_unavailable">Cette catégorie n\'est plus disponible.</string>
     <string name="settings_tablets_foldables">Tablettes &amp; appareils pliants</string>
     <string name="settings_wallpaper">Fond d\'écran</string>
@@ -752,8 +752,8 @@
     <string name="settings_home_screen">Ecran d\'accueil</string>
     <string name="settings_feed_screen">Ecran de défilement</string>
     <string name="settings_status_screen">Statuts</string>
-    <string name="lab_dismiss_resistance_summary">Partagés par les notifications et le player média. Une valeur plus haute créée plus de résistance ; 0% suis le mouvement du doigt.</string>
-    <string name="lab_dismiss_threshold_summary">Distance avant que la résistance ne lâche. Partagée par les notifications et le player média  ; limitée par la largeur disponible.</string>
+    <string name="lab_dismiss_resistance_summary">Partagés par les notifications et le player média. Une valeur plus haute créée plus de résistance ; 0% suis le mouvement du doigt.</string>
+    <string name="lab_dismiss_threshold_summary">Distance avant que la résistance ne lâche. Partagée par les notifications et le player média ; limitée par la largeur disponible.</string>
     <string name="font_color_default">Couleur de police par défaut</string>
     <string name="font_color_theme">Couleur de police du thème</string>
     <string name="font_color_add">Ajouter une couleur</string>
@@ -802,8 +802,8 @@
     <string name="wallpaper_brightness_dark">Fond d\'écran sombre</string>
     <string name="wallpaper_brightness_light">Fond d\'écran lumineux</string>
     <string name="wallpaper_color_access_unavailable">Utilise les couleurs adaptées à un fond d\'écran sombre tant que la détection automatique n\'est pas autorisée</string>
-    <string name="wallpaper_color_access_title">Autoriser la détection automatique de la couleur du fond d\'écran ?</string>
-    <string name="wallpaper_color_access_summary">Autoriser GraceLauncher à utiliser les couleurs fournies par Android pour les textes ? En cas de refus, utilisation automatique du fond d\'écran sombre.</string>
+    <string name="wallpaper_color_access_title">Autoriser la détection automatique de la couleur du fond d\'écran ?</string>
+    <string name="wallpaper_color_access_summary">Autoriser GraceLauncher à utiliser les couleurs fournies par Android pour les textes ? En cas de refus, utilisation automatique du fond d\'écran sombre.</string>
     <string name="wallpaper_color_access_allow">Autoriser</string>
     <string name="wallpaper_color_access_decline">Pas maintenant</string>
     <string name="clock_tab_presets">Réglages prédifinis</string>
@@ -841,7 +841,7 @@
     <string name="category_notification_silent">Silencieux</string>
     <string name="category_notification_normal">Normal</string>
     <string name="category_notification_high">Haute</string>
-    <string name="category_app_count">Nombre d\'applications : %1$d</string>
+    <string name="category_app_count">Nombre d\'applications : %1$d</string>
     <string name="category_icon_music">Note de musique</string>
     <string name="category_icon_keep">Garder</string>
     <string name="category_icon_notifications">Notifications non-lues</string>
