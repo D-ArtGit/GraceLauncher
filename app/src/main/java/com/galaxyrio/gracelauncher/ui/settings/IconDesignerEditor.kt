@@ -5,6 +5,7 @@ package com.galaxyrio.gracelauncher.ui.settings
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,6 +16,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.toArgb
@@ -216,8 +218,9 @@ internal fun IconDesignerSettings(
         }
     }
     LaunchedEffect(uiState.itemIcons.keys) { selection = selection.filter { it in uiState.itemIcons } }
-    SettingsScaffold(stringResource(if (onPositionAndSize != null) R.string.settings_grace_button else R.string.icon_designer_title),
-        "icon_designer", back, fixedCollapsed = true,
+    SettingsPreviewScaffold(uiState,
+        stringResource(if (onPositionAndSize != null) R.string.settings_grace_button else R.string.icon_designer_title),
+        "icon_designer", back, previewEnabled = page != DesignerPage.Data,
         actions = {
             if (page == DesignerPage.Data) {
                 if (selection.isNotEmpty()) Text(selection.size.toString(), style = MaterialTheme.typography.labelLarge)
@@ -239,21 +242,25 @@ internal fun IconDesignerSettings(
                 }, enabled = selection.isNotEmpty() && !saving, modifier = Modifier.testTag("icon_designer_delete")) {
                     Icon(androidx.compose.ui.res.painterResource(R.drawable.ms_delete), stringResource(R.string.icon_designer_delete_data))
                 }
-            } else Button(onClick = { save() }, enabled = !saving && (page == DesignerPage.All || app != null),
-                modifier = Modifier.padding(end = 8.dp).testTag("icon_designer_save")) { Text(stringResource(R.string.icon_designer_save)) }
+            } else SettingsApplyAction(stringResource(R.string.icon_designer_save), onClick = { save() },
+                enabled = !saving && (page == DesignerPage.All || app != null),
+                modifier = Modifier.testTag("icon_designer_save"))
         }) { padding ->
         BoxWithConstraints(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding).imePadding()) {
-            val previewHeight = ((maxHeight - LocalSettingsBottomInset.current) * .40f).coerceIn(if (page == DesignerPage.All)
-                (40.dp * (shared.iconSize / 100f) + 16.dp) * 3 + 24.dp
-                else 160.dp * (if (button) 1f else shared.iconSize / 100f) + 24.dp, 264.dp)
-            AnimatedContent(page, modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp).clipToBounds(),
+            val previewHeight by animateDpAsState(
+                ((maxHeight - LocalSettingsBottomInset.current) * .40f).coerceIn(if (page == DesignerPage.All)
+                    (40.dp * (shared.iconSize / 100f) + 16.dp) * 3 + 24.dp
+                    else 160.dp * (if (button) 1f else shared.iconSize / 100f) + 24.dp, 264.dp),
+                animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec(), label = "iconDesignerPreviewHeight")
+            AnimatedContent(page, modifier = Modifier.fillMaxSize().clipToBounds(),
                 transitionSpec = {
                     val direction = if (targetState.ordinal > initialState.ordinal) 1 else -1
                     (slideInHorizontally(tween(300)) { it * direction } + fadeIn(tween(150))) togetherWith
                         (slideOutHorizontally(tween(300)) { -it * direction } + fadeOut(tween(150)))
                 }, label = "iconDesignerPage") { displayed ->
                 if (displayed == DesignerPage.Data) IconDesignerData(uiState, selection.toSet(), !saving && page == displayed,
-                    onSelection = { selection = it.toList() }, onEdit = { request("edit:$it") })
+                    onSelection = { selection = it.toList() }, onEdit = { request("edit:$it") },
+                    modifier = Modifier.padding(horizontal = 16.dp).clip(settingsPreviewControlsShape()))
                 else {
                     val isAll = displayed == DesignerPage.All
                     val shownChoice = if (isAll) bulkChoice else specialChoice
@@ -271,7 +278,7 @@ internal fun IconDesignerSettings(
                     Column(Modifier.fillMaxSize()) {
                         IconDesignerPreview(uiState, app, shownChoice, shownDesign, layers, store, dynamicColors, themeColors, isAll,
                             !saving && page == displayed, { request("choose") }, ::changeDesign,
-                            Modifier.padding(top = 8.dp, bottom = 16.dp).height(previewHeight))
+                            Modifier.padding(top = 8.dp).height(previewHeight))
                         DesignerControlsPane(isAll, shownChoice, layered, !saving && page == displayed && (isAll || app != null),
                             app?.label, sourceLabel, dynamicColors, themeColors,
                             if (isAll) IconDesign.defaults() else if (button) GraceButtonIcon.defaults else shared.itemDefaults(app?.shortcut != null), colorPicker,
@@ -318,11 +325,13 @@ private fun DesignerControlsPane(all: Boolean, choice: ItemIcon, layered: Boolea
     val heroBounds = remember(heroSpec) { BoundsTransform { _, _ -> heroSpec } }
     val shape = ListItemDefaults.segmentedShapes(0, 1).shape
     val list = rememberLazyListState()
-    SharedTransitionLayout(modifier.clipToBounds()) {
+    SharedTransitionLayout(modifier.fillMaxWidth().settingsPreviewScrim()
+        .padding(start = 16.dp, top = 16.dp, end = 16.dp).clipToBounds()) {
         AnimatedContent(color, modifier = Modifier.fillMaxSize(),
             transitionSpec = { fadeIn(tween(200)) togetherWith fadeOut(tween(150)) }, label = "iconDesignerColorHero") { activeColor ->
             val visibility = this
-            if (activeColor == null) LazyColumn(Modifier.fillMaxSize().testTag("icon_designer_controls"), state = list,
+            if (activeColor == null) LazyColumn(Modifier.fillMaxSize().clip(settingsPreviewControlsShape())
+                .testTag("icon_designer_controls"), state = list,
                 verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
                 contentPadding = PaddingValues(bottom = (if (onPositionAndSize == null) 88.dp else 24.dp) + LocalSettingsBottomInset.current)) {
                 iconDesignerControls(all, enabled, appLabel, sourceLabel, design, layered, dynamicColors, themeColors, defaults,

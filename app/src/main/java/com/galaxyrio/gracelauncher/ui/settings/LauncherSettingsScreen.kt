@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -83,6 +85,10 @@ internal enum class SettingsPage {
     Wallpaper, WallpaperDesigner,
     AppCategories, CategoryEditor,
 }
+
+/** The window's existing system-bar owner follows the active settings surface. */
+internal enum class SettingsSystemBarBackground { Surface, Wallpaper, WallpaperWithBottomScrim, WallpaperWithTopScrim }
+internal val LocalSettingsSystemBarBackground = staticCompositionLocalOf<(SettingsSystemBarBackground) -> Unit> { {} }
 
 /** Navigation owns each page's saved state and seekable predictive-back transition. */
 @Composable
@@ -153,6 +159,8 @@ fun LauncherSettingsScreen(
     val storage = SettingsStorageState(
         uiState.isLoadingSettings, uiState.settingsLoadFailed, uiState.settingsSaveFailed,
     )
+    val reportSystemBarBackground by rememberUpdatedState(LocalSettingsSystemBarBackground.current)
+    DisposableEffect(Unit) { onDispose { reportSystemBarBackground(SettingsSystemBarBackground.Surface) } }
     MaterialTheme(typography = if (uiState.settings.applyFontToSettings) LocalLauncherTypography.current else SystemLauncherTypography) {
      CompositionLocalProvider(LocalSettingsStorageState provides storage) {
       NavHost(
@@ -182,6 +190,12 @@ fun LauncherSettingsScreen(
                     else -> emptyList()
                 },
             ) { entry ->
+                // Inline editors can switch to an opaque source picker without changing their route.
+                // Retain each entry's surface separately so outgoing transitions cannot override it.
+                var systemBarBackground by remember(entry) { mutableStateOf(SettingsSystemBarBackground.Surface) }
+                val activeEntry = currentEntry?.id == entry.id
+                val currentSystemBarBackground = systemBarBackground
+                SideEffect { if (activeEntry) reportSystemBarBackground(currentSystemBarBackground) }
                 // Ignore double taps and clicks on an outgoing/predictively revealed page.
                 fun isCurrent() = navController.currentBackStackEntry === entry &&
                     entry.lifecycle.currentState == Lifecycle.State.RESUMED && !closing
@@ -194,7 +208,8 @@ fun LauncherSettingsScreen(
                         else closeRoot()
                     }
                 }
-                CompositionLocalProvider(LocalOpenFontColors provides { navigate(SettingsPage.FontColors) },
+                CompositionLocalProvider(LocalSettingsSystemBarBackground provides { systemBarBackground = it },
+                    LocalOpenFontColors provides { navigate(SettingsPage.FontColors) },
                     LocalOpenDigitalWellbeing provides { navigate(SettingsPage.DigitalWellbeing) }) {
                 // Never initialize an editable draft before Room's first snapshot.
                 if (!storage.canEdit) {

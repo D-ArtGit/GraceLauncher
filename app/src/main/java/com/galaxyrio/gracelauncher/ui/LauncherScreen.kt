@@ -47,7 +47,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -83,7 +82,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withResumed
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.net.toUri
 import androidx.core.content.ContextCompat
 import com.galaxyrio.gracelauncher.R
@@ -136,6 +134,9 @@ import com.galaxyrio.gracelauncher.ui.home.rememberHeadphonesConnected
 import com.galaxyrio.gracelauncher.ui.home.rememberHomeTime
 import com.galaxyrio.gracelauncher.ui.home.WidgetScreen
 import com.galaxyrio.gracelauncher.ui.settings.LauncherSettingsScreen
+import com.galaxyrio.gracelauncher.ui.settings.LocalSettingsSystemBarBackground
+import com.galaxyrio.gracelauncher.ui.settings.SettingsSystemBarBackground
+import com.galaxyrio.gracelauncher.ui.theme.LocalWallpaperFontColor
 import com.galaxyrio.gracelauncher.ui.overlays.LauncherOverlay
 import com.galaxyrio.gracelauncher.ui.overlays.LauncherOverlays
 import com.galaxyrio.gracelauncher.ui.theme.GraceLauncherTheme
@@ -487,16 +488,26 @@ fun LauncherRoute(
     if (settingsOnly) {
         // Do not register a root back callback here: Android owns the predictive
         // cross-task/back-to-home animation of this regular settings Activity.
-        val lightBars = MaterialTheme.colorScheme.surface.luminance() > 0.5f
-        SideEffect {
-            (context as? Activity)?.window?.let { window ->
-                WindowInsetsControllerCompat(window, launchView).apply {
-                    isAppearanceLightStatusBars = lightBars
-                    isAppearanceLightNavigationBars = lightBars
-                }
-            }
+        var settingsBarBackground by remember { mutableStateOf(SettingsSystemBarBackground.Surface) }
+        val wallpaperSettings = settingsBarBackground == SettingsSystemBarBackground.Wallpaper ||
+            settingsBarBackground == SettingsSystemBarBackground.WallpaperWithBottomScrim
+        val lightBars = if (wallpaperSettings) LocalWallpaperFontColor.current.luminance() < 0.5f
+            else if (settingsBarBackground == SettingsSystemBarBackground.WallpaperWithTopScrim)
+                MaterialTheme.colorScheme.surfaceContainer.luminance() > 0.5f
+            else MaterialTheme.colorScheme.surface.luminance() > 0.5f
+        rememberLauncherSystemBars(
+            autoHide = false,
+            darkIcons = lightBars,
+            allowPullDown = false,
+            darkNavigationIcons = when (settingsBarBackground) {
+                SettingsSystemBarBackground.WallpaperWithBottomScrim -> MaterialTheme.colorScheme.surfaceContainer.luminance() > 0.5f
+                SettingsSystemBarBackground.WallpaperWithTopScrim -> LocalWallpaperFontColor.current.luminance() < 0.5f
+                else -> lightBars
+            },
+        )
+        CompositionLocalProvider(LocalSettingsSystemBarBackground provides { settingsBarBackground = it }) {
+            LauncherSettingsScreen(uiState, actions, onCloseSettings, handleRootBack = false)
         }
-        LauncherSettingsScreen(uiState, actions, onCloseSettings, handleRootBack = false)
     } else {
         LauncherScreen(
             uiState = uiState,
@@ -716,11 +727,23 @@ internal fun LauncherScreen(
     }
     val backProgress = remember { Animatable(0f) }
     val homeListMotion = remember { HomeListMotion(drawerOpen) }
-    val darkSystemIcons = if (fullScreen && !searching) MaterialTheme.colorScheme.surface.luminance() > 0.5f else appearance.darkText
+    var settingsBarBackground by remember { mutableStateOf(SettingsSystemBarBackground.Surface) }
+    val wallpaperSettings = settingsBarBackground == SettingsSystemBarBackground.Wallpaper ||
+        settingsBarBackground == SettingsSystemBarBackground.WallpaperWithBottomScrim
+    val darkSystemIcons = if (isSettings && settingsBarBackground == SettingsSystemBarBackground.WallpaperWithTopScrim)
+        MaterialTheme.colorScheme.surfaceContainer.luminance() > 0.5f
+        else if (fullScreen && !searching && !(isSettings && wallpaperSettings))
+        MaterialTheme.colorScheme.surface.luminance() > 0.5f else appearance.darkText
     val statusBarPull = rememberLauncherSystemBars(
         autoHide = uiState.settings.hideStatusBar && (!fullScreen || searching),
         darkIcons = darkSystemIcons,
         allowPullDown = !fullScreen && !editingHome && !editingWidgetScreen && !editingHomeContent && overlay == null && buttonTransition == null,
+        darkNavigationIcons = when {
+            isSettings && settingsBarBackground == SettingsSystemBarBackground.WallpaperWithBottomScrim ->
+                MaterialTheme.colorScheme.surfaceContainer.luminance() > 0.5f
+            isSettings && settingsBarBackground == SettingsSystemBarBackground.WallpaperWithTopScrim -> appearance.darkText
+            else -> darkSystemIcons
+        },
     )
 
     LaunchedEffect(returnHomeRequests) {
@@ -1015,7 +1038,8 @@ internal fun LauncherScreen(
     val widgetHost = rememberWidgetHost()
     CompositionLocalProvider(LocalLauncherAppearance provides appearance, LocalListAppearance provides uiState.settings.listAppearance,
         LocalHapticFeedback provides haptics, LocalWidgetHost provides widgetHost,
-        LocalPopupGestureSettings provides popupSettings) {
+        LocalPopupGestureSettings provides popupSettings,
+        LocalSettingsSystemBarBackground provides { settingsBarBackground = it }) {
       // One wallpaper treatment serves both transparent search and the alphabetical app list.
       val revealDimAlpha = if (drawerTransition != null && uiState.settings.dimWallpaper)
           uiState.settings.wallpaperDimAmount.coerceIn(0, 100) / 100f else dimAlpha

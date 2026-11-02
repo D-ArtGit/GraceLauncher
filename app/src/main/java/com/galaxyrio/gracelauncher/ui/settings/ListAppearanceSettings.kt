@@ -4,7 +4,6 @@ package com.galaxyrio.gracelauncher.ui.settings
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,11 +14,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.galaxyrio.gracelauncher.R
@@ -55,6 +54,7 @@ internal fun ListAppearanceSettings(uiState: LauncherUiState, actions: LauncherA
     val heroSpec = MaterialTheme.motionScheme.slowSpatialSpec<Rect>()
     val heroBounds = remember(heroSpec) { BoundsTransform { _, _ -> heroSpec } }
     val heroShape = ListItemDefaults.segmentedShapes(0, 1).shape
+    val controlsShape = settingsPreviewControlsShape()
     fun change(transform: (ListAppearance) -> ListAppearance) {
         draft = transform(draft).normalized()
         actions.updateSettings { it.copy(listAppearance = transform(it.listAppearance).normalized()) }
@@ -81,21 +81,17 @@ internal fun ListAppearanceSettings(uiState: LauncherUiState, actions: LauncherA
             onSelect = { id -> change { it.copy(fontId = id) }; dialog = null },
             onManage = { dialog = null; onManageFonts() }, onDismiss = { dialog = null }, tag = "list_font_picker")
     }
-    SettingsScaffold(stringResource(R.string.settings_favorites_app_list), "list_appearance",
-        { if (colorPage != null) closeColor() else onBack() }, fixedCollapsed = true) { padding ->
+    SettingsPreviewScaffold(uiState, stringResource(R.string.settings_favorites_app_list), "list_appearance",
+        { if (colorPage != null) closeColor() else onBack() }) { padding ->
         BoxWithConstraints(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding).imePadding()) {
             val notifications = settings.shortcutsFolders
-            // One preview for the app, plus the folder's one or two contributing apps.
-            val notificationCount = 1 + if (notifications.multipleAppNotificationPreviews) 2 else 1
-            val notificationLines = if (notifications.singleLineNotificationPreviews) 2 else 3
-            val notificationHeight = ((draft.fontSize - 2) * 1.5f * LocalDensity.current.fontScale *
-                notificationLines * notificationCount).dp + (notificationCount * 6).dp
-            val previewHeight by animateDpAsState(((40.dp * iconSize / 100f + draft.appSpacing.dp) * 3 + 76.dp + notificationHeight)
-                .coerceIn(176.dp, ((maxHeight - LocalSettingsBottomInset.current) * .45f).coerceAtLeast(176.dp)), label = "listPreviewHeight")
+            val previewMaxHeight = (maxHeight - LocalSettingsBottomInset.current).coerceAtLeast(0.dp) * .45f
             Column(Modifier.fillMaxSize()) {
                 ListAppearancePreview(uiState, draft, iconSize,
-                    Modifier.padding(top = 8.dp, bottom = 16.dp).height(previewHeight), popupState = previewState)
-                SharedTransitionLayout(Modifier.weight(1f).padding(horizontal = 16.dp).clipToBounds()) {
+                    Modifier.padding(top = 8.dp).fillMaxWidth().heightIn(max = previewMaxHeight)
+                        .animateContentSize(MaterialTheme.motionScheme.defaultSpatialSpec()), popupState = previewState)
+                SharedTransitionLayout(Modifier.weight(1f).fillMaxWidth().settingsPreviewScrim()
+                    .padding(start = 16.dp, top = 16.dp, end = 16.dp).clipToBounds()) {
                     AnimatedContent(colorPage, modifier = Modifier.fillMaxSize(),
                         transitionSpec = { fadeIn(tween(200)) togetherWith fadeOut(tween(150)) }, label = "listAppearanceColorHero") { activeColor ->
                         val visibility = this
@@ -111,7 +107,8 @@ internal fun ListAppearanceSettings(uiState: LauncherUiState, actions: LauncherA
                                 modifier = Modifier.padding(bottom = 16.dp).then(colorModifier(activeColor)), fallback = wallpaper.text.toArgb(),
                                 fontColors = settings.fontColors)
                         } else if (page == ListAppearancePage.Notification) {
-                            LazyColumn(Modifier.fillMaxSize().testTag("list_notification_controls"), state = notificationControlsState,
+                            LazyColumn(Modifier.fillMaxSize().clip(controlsShape)
+                                .testTag("list_notification_controls"), state = notificationControlsState,
                                 contentPadding = PaddingValues(bottom = 96.dp + LocalSettingsBottomInset.current),
                                 verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)) {
                                 item("single_line") {
@@ -131,7 +128,8 @@ internal fun ListAppearanceSettings(uiState: LauncherUiState, actions: LauncherA
                                     }
                                 }
                             }
-                        } else LazyColumn(Modifier.fillMaxSize().testTag("list_appearance_controls"), state = controlsState,
+                        } else LazyColumn(Modifier.fillMaxSize().clip(controlsShape)
+                            .testTag("list_appearance_controls"), state = controlsState,
                             contentPadding = PaddingValues(bottom = 96.dp + LocalSettingsBottomInset.current), verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)) {
                             item("icon_size") {
                                 DesignerSegment(0, 10, "list_icon_size") {

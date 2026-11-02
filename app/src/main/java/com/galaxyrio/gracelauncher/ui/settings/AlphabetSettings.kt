@@ -8,7 +8,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -17,11 +16,7 @@ import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
@@ -45,7 +40,6 @@ import com.galaxyrio.gracelauncher.ui.theme.LocalFontLibrary
 import com.galaxyrio.gracelauncher.ui.theme.LocalLauncherAppearance
 import com.galaxyrio.gracelauncher.ui.theme.rememberLauncherAppearance
 import com.galaxyrio.gracelauncher.ui.theme.resolvedFontColor
-import com.galaxyrio.gracelauncher.ui.theme.wallpaperTint
 import kotlin.math.roundToInt
 import org.json.JSONObject
 
@@ -91,17 +85,17 @@ internal fun AlphabetSettings(uiState: LauncherUiState, actions: LauncherActions
         onSelect = { id -> change { it.copy(fontId = id) }; dialog = null },
         onManage = { dialog = null; onManageFonts() }, onDismiss = { dialog = null }, tag = "alphabet_font_picker")
 
-    SettingsScaffold(stringResource(R.string.settings_alphabet), "alphabet_settings",
+    SettingsPreviewScaffold(uiState, stringResource(R.string.settings_alphabet), "alphabet_settings",
         { if (dialog == "color") closeColor() else onBack() },
-        modifier = Modifier.onGloballyPositioned { viewportTop = with(density) { it.positionInWindow().y.toDp().value } },
-        fixedCollapsed = true) { padding ->
+        wallpaperNavigationBar = true,
+        modifier = Modifier.onGloballyPositioned { viewportTop = with(density) { it.positionInWindow().y.toDp().value } }) { padding ->
         BoxWithConstraints(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding).imePadding()) {
             // Leave a useful controls column on small phones, and enough preview width
             // for both the wave and its indicator. The right edge has no outer margin.
             val previewWidth = (maxWidth * .42f).coerceIn(160.dp, 180.dp)
             AlphabetPreview(uiState, draft, previewModel, railLayout, viewportTop, Modifier.align(AbsoluteAlignment.TopRight).width(previewWidth).fillMaxHeight()
                 .padding(top = 8.dp, bottom = 8.dp + LocalSettingsBottomInset.current))
-            SharedTransitionLayout(Modifier.fillMaxSize().absolutePadding(left = 12.dp, right = previewWidth + 8.dp, top = 8.dp).clipToBounds()) {
+            SharedTransitionLayout(Modifier.fillMaxSize().absolutePadding(left = 16.dp, right = previewWidth + 8.dp, top = 8.dp).clipToBounds()) {
                 AnimatedContent(dialog == "color", Modifier.fillMaxSize(),
                     transitionSpec = { fadeIn(tween(200)) togetherWith fadeOut(tween(150)) }, label = "alphabetColorHero") { colorOpen ->
                     val colorModifier = Modifier.sharedBounds(rememberSharedContentState("alphabet_color"), this,
@@ -113,7 +107,7 @@ internal fun AlphabetSettings(uiState: LauncherUiState, actions: LauncherActions
                             onClose = { if (dialog == "color") closeColor() },
                             modifier = Modifier.padding(bottom = 8.dp).then(colorModifier), fallback = wallpaper.text.toArgb(),
                             fontColors = uiState.settings.fontColors)
-                    } else LazyColumn(Modifier.fillMaxSize().testTag("alphabet_controls"), state = controls,
+                    } else LazyColumn(Modifier.fillMaxSize().clip(settingsPreviewControlsShape()).testTag("alphabet_controls"), state = controls,
                         contentPadding = PaddingValues(bottom = 24.dp + LocalSettingsBottomInset.current),
                         verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)) {
                         item("font") {
@@ -229,13 +223,6 @@ private fun AlphabetPreview(uiState: LauncherUiState, draft: AlphabetAppearance,
     viewportTop: Float, modifier: Modifier) {
     val appearance = rememberLauncherAppearance(uiState.textMode, uiState.themedIcons, 100)
     val settings = uiState.settings
-    val primary = MaterialTheme.colorScheme.primary
-    val colorScheme = MaterialTheme.colorScheme
-    val tint = remember(colorScheme, appearance.darkText, settings.listAppearance.wallpaperDimColor) {
-        appearance.wallpaperTint(primary, settings.listAppearance.wallpaperDimColor, colorScheme)
-    }
-    val dimAlpha = if (settings.dimWallpaper) settings.wallpaperDimAmount / 100f else 0f
-    val shape = remember { AbsoluteRoundedCornerShape(topLeft = 24.dp, bottomLeft = 24.dp) }
     val density = LocalDensity.current
     var previewTop by remember { mutableFloatStateOf(0f) }
     var positioned by remember { mutableStateOf(false) }
@@ -244,12 +231,7 @@ private fun AlphabetPreview(uiState: LauncherUiState, draft: AlphabetAppearance,
     BoxWithConstraints(modifier.testTag("alphabet_preview").onGloballyPositioned {
         previewTop = with(density) { it.positionInWindow().y.toDp().value }
         positioned = true
-    }.drawWithContent {
-        val outline = shape.createOutline(size, layoutDirection, this)
-        drawOutline(outline, Color.Transparent, blendMode = BlendMode.Clear)
-        drawOutline(outline, tint.copy(alpha = dimAlpha))
-        drawContent()
-    }.clip(shape)) {
+    }.clipToBounds()) {
         CompositionLocalProvider(LocalLauncherAppearance provides appearance, LocalFontLibrary provides settings.fontLibrary) {
             // A window into the desktop, not another screen with a shorter coordinate
             // system. Preserve actual letter spacing, glyph sizes and indicator geometry.

@@ -29,11 +29,8 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.LookaheadScope
@@ -57,6 +54,8 @@ import com.galaxyrio.gracelauncher.data.ClockLayout
 import com.galaxyrio.gracelauncher.data.ClockStyle
 import com.galaxyrio.gracelauncher.ui.LauncherActions
 import com.galaxyrio.gracelauncher.ui.LauncherUiState
+import com.galaxyrio.gracelauncher.ui.components.endPadding
+import com.galaxyrio.gracelauncher.ui.components.startPadding
 import com.galaxyrio.gracelauncher.ui.home.ClockFace
 import com.galaxyrio.gracelauncher.ui.home.HomeClockHeader
 import com.galaxyrio.gracelauncher.ui.theme.LocalLauncherAppearance
@@ -148,15 +147,12 @@ internal fun ClockStyleSettings(uiState: LauncherUiState, actions: LauncherActio
     val styleListState = rememberLazyListState()
     val presetsListState = rememberLazyListState()
     val colorsListState = rememberLazyListState()
-    SettingsScaffold(stringResource(R.string.settings_clock_style), "settings_clock_style_editor",
-        { if (editingColor != null) editingColor = null else onBack() }, fixedCollapsed = true,
+    SettingsPreviewScaffold(uiState, stringResource(R.string.settings_clock_style), "settings_clock_style_editor",
+        { if (editingColor != null) editingColor = null else onBack() },
         actions = {
-            Button(
-                modifier = Modifier.padding(end = 8.dp).testTag("clock_style_apply"), enabled = enabled,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                ),
+            SettingsApplyAction(
+                contentDescription = stringResource(R.string.clock_style_apply),
+                modifier = Modifier.testTag("clock_style_apply"), enabled = enabled,
                 onClick = {
                     val applied = draft.applyPresetToBase()
                     saving = true
@@ -167,17 +163,20 @@ internal fun ClockStyleSettings(uiState: LauncherUiState, actions: LauncherActio
                         } finally { saving = false }
                     }
                 },
-            ) { Text(stringResource(R.string.clock_style_apply)) }
+            )
         },
     ) { padding ->
         LookaheadScope {
             Box(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding).imePadding()) {
-                Column(Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
+                Column(Modifier.fillMaxSize()) {
                     ClockStylePreview(draft, uiState, this@LookaheadScope, heroBounds,
-                        Modifier.padding(top = 8.dp, bottom = 16.dp))
+                        Modifier.padding(top = 8.dp))
                     val activeColor = editingColor
-                    val controlsModifier = Modifier.weight(1f)
+                    val controlsModifier = Modifier.weight(1f).fillMaxWidth()
                         .animateBounds(this@LookaheadScope, boundsTransform = heroBounds)
+                        .settingsPreviewScrim()
+                        .padding(start = 16.dp, top = 16.dp, end = 16.dp)
+                        .clip(settingsPreviewControlsShape())
                     if (activeColor != null) key(activeColor) {
                         IconDesignerColorPicker(activeColor.label(), draft.colors[activeColor],
                             MaterialTheme.colorScheme.primary.toArgb(), null,
@@ -431,19 +430,12 @@ private fun ClockStylePreview(
     val now by produceState(Instant.now()) {
         while (true) { value = Instant.now(); delay(60_000 - System.currentTimeMillis() % 60_000) }
     }
-    val shape = ListItemDefaults.segmentedShapes(index = 0, count = 1).shape
     Box(modifier.fillMaxWidth().testTag("clock_style_preview")
         .animateBounds(
             lookaheadScope = lookaheadScope,
             modifier = Modifier.heightIn(min = if (style.layout.stacked) 232.dp else 168.dp),
             boundsTransform = boundsTransform,
-        )
-        .drawWithContent {
-            // Clear the window, not an isolated offscreen layer. FLAG_SHOW_WALLPAPER
-            // supplies the real (including live) wallpaper without reading its bitmap.
-            drawOutline(shape.createOutline(size, layoutDirection, this), Color.Transparent, blendMode = BlendMode.Clear)
-            drawContent()
-        }, contentAlignment = Alignment.CenterStart) {
+        ).clipToBounds(), contentAlignment = Alignment.CenterStart) {
         CompositionLocalProvider(LocalLauncherAppearance provides appearance) {
           MaterialTheme(typography = LocalLauncherTypography.current) {
             HomeClockHeader(
@@ -453,7 +445,9 @@ private fun ClockStylePreview(
                 calendarAboveClock = uiState.settings.calendarAboveClock,
                 weather = uiState.weather.snapshot?.current?.takeIf { it.temperature != null }
                     ?: WeatherCurrent(WeatherTemperature(22.0, "c"), WeatherCondition.Clear, true, null),
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp),
+                modifier = Modifier.fillMaxWidth().padding(
+                    start = uiState.settings.listAppearance.startPadding,
+                    end = uiState.settings.listAppearance.endPadding, top = 12.dp, bottom = 12.dp),
                 interactive = false, clockTag = "clock_style_preview_text", dateTag = "clock_style_preview_date",
             )
           }
