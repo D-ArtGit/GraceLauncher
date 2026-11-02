@@ -37,11 +37,12 @@ private val ListAppearanceDraftSaver = Saver<ListAppearance, String>(
 private enum class ListAppearancePage { List, Notification }
 
 @Composable
-internal fun ListAppearanceSettings(uiState: LauncherUiState, actions: LauncherActions, onBack: () -> Unit, onManageFonts: () -> Unit) {
+internal fun ListAppearanceSettings(uiState: LauncherUiState, actions: LauncherActions, onBack: () -> Unit, onManageFonts: () -> Unit) = Box(Modifier.fillMaxSize()) {
     val settings = uiState.settings
     var draft by rememberSaveable(settings.listAppearance, stateSaver = ListAppearanceDraftSaver) { mutableStateOf(settings.listAppearance) }
     val savedSize = settings.iconDesign?.design?.iconSize ?: 100
     var iconSize by remember(savedSize) { mutableIntStateOf(savedSize) }
+    val previewState = rememberListAppearancePreviewState()
     var page by rememberSaveable { mutableStateOf(ListAppearancePage.List) }
     var dialog by rememberSaveable { mutableStateOf<String?>(null) }
     val colorPage = dialog?.takeIf { it == "font_color" }
@@ -84,15 +85,17 @@ internal fun ListAppearanceSettings(uiState: LauncherUiState, actions: LauncherA
         { if (colorPage != null) closeColor() else onBack() }, fixedCollapsed = true) { padding ->
         BoxWithConstraints(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding).imePadding()) {
             val notifications = settings.shortcutsFolders
-            val notificationCount = if (notifications.multipleAppNotificationPreviews) 2 else 1
+            // One preview for the app, plus the folder's one or two contributing apps.
+            val notificationCount = 1 + if (notifications.multipleAppNotificationPreviews) 2 else 1
             val notificationLines = if (notifications.singleLineNotificationPreviews) 2 else 3
             val notificationHeight = ((draft.fontSize - 2) * 1.5f * LocalDensity.current.fontScale *
                 notificationLines * notificationCount).dp + (notificationCount * 6).dp
             val previewHeight by animateDpAsState(((40.dp * iconSize / 100f + draft.appSpacing.dp) * 3 + 76.dp + notificationHeight)
                 .coerceIn(176.dp, ((maxHeight - LocalSettingsBottomInset.current) * .45f).coerceAtLeast(176.dp)), label = "listPreviewHeight")
-            Column(Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
-                ListAppearancePreview(uiState, draft, iconSize, Modifier.padding(top = 8.dp, bottom = 16.dp).height(previewHeight))
-                SharedTransitionLayout(Modifier.weight(1f).clipToBounds()) {
+            Column(Modifier.fillMaxSize()) {
+                ListAppearancePreview(uiState, draft, iconSize,
+                    Modifier.padding(top = 8.dp, bottom = 16.dp).height(previewHeight), popupState = previewState)
+                SharedTransitionLayout(Modifier.weight(1f).padding(horizontal = 16.dp).clipToBounds()) {
                     AnimatedContent(colorPage, modifier = Modifier.fillMaxSize(),
                         transitionSpec = { fadeIn(tween(200)) togetherWith fadeOut(tween(150)) }, label = "listAppearanceColorHero") { activeColor ->
                         val visibility = this
@@ -215,6 +218,7 @@ internal fun ListAppearanceSettings(uiState: LauncherUiState, actions: LauncherA
             ) { page = ListAppearancePage.entries[it] }
         }
     }
+    ListAppearancePreviewPopup(uiState, draft, iconSize, previewState)
 }
 
 @Composable

@@ -692,10 +692,8 @@
     <string name="list_appearance_tab_list">列表</string>
     <string name="list_appearance_tab_notification">通知</string>
     <string name="list_preview_folder">文件夹</string>
-    <string name="list_preview_notification_first_title">消息</string>
-    <string name="list_preview_notification_first_text">下午见。\n记得带上你喜欢的零食。</string>
-    <string name="list_preview_notification_second_title">日历</string>
-    <string name="list_preview_notification_second_text">团队会议即将开始。\n参会前请先查看议程。</string>
+    <string name="list_preview_notification_title">Test</string>
+    <string name="list_preview_notification_text">这是一段测试消息，用于测试通知的显示效果。</string>
     <string name="list_app_spacing">应用间距</string>
     <string name="list_side_padding">列表两侧边距</string>
     <string name="list_icon_name_gap">图标与名称间距</string>

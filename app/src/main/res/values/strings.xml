@@ -711,10 +711,8 @@
     <string name="list_appearance_tab_list">List</string>
     <string name="list_appearance_tab_notification">Notification</string>
     <string name="list_preview_folder">Folder</string>
-    <string name="list_preview_notification_first_title">Messages</string>
-    <string name="list_preview_notification_first_text">See you this afternoon.\nBring your favorite snacks.</string>
-    <string name="list_preview_notification_second_title">Calendar</string>
-    <string name="list_preview_notification_second_text">Team meeting starts soon.\nReview the agenda before joining.</string>
+    <string name="list_preview_notification_title">Test</string>
+    <string name="list_preview_notification_text">This is a test message for checking how notifications are displayed.</string>
     <string name="list_app_spacing">App spacing</string>
     <string name="list_side_padding">List side margins</string>
     <string name="list_icon_name_gap">Icon and name spacing</string>

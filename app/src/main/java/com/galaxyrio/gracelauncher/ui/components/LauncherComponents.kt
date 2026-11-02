@@ -67,6 +67,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.semantics.CustomAccessibilityAction
@@ -527,7 +528,9 @@ internal fun AppNotificationLabel(
                 if (notification.text.isNotBlank()) Text(
                     text = if (notificationBodyLines > 1) notification.text else notification.text.replace('\n', ' '),
                     modifier = Modifier.testTag("notification_preview:${notification.key}:body"),
-                    style = previewStyle, maxLines = notificationBodyLines, overflow = TextOverflow.Ellipsis)
+                    // Use the body's font metrics instead of the larger app label's line height.
+                    style = previewStyle.copy(lineHeight = TextUnit.Unspecified),
+                    maxLines = notificationBodyLines, overflow = TextOverflow.Ellipsis)
             }
         }
     }
