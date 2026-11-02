@@ -860,4 +860,25 @@
     <string name="list_symbol_horizontal_offset">Décalage horizontal du symbole</string>
     <string name="lab_dismiss_threshold">Dépasser le seuil</string>
     <string name="material_color_scrim">Scrim</string>
+    <string name="clock_lucky" translatable="false"></string>
+    <string name="clock_monoton" translatable="false"></string>
+    <string name="list_preview_notification_second_text"></string>
+    <string name="alphabet_touch_area"></string>
+    <string name="list_appearance_tab_notification"></string>
+    <string name="clock_plaster" translatable="false"></string>
+    <string name="list_preview_notification_second_title"></string>
+    <string name="media_keep_while_playing_summary"></string>
+    <string name="clock_week" translatable="false"></string>
+    <string name="list_appearance_tab_list"></string>
+    <string name="list_preview_notification_first_title"></string>
+    <string name="clock_bokor" translatable="false"></string>
+    <string name="alphabet_touch_width"></string>
+    <string name="list_preview_folder"></string>
+    <plurals name="app_category_item_count">
+    </plurals>
+    <string name="clock_double_plaster" translatable="false"></string>
+    <string name="list_preview_notification_first_text"></string>
+    <string name="font_josefin" translatable="false"></string>
+    <string name="clock_sacramento" translatable="false"></string>
+    <string name="clock_sacramento_week" translatable="false"></string>
 </resources>
