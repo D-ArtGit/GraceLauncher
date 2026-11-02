@@ -688,7 +688,14 @@
     <string name="font_delete">删除</string>
     <string name="font_delete_title">删除字体？</string>
     <string name="font_delete_summary">删除 %1$d 个导入的字体？使用这些字体的组件将恢复为默认字体。</string>
-    <string name="settings_favorites_app_list">收藏与应用列表</string>
+    <string name="settings_favorites_app_list">应用列表</string>
+    <string name="list_appearance_tab_list">列表</string>
+    <string name="list_appearance_tab_notification">通知</string>
+    <string name="list_preview_folder">文件夹</string>
+    <string name="list_preview_notification_first_title">消息</string>
+    <string name="list_preview_notification_first_text">下午见。\n记得带上你喜欢的零食。</string>
+    <string name="list_preview_notification_second_title">日历</string>
+    <string name="list_preview_notification_second_text">团队会议即将开始。\n参会前请先查看议程。</string>
     <string name="list_app_spacing">应用间距</string>
     <string name="list_side_padding">列表两侧边距</string>
     <string name="list_icon_name_gap">图标与名称间距</string>
@@ -878,4 +885,5 @@
     <string name="alphabet_show_in">显示在</string>
     <string name="list_symbol_horizontal_offset">符号水平偏移</string>
     <string name="alphabet_touch_area">显示触控区域</string>
+    <string name="alphabet_touch_width">右侧触控宽度</string>
 </resources>

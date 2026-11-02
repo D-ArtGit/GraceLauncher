@@ -28,6 +28,7 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 /** Shared editor mode switch; the host owns its position and bottom inset. */
@@ -39,6 +40,7 @@ internal fun SettingsModeToolbar(
     tag: String,
     itemTags: List<String>,
     modifier: Modifier = Modifier,
+    itemWidth: Dp = 88.dp,
     onSelect: (Int) -> Unit,
 ) {
     HorizontalFloatingToolbar(
@@ -47,15 +49,15 @@ internal fun SettingsModeToolbar(
         expandedShadowElevation = 3.dp,
         modifier = modifier.testTag(tag).selectableGroup(),
     ) {
-        val indicator by animateDpAsState(88.dp * selectedIndex, MaterialTheme.motionScheme.defaultSpatialSpec(),
+        val indicator by animateDpAsState(itemWidth * selectedIndex, MaterialTheme.motionScheme.defaultSpatialSpec(),
             label = "settingsModeToolbarIndicator")
         Box {
-            Box(Modifier.offset(x = indicator).size(88.dp, 48.dp).background(MaterialTheme.colorScheme.primaryContainer, CircleShape))
+            Box(Modifier.offset(x = indicator).size(itemWidth, 48.dp).background(MaterialTheme.colorScheme.primaryContainer, CircleShape))
             Row {
                 labels.forEachIndexed { index, label ->
                     val isSelected = index == selectedIndex
                     TextButton(onClick = { onSelect(index) }, enabled = enabled,
-                        modifier = Modifier.width(88.dp).heightIn(min = 48.dp).testTag(itemTags[index])
+                        modifier = Modifier.width(itemWidth).heightIn(min = 48.dp).testTag(itemTags[index])
                             .semantics { selected = isSelected; role = Role.Tab },
                         colors = ButtonDefaults.textButtonColors(containerColor = Color.Transparent,
                             contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface)) {

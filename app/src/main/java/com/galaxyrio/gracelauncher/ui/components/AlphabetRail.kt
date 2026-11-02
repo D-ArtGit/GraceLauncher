@@ -47,6 +47,7 @@ import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFontFamilyResolver
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -60,6 +61,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.galaxyrio.gracelauncher.R
@@ -143,7 +145,9 @@ fun AlphabetRail(
     val cellHeightPx = with(density) { cellHeight.toPx() }
     val waveRadius = with(density) { 82.dp.toPx() }
     val basePull = with(density) { 50.dp.toPx() }
+    val rightTouchWidth = (alphabet?.rightTouchWidth?.coerceIn(28, 56) ?: 48).dp
     val railWidth = with(density) { 48.dp.toPx() }
+    val rightAligned by rememberUpdatedState(LocalLayoutDirection.current == LayoutDirection.Ltr)
     val indicatorSize = with(density) { 46.dp.toPx() }
     val indicatorGap = with(density) { 14.dp.toPx() }
     // Leave room for the rail's widest glyph (or its 18dp home star),
@@ -215,7 +219,12 @@ fun AlphabetRail(
                     val railY = change.position.y - railTopPx
                     state.drift = alphabetDriftAt(railY, railHeightPx.toFloat(), state.drift, freeMovement)
                     state.fingerY = (railY - state.drift).coerceIn(0f, railHeightPx.toFloat())
-                    state.fingerX = if (fromLeft) railWidth - change.position.x else change.position.x
+                    // Translate the right strip into the fixed visual rail's coordinates.
+                    state.fingerX = when {
+                        fromLeft -> railWidth - change.position.x
+                        rightAligned -> railWidth - size.width + change.position.x
+                        else -> change.position.x
+                    }
                     val index = alphabetIndexAt(
                         y = state.fingerY,
                         height = railHeightPx.toFloat(),
@@ -243,18 +252,20 @@ fun AlphabetRail(
     }
 
     // Two touch regions, one visual rail and one scrub state. No second alphabet is drawn.
-    Box(modifier.then(if (leftTouchEnabled) Modifier.fillMaxWidth() else Modifier.width(48.dp)).height(touchHeight)) {
+    Box(modifier.then(if (leftTouchEnabled) Modifier.fillMaxWidth() else Modifier.width(maxOf(48.dp, rightTouchWidth))).height(touchHeight)) {
         if (leftTouchEnabled) Box(Modifier.align(Alignment.TopStart).width(28.dp).height(touchHeight)
             .onGloballyPositioned { leftTouchOrigin = it.positionInRoot() }
             .testTag("alphabet_left_touch").then(touchSurface(true)).clearAndSetSemantics {})
         Box(
-            Modifier.align(Alignment.TopEnd).width(48.dp).height(touchHeight)
+            Modifier.align(Alignment.TopEnd).width(rightTouchWidth).height(touchHeight)
                 .then(if (showRightTouchArea) Modifier.background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)) else Modifier)
                 .onGloballyPositioned { rightTouchOrigin = it.positionInRoot() }
                 .testTag("alphabet_rail")
                 .semantics { contentDescription = railDescription }
                 .then(touchSurface(false)),
-        ) {
+        )
+        // The glyphs and indicator keep their original position as the touch strip changes.
+        Box(Modifier.align(Alignment.TopEnd).width(48.dp).height(touchHeight)) {
             entries.forEachIndexed { index, letter ->
                 val isSelected = if (state.active) state.selectedIndex == index else selectedLetter == letter
                 val category = letter?.let(categorySections::get)

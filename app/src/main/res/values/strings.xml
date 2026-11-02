@@ -707,7 +707,14 @@
     <string name="font_delete">Delete</string>
     <string name="font_delete_title">Delete fonts?</string>
     <string name="font_delete_summary">Delete %1$d imported fonts? Components using them will return to the default font.</string>
-    <string name="settings_favorites_app_list">Favorites &amp; app list</string>
+    <string name="settings_favorites_app_list">App list</string>
+    <string name="list_appearance_tab_list">List</string>
+    <string name="list_appearance_tab_notification">Notification</string>
+    <string name="list_preview_folder">Folder</string>
+    <string name="list_preview_notification_first_title">Messages</string>
+    <string name="list_preview_notification_first_text">See you this afternoon.\nBring your favorite snacks.</string>
+    <string name="list_preview_notification_second_title">Calendar</string>
+    <string name="list_preview_notification_second_text">Team meeting starts soon.\nReview the agenda before joining.</string>
     <string name="list_app_spacing">App spacing</string>
     <string name="list_side_padding">List side margins</string>
     <string name="list_icon_name_gap">Icon and name spacing</string>
@@ -897,4 +904,5 @@
     <string name="alphabet_show_in">Show in</string>
     <string name="list_symbol_horizontal_offset">Symbol horizontal offset</string>
     <string name="alphabet_touch_area">Show touch area</string>
+    <string name="alphabet_touch_width">Right touch width</string>
 </resources>

@@ -2,7 +2,6 @@
 
 package com.galaxyrio.gracelauncher.ui.settings
 
-import android.content.ComponentName
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
@@ -16,14 +15,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawOutline
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.platform.LocalDensity
@@ -33,10 +26,7 @@ import com.galaxyrio.gracelauncher.R
 import com.galaxyrio.gracelauncher.data.*
 import com.galaxyrio.gracelauncher.ui.LauncherActions
 import com.galaxyrio.gracelauncher.ui.LauncherUiState
-import com.galaxyrio.gracelauncher.ui.components.*
-import com.galaxyrio.gracelauncher.ui.theme.LocalLauncherAppearance
 import com.galaxyrio.gracelauncher.ui.theme.rememberLauncherAppearance
-import com.galaxyrio.gracelauncher.ui.theme.wallpaperTint
 import com.galaxyrio.gracelauncher.ui.theme.resolvedFontColor
 import kotlin.math.roundToInt
 
@@ -44,16 +34,20 @@ private val ListAppearanceDraftSaver = Saver<ListAppearance, String>(
     save = { it.encode() }, restore = { ListAppearance.decode(it) },
 )
 
+private enum class ListAppearancePage { List, Notification }
+
 @Composable
 internal fun ListAppearanceSettings(uiState: LauncherUiState, actions: LauncherActions, onBack: () -> Unit, onManageFonts: () -> Unit) {
     val settings = uiState.settings
     var draft by rememberSaveable(settings.listAppearance, stateSaver = ListAppearanceDraftSaver) { mutableStateOf(settings.listAppearance) }
     val savedSize = settings.iconDesign?.design?.iconSize ?: 100
     var iconSize by remember(savedSize) { mutableIntStateOf(savedSize) }
+    var page by rememberSaveable { mutableStateOf(ListAppearancePage.List) }
     var dialog by rememberSaveable { mutableStateOf<String?>(null) }
     val colorPage = dialog?.takeIf { it == "font_color" }
     // Keep the source row in place while its color picker occupies the controls pane.
     val controlsState = rememberLazyListState()
+    val notificationControlsState = rememberLazyListState()
     val enabled = LocalSettingsStorageState.current.canEdit
     val wallpaper = rememberLauncherAppearance(uiState.textMode, uiState.themedIcons, iconSize)
     val primary = MaterialTheme.colorScheme.primary
@@ -89,7 +83,12 @@ internal fun ListAppearanceSettings(uiState: LauncherUiState, actions: LauncherA
     SettingsScaffold(stringResource(R.string.settings_favorites_app_list), "list_appearance",
         { if (colorPage != null) closeColor() else onBack() }, fixedCollapsed = true) { padding ->
         BoxWithConstraints(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding).imePadding()) {
-            val previewHeight by animateDpAsState(((40.dp * iconSize / 100f + draft.appSpacing.dp) * 3 + 76.dp)
+            val notifications = settings.shortcutsFolders
+            val notificationCount = if (notifications.multipleAppNotificationPreviews) 2 else 1
+            val notificationLines = if (notifications.singleLineNotificationPreviews) 2 else 3
+            val notificationHeight = ((draft.fontSize - 2) * 1.5f * LocalDensity.current.fontScale *
+                notificationLines * notificationCount).dp + (notificationCount * 6).dp
+            val previewHeight by animateDpAsState(((40.dp * iconSize / 100f + draft.appSpacing.dp) * 3 + 76.dp + notificationHeight)
                 .coerceIn(176.dp, ((maxHeight - LocalSettingsBottomInset.current) * .45f).coerceAtLeast(176.dp)), label = "listPreviewHeight")
             Column(Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
                 ListAppearancePreview(uiState, draft, iconSize, Modifier.padding(top = 8.dp, bottom = 16.dp).height(previewHeight))
@@ -108,8 +107,29 @@ internal fun ListAppearanceSettings(uiState: LauncherUiState, actions: LauncherA
                                 } }, onClose = { if (activeColor == colorPage) closeColor() },
                                 modifier = Modifier.padding(bottom = 16.dp).then(colorModifier(activeColor)), fallback = wallpaper.text.toArgb(),
                                 fontColors = settings.fontColors)
+                        } else if (page == ListAppearancePage.Notification) {
+                            LazyColumn(Modifier.fillMaxSize().testTag("list_notification_controls"), state = notificationControlsState,
+                                contentPadding = PaddingValues(bottom = 96.dp + LocalSettingsBottomInset.current),
+                                verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)) {
+                                item("single_line") {
+                                    SettingsToggleItem(stringResource(R.string.popup_single_line_previews),
+                                        stringResource(R.string.popup_single_line_previews_summary),
+                                        notifications.singleLineNotificationPreviews, 0, 2, "popup_single_line_previews",
+                                        enabled = notifications.enabled) { value ->
+                                        actions.updateSettings { it.copy(shortcutsFolders = it.shortcutsFolders.copy(singleLineNotificationPreviews = value)) }
+                                    }
+                                }
+                                item("multiple_apps") {
+                                    SettingsToggleItem(stringResource(R.string.popup_multiple_app_previews),
+                                        stringResource(R.string.popup_multiple_app_previews_summary),
+                                        notifications.multipleAppNotificationPreviews, 1, 2, "popup_multiple_app_previews",
+                                        enabled = notifications.enabled) { value ->
+                                        actions.updateSettings { it.copy(shortcutsFolders = it.shortcutsFolders.copy(multipleAppNotificationPreviews = value)) }
+                                    }
+                                }
+                            }
                         } else LazyColumn(Modifier.fillMaxSize().testTag("list_appearance_controls"), state = controlsState,
-                            contentPadding = PaddingValues(bottom = 24.dp + LocalSettingsBottomInset.current), verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)) {
+                            contentPadding = PaddingValues(bottom = 96.dp + LocalSettingsBottomInset.current), verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)) {
                             item("icon_size") {
                                 DesignerSegment(0, 10, "list_icon_size") {
                                     Text(stringResource(R.string.icon_designer_icon_size_title))
@@ -185,6 +205,14 @@ internal fun ListAppearanceSettings(uiState: LauncherUiState, actions: LauncherA
                     }
                 }
             }
+            if (colorPage == null) SettingsModeToolbar(
+                listOf(stringResource(R.string.list_appearance_tab_list), stringResource(R.string.list_appearance_tab_notification)),
+                page.ordinal, enabled, "list_appearance_toolbar",
+                ListAppearancePage.entries.map { "list_appearance_tab:${it.name}" },
+                Modifier.align(Alignment.BottomCenter)
+                    .padding(bottom = FloatingToolbarDefaults.ScreenOffset + LocalSettingsBottomInset.current),
+                itemWidth = 120.dp,
+            ) { page = ListAppearancePage.entries[it] }
         }
     }
 }
@@ -196,38 +224,5 @@ private fun ListSpacingSlider(label: String, value: Int, default: Int, range: In
         DesignerSlider(label, value.toFloat(), default.toFloat(), range.first.toFloat()..range.last.toFloat(),
             LocalSettingsStorageState.current.canEdit, "${tag}_slider", suffix, centered = centered,
             onFinished = { onCommit(it.roundToInt()) }, onChange = { onPreview(it.roundToInt()) })
-    }
-}
-
-@Composable
-private fun ListAppearancePreview(uiState: LauncherUiState, list: ListAppearance, iconSize: Int, modifier: Modifier) {
-    val appearance = rememberLauncherAppearance(uiState.textMode, uiState.themedIcons, iconSize)
-    val primary = MaterialTheme.colorScheme.primary
-    val colorScheme = MaterialTheme.colorScheme
-    val tint = remember(colorScheme, appearance.darkText, list.wallpaperDimColor) { appearance.wallpaperTint(primary, list.wallpaperDimColor, colorScheme) }
-    val dimAlpha = if (uiState.settings.dimWallpaper) uiState.settings.wallpaperDimAmount.coerceIn(0, 100) / 100f else 0f
-    val shape = ListItemDefaults.segmentedShapes(0, 1).shape
-    val example = stringResource(R.string.icon_designer_example)
-    val favorites = uiState.favoriteItems.take(3)
-    val rows = remember(favorites, example) { List(3) { index -> favorites.getOrNull(index)
-        ?: LauncherApp(ComponentName("list.preview", "Sample$index"), example, null) } }
-    BoxWithConstraints(modifier.fillMaxWidth().testTag("list_appearance_preview").drawWithContent {
-        val outline = shape.createOutline(size, layoutDirection, this)
-        drawOutline(outline, Color.Transparent, blendMode = BlendMode.Clear)
-        drawOutline(outline, tint.copy(alpha = dimAlpha))
-        drawContent()
-    }.clip(shape), contentAlignment = Alignment.Center) {
-        // Keep the section marker and all three examples visible at large text or spacing sizes.
-        val lineHeight = (list.fontSize * 1.5f * LocalDensity.current.fontScale).dp
-        val rowHeight = (maxOf(40.dp * iconSize / 100f, lineHeight) + list.appSpacing.dp).coerceAtLeast(48.dp)
-        val scale = (maxHeight / (rowHeight * 3 + 44.dp)).coerceAtMost(1f)
-        CompositionLocalProvider(LocalLauncherAppearance provides appearance, LocalListAppearance provides list,
-            LocalLauncherInputEnabled provides false) {
-            Column(Modifier.fillMaxWidth().wrapContentHeight(unbounded = true).graphicsLayer { scaleX = scale; scaleY = scale }
-                .padding(start = list.startPadding, end = list.endPadding), verticalArrangement = Arrangement.Center) {
-                AppListSectionHeader("A", Modifier.testTag("list_preview_section"))
-                rows.forEach { app -> LauncherAppRow(app, {}, {}, showLabel = list.showNames(favorites = false)) }
-            }
-        }
     }
 }
