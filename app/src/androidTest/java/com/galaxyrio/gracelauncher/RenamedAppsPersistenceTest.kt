@@ -62,7 +62,7 @@ class RenamedAppsPersistenceTest {
         val items = database.itemsDao()
         repository.mutateSettings {
             it.copy(mediaAppKey = "old/old.Main", appCategories = listOf(
-                AppCategory(FavoritesCategoryId, itemKeys = listOf("old/old.Main", "kept/kept.Main"), showOnHome = true)))
+                AppCategory(FavoritesCategoryId, itemKeys = listOf("old/old.Main", "kept/kept.Main"))))
         }
         repository.hideApp("old/old.Main")
         repository.saveFolder(LauncherFolder("f", "Folder", listOf("kept/kept.Main", "old/old.Main"), FolderPlacement.AppList))
@@ -81,7 +81,7 @@ class RenamedAppsPersistenceTest {
 
         val snapshot = repository.snapshots.first()
         assertEquals("old/old.Renamed", snapshot.settings.mediaAppKey)
-        assertEquals(listOf("old/old.Renamed", "kept/kept.Main"), snapshot.settings.appCategories!!.single().itemKeys)
+        assertEquals(listOf("old/old.Renamed", "kept/kept.Main"), snapshot.settings.appCategories!!.single { it.id == FavoritesCategoryId }.itemKeys)
         assertEquals(setOf("old/old.Renamed"), snapshot.hiddenAppKeys)
         assertEquals(listOf("kept/kept.Main", "old/old.Renamed"), snapshot.folders.single().appKeys)
         assertNull(items.popup("old/old.Main"))
