@@ -218,7 +218,7 @@
     <string name="lab_milliseconds">%1$d ms</string>
     <string name="lab_percentage">%1$d%%</string>
     <string name="settings_advanced_summary">Máis opcións para o teu lanzador</string>
-    <string name="settings_about">Acerca de</string>
+    <string name="settings_about">En canto a</string>
     <string name="settings_about_summary">Grace Launcher, actualizacións e licenzas</string>
     <string name="settings_instant_access">Acceso inmediato</string>
     <string name="settings_calendar_agenda">Calendario e axenda</string>
