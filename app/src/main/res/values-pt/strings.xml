@@ -472,7 +472,6 @@
     <string name="icon_designer_apply_to_shortcuts">Aplicar definições aos atalhos</string>
     <string name="icon_designer_drag_symbol">%1$s · Arraste para mover; utilize dois dedos para ajustar e rodar</string>
     <string name="icon_designer_reset">Repor</string>
-    <string name="icon_designer_saturation_brightness"></string>
     <string name="icon_designer_hue">Tom</string>
     <string name="icon_designer_brightness">Brilho</string>
     <string name="icon_designer_hex">Cor hexadecimal</string>
