@@ -81,6 +81,8 @@ import com.galaxyrio.gracelauncher.data.notifications.NotificationAppId
 import com.galaxyrio.gracelauncher.data.notifications.AppNotification
 import com.galaxyrio.gracelauncher.data.notifications.appNotifications
 import com.galaxyrio.gracelauncher.data.weather.BreezyWeatherRepository
+import com.galaxyrio.gracelauncher.data.weather.GadgetbridgeWeatherRepository
+import com.galaxyrio.gracelauncher.data.weather.WeatherConnectionMode
 import com.galaxyrio.gracelauncher.data.weather.WeatherState
 import com.galaxyrio.gracelauncher.data.weather.WeatherStatus
 import kotlinx.coroutines.CancellationException
@@ -357,6 +359,7 @@ class LauncherViewModel(application: Application) : AndroidViewModel(application
     private var itemsReady = false
     private val mediaRepository = MediaSessionRepository(application)
     private val weatherRepository = BreezyWeatherRepository(application)
+    private val gadgetbridgeWeatherRepository = GadgetbridgeWeatherRepository.get(application)
     private val settingsWriteMutex = Mutex()
 
     private val _uiState = MutableStateFlow(LauncherUiState(
@@ -392,10 +395,15 @@ class LauncherViewModel(application: Application) : AndroidViewModel(application
     private val usageRepository = com.galaxyrio.gracelauncher.data.UsageRepository.get(application)
     private var usageLoadJob: Job? = null
     private var lastWeatherRefresh = 0L
+    private var lastWeatherRequest: Triple<WeatherConnectionMode, String?, String?>? = null
     private var iconPackDiscoveryJob: Job? = null
     private var retryIconPacksAfter = 0L
     private val dateReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) { refreshApps() }
+        override fun onReceive(context: Context?, intent: Intent?) {
+            refreshApps()
+            // Reapply system temperature preferences and date/time interpretation to cached pushes.
+            if (_uiState.value.settings.weatherConnection.mode == WeatherConnectionMode.Gadgetbridge) refreshWeather()
+        }
     }
 
     init {
@@ -437,10 +445,16 @@ class LauncherViewModel(application: Application) : AndroidViewModel(application
         }
         viewModelScope.launch {
             BreezyWeatherUpdates.events.collectLatest {
+                if (_uiState.value.settings.weatherConnection.mode != WeatherConnectionMode.LocationUpdateNotifier) return@collectLatest
                 // Refresh after the final signal, so a forecast update following
                 // a current-conditions update is never lost to a leading-edge throttle.
                 delay(500)
-                refreshWeather()
+                if (_uiState.value.settings.weatherConnection.mode == WeatherConnectionMode.LocationUpdateNotifier) refreshWeather()
+            }
+        }
+        viewModelScope.launch {
+            gadgetbridgeWeatherRepository.events.collect {
+                if (_uiState.value.settings.weatherConnection.mode == WeatherConnectionMode.Gadgetbridge) refreshWeather()
             }
         }
         viewModelScope.launch {
@@ -479,6 +493,8 @@ class LauncherViewModel(application: Application) : AndroidViewModel(application
                     _uiState.update {
                         it.copy(
                             settings = snapshot.settings,
+                            weather = if (it.settings.weatherConnection.mode != snapshot.settings.weatherConnection.mode)
+                                WeatherState() else it.weather,
                             favoriteKeys = favorites.toSet(), favoriteOrder = favorites,
                             apps = it.apps.map { app -> if (app.isWorkProfile) app.copy(showWorkIndicator = snapshot.settings.workProfile.showIndicator) else app },
                             shortcutApps = it.shortcutApps.map { app -> if (app.isWorkProfile) app.copy(showWorkIndicator = snapshot.settings.workProfile.showIndicator) else app },
@@ -513,7 +529,8 @@ class LauncherViewModel(application: Application) : AndroidViewModel(application
                         refreshUsage()
                     }
                     if (previous.isLoadingSettings || previous.settings.weatherEnabled != snapshot.settings.weatherEnabled ||
-                        previous.settings.weatherLocationId != snapshot.settings.weatherLocationId
+                        previous.settings.weatherLocationId != snapshot.settings.weatherLocationId ||
+                        previous.settings.weatherConnection != snapshot.settings.weatherConnection
                     ) refreshWeather()
                     if (previous.isLoadingSettings) {
                         val favorites = _uiState.value.favoriteApps
@@ -932,25 +949,31 @@ class LauncherViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    /** Only reads Breezy's local provider; never initiates a network weather request. */
+    /** Reads a local provider or the latest Gadgetbridge push; never starts a network weather request. */
     fun refreshWeather(force: Boolean = true) {
         val state = _uiState.value
         if (state.isLoadingSettings || state.settingsLoadFailed || !state.settings.weatherEnabled) {
             weatherLoadJob?.cancel()
             lastWeatherRefresh = 0L
+            lastWeatherRequest = null
             _uiState.update { it.copy(weather = WeatherState()) }
             return
         }
-        if (!force && (weatherLoadJob?.isActive == true ||
+        val connection = state.settings.weatherConnection
+        val gadgetbridge = connection.mode == WeatherConnectionMode.Gadgetbridge
+        val locationId = if (gadgetbridge) connection.gadgetbridgeLocationId else state.settings.weatherLocationId
+        val request = Triple(connection.mode, locationId, if (gadgetbridge) connection.temperatureUnit.resolvedUnit() else null)
+        val sameRequest = request == lastWeatherRequest
+        if (!force && sameRequest && (weatherLoadJob?.isActive == true ||
                 (state.weather.status == WeatherStatus.Ready &&
                     SystemClock.elapsedRealtime() - lastWeatherRefresh < 15 * 60_000L))) return
         weatherLoadJob?.cancel()
-        val locationId = state.settings.weatherLocationId
+        lastWeatherRequest = request
         weatherLoadJob = viewModelScope.launch {
             val previous = _uiState.value.weather
             _uiState.update { it.copy(weather = previous.copy(status = WeatherStatus.Loading,
-                snapshot = previous.snapshot.takeIf { previous.selectedLocationId == locationId || locationId == null })) }
-            val weather = weatherRepository.load(locationId)
+                snapshot = previous.snapshot.takeIf { sameRequest && (previous.selectedLocationId == locationId || locationId == null) })) }
+            val weather = if (gadgetbridge) gadgetbridgeWeatherRepository.load(connection) else weatherRepository.load(locationId)
             lastWeatherRefresh = SystemClock.elapsedRealtime()
             _uiState.update { it.copy(weather = weather) }
         }

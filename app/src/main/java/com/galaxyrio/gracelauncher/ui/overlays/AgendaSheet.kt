@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.galaxyrio.gracelauncher.R
 import com.galaxyrio.gracelauncher.data.ScheduleEvent
 import com.galaxyrio.gracelauncher.data.weather.WeatherStatus
+import com.galaxyrio.gracelauncher.data.weather.WeatherConnectionMode
 import com.galaxyrio.gracelauncher.ui.LauncherActions
 import com.galaxyrio.gracelauncher.ui.LauncherUiState
 import com.galaxyrio.gracelauncher.ui.ScheduleStatus
@@ -122,7 +123,8 @@ fun AgendaSheet(uiState: LauncherUiState, actions: LauncherActions, onRequestCal
                         WeatherSourceNote(weather, now, actions.openBreezyWeather)
                     }
                     else if (weatherEnabled && uiState.weather.status != WeatherStatus.Loading) item(key = "weather_unavailable") {
-                        WeatherConnectionNotice(uiState.weather.status, actions)
+                        WeatherConnectionNotice(uiState.weather.status, actions,
+                            gadgetbridge = uiState.settings.weatherConnection.mode == WeatherConnectionMode.Gadgetbridge)
                     }
                     // Calendar access is independent of weather access: keep the forecast visible
                     // when the user has not connected a calendar, or its provider fails.
@@ -158,7 +160,15 @@ fun AgendaSheet(uiState: LauncherUiState, actions: LauncherActions, onRequestCal
 }
 
 @Composable
-private fun WeatherConnectionNotice(status: WeatherStatus, actions: LauncherActions) {
+private fun WeatherConnectionNotice(status: WeatherStatus, actions: LauncherActions, gadgetbridge: Boolean) {
+    if (gadgetbridge) {
+        if (status == WeatherStatus.Disabled || status == WeatherStatus.Loading) return
+        Text(stringResource(if (status == WeatherStatus.Error) R.string.weather_gadgetbridge_unavailable
+            else R.string.weather_gadgetbridge_waiting), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
+        Text(stringResource(R.string.weather_gadgetbridge_setup),
+            color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
+        return
+    }
     val (message, label, onClick) = when (status) {
         WeatherStatus.Disabled, WeatherStatus.Loading -> return
         WeatherStatus.NotInstalled -> Triple(R.string.weather_settings_not_installed, R.string.weather_settings_install, actions.installBreezyWeather)

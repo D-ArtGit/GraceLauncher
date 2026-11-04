@@ -123,6 +123,7 @@ import com.galaxyrio.gracelauncher.ui.components.GraceButtonTransitionOverlay
 import com.galaxyrio.gracelauncher.ui.components.GraceSystemAccessDialog
 import com.galaxyrio.gracelauncher.ui.components.graceReveal
 import com.galaxyrio.gracelauncher.data.weather.BreezyWeatherRepository
+import com.galaxyrio.gracelauncher.data.weather.WeatherConnectionMode
 import com.galaxyrio.gracelauncher.ui.overlays.ShortcutRevealState
 import com.galaxyrio.gracelauncher.ui.components.LauncherIcon
 import com.galaxyrio.gracelauncher.ui.components.LauncherSymbol
@@ -348,6 +349,7 @@ fun LauncherRoute(
         refreshWeather = { viewModel.refreshWeather() },
         requestWeatherAccess = {
             when {
+                viewModel.uiState.value.settings.weatherConnection.mode == WeatherConnectionMode.Gadgetbridge -> viewModel.refreshWeather()
                 breezyRepository.installedPackage() == null -> viewModel.refreshWeather()
                 ContextCompat.checkSelfPermission(context, BreezyWeatherRepository.READ_PERMISSION) == PackageManager.PERMISSION_GRANTED ->
                     viewModel.refreshWeather()

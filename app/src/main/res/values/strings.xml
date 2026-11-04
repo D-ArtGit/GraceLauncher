@@ -533,8 +533,8 @@
     <string name="icon_pack_load_failed">Could not load icon packs. Try again.</string>
 
     <!-- Weather settings -->
-    <string name="weather_settings_enabled_summary">Home screen and agenda · Breezy Weather</string>
-    <string name="weather_settings_disabled_summary">Optional · requires Breezy Weather</string>
+    <string name="weather_settings_enabled_summary">Weather on the home screen and in your agenda</string>
+    <string name="weather_settings_disabled_summary">Connect a weather app</string>
     <string name="weather_settings_enable">Show weather</string>
     <string name="weather_settings_enable_summary">Show weather beside the date and in your agenda.</string>
     <string name="weather_settings_about">Built-in weather uses the locations and forecasts saved in Breezy Weather. Allow access to share that data with Grace Launcher.</string>
@@ -558,6 +558,16 @@
     <string name="weather_settings_location">Location</string>
     <string name="weather_settings_first_location">First location in Breezy Weather</string>
     <string name="weather_settings_forecast_days">Forecast days</string>
+    <string name="weather_mode_location_update_notifier">Location Update Notifier</string>
+    <string name="weather_mode_gadgetbridge">Gadgetbridge</string>
+    <string name="weather_gadgetbridge_setup">Enable Gadgetbridge sharing in your weather app. If it asks for a receiving app, select Grace Launcher, then refresh the weather. New data appears here automatically.</string>
+    <string name="weather_gadgetbridge_waiting">Waiting for weather data.</string>
+    <string name="weather_gadgetbridge_loading">Loading saved weather…</string>
+    <string name="weather_gadgetbridge_unavailable">Saved weather could not be read. Refresh the weather in the connected app to send a new update.</string>
+    <string name="weather_gadgetbridge_first_location">First received location</string>
+    <string name="weather_temperature_unit">Temperature unit</string>
+    <string name="weather_temperature_celsius">Celsius (°C)</string>
+    <string name="weather_temperature_fahrenheit">Fahrenheit (°F)</string>
     <plurals name="weather_settings_days_value">
         <item quantity="one">%1$d day</item>
         <item quantity="other">%1$d days</item>

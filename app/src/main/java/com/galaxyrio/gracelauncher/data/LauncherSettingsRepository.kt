@@ -1,6 +1,7 @@
 package com.galaxyrio.gracelauncher.data
 
 import androidx.room.withTransaction
+import com.galaxyrio.gracelauncher.data.weather.WeatherConnectionPreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -67,6 +68,7 @@ class LauncherSettingsRepository(private val database: LauncherDatabase) {
             weatherEnabled = settings.weatherEnabled,
             weatherForecastDays = settings.weatherForecastDays.coerceIn(1, 14),
             weatherLocationId = settings.weatherLocationId,
+            weatherConnectionJson = settings.weatherConnection.encode(),
             clockAppKey = settings.clockAppKey,
             clockStyleJson = settings.clockStyle.encode(),
             homeLayoutJson = settings.homeLayout.encode(),
@@ -245,6 +247,7 @@ private fun LauncherSettingsEntity.toSettings() = LauncherSettings(
     weatherEnabled = weatherEnabled,
     weatherForecastDays = weatherForecastDays.coerceIn(1, 14),
     weatherLocationId = weatherLocationId,
+    weatherConnection = WeatherConnectionPreferences.decode(weatherConnectionJson),
     clockAppKey = clockAppKey,
     clockStyle = ClockStyle.decode(clockStyleJson, legacyShowBattery = showBatteryPercentage),
     homeLayout = HomeLayout.decode(homeLayoutJson),

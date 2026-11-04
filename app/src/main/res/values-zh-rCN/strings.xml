@@ -517,8 +517,8 @@
     <string name="icon_pack_missing">%1$s 不可用，将按顺序使用其他图标包或系统图标。</string>
     <string name="icon_pack_load_failed">无法读取图标包，请重试。</string>
     <!-- 天气设置 -->
-    <string name="weather_settings_enabled_summary">桌面与日程 · Breezy Weather</string>
-    <string name="weather_settings_disabled_summary">可选功能 · 需要 Breezy Weather</string>
+    <string name="weather_settings_enabled_summary">在桌面与日程中显示天气</string>
+    <string name="weather_settings_disabled_summary">连接天气应用</string>
     <string name="weather_settings_enable">显示天气</string>
     <string name="weather_settings_enable_summary">在日期旁及日程页面显示天气。</string>
     <string name="weather_settings_about">内置天气使用 Breezy Weather 中保存的地点和预报。请授权向 Grace Launcher 共享这些数据。</string>
@@ -542,6 +542,16 @@
     <string name="weather_settings_location">地点</string>
     <string name="weather_settings_first_location">Breezy Weather 中的第一个地点</string>
     <string name="weather_settings_forecast_days">预报天数</string>
+    <string name="weather_mode_location_update_notifier">Location Update Notifier</string>
+    <string name="weather_mode_gadgetbridge">Gadgetbridge</string>
+    <string name="weather_gadgetbridge_setup">在天气应用中开启 Gadgetbridge 数据共享；如需选择接收应用，请选择 Grace Launcher，然后刷新天气。新数据会自动显示在此处。</string>
+    <string name="weather_gadgetbridge_waiting">正在等待天气数据。</string>
+    <string name="weather_gadgetbridge_loading">正在读取已保存的天气…</string>
+    <string name="weather_gadgetbridge_unavailable">无法读取已保存的天气。请在已连接的天气应用中刷新天气，发送新的数据。</string>
+    <string name="weather_gadgetbridge_first_location">接收到的第一个地点</string>
+    <string name="weather_temperature_unit">温度单位</string>
+    <string name="weather_temperature_celsius">摄氏度（°C）</string>
+    <string name="weather_temperature_fahrenheit">华氏度（°F）</string>
     <plurals name="weather_settings_days_value">
         <item quantity="other">%1$d 天</item>
     </plurals>

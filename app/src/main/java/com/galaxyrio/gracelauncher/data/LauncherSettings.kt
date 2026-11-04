@@ -1,6 +1,7 @@
 package com.galaxyrio.gracelauncher.data
 
 import com.materialkolor.PaletteStyle
+import com.galaxyrio.gracelauncher.data.weather.WeatherConnectionPreferences
 
 enum class ThemeMode { System, Light, Dark }
 
@@ -33,6 +34,7 @@ data class LauncherSettings(
     val weatherEnabled: Boolean = false,
     val weatherForecastDays: Int = 7,
     val weatherLocationId: String? = null,
+    val weatherConnection: WeatherConnectionPreferences = WeatherConnectionPreferences(),
     /** null delegates to Android's standard SHOW_ALARMS action. */
     val clockAppKey: String? = null,
     val clockStyle: ClockStyle = ClockStyle(),
