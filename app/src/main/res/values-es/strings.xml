@@ -832,7 +832,7 @@
     <string name="clock_color_date_group">Fecha</string>
     <string name="clock_color_month">Mes</string>
     <string name="clock_color_day">Día</string>
-    <string name="clock_color_battery">Porcentaje de la batería</string>
+    <string name="clock_color_battery">Batería</string>
     <string name="clock_color_weather">Texto del tiempo</string>
     <string name="app_category_pinned">Fijado</string>
     <string name="app_category_notification">Notificación</string>
@@ -962,4 +962,14 @@
     <string name="clock_rotate_above_primary">Rotar regiones por encima del primario</string>
     <string name="clock_rotate_primary">Rotar la región primaria</string>
     <string name="clock_rotate_all">Rotar todas las regiones</string>
+    <string name="clock_battery_show_percentage">Mostrar porcentaje</string>
+    <string name="clock_battery_icon_android">Batería de Android</string>
+    <string name="clock_battery_icon_android_frame">Marco de batería de Android</string>
+    <string name="clock_battery_icon_bar">Barra de la batería</string>
+    <string name="clock_battery_level">Batería %1$d%%</string>
+    <string name="clock_battery_charging">Batería %1$d%%, cargando</string>
+    <string name="clock_color_battery_percentage">Porcentaje de la batería</string>
+    <string name="clock_color_battery_icons">Iconos de la batería</string>
+    <string name="clock_color_weather_icons">Iconos del tiempo</string>
+    <string name="clock_color_agenda">Texto de la agenda</string>
 </resources>
