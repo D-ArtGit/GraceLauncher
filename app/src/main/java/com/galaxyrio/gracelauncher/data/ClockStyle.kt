@@ -36,7 +36,11 @@ data class ClockVisibility(
     val showWeather: Boolean = true,
 )
 
-enum class ClockColorPart { HourTens, HourOnes, MinuteTens, MinuteOnes, Weekday, Month, Day, Battery, Weather }
+enum class ClockColorPart {
+    HourTens, HourOnes, MinuteTens, MinuteOnes, Weekday, Month, Day, Battery, Weather, Agenda, WeatherIcon, BatteryIcon,
+}
+
+private const val ClockColorVersion = 2
 
 data class ClockFaceStyle(
     val fontId: String? = null,
@@ -132,6 +136,7 @@ data class ClockStyle(
             put("showBattery", visibility.showBattery)
             put("showWeather", visibility.showWeather)
         })
+        put("colorVersion", ClockColorVersion)
         put("colors", JSONObject().apply {
             colors.forEach { (part, color) -> put(part.name, color.json()) }
         })
@@ -196,6 +201,14 @@ data class ClockStyle(
             val presets = json.optJSONObject("presets")
             val visibility = json.optJSONObject("visibility")
             val colors = json.optJSONObject("colors")
+            val decodedColors = ClockColorPart.entries.mapNotNull { part ->
+                IconColor.decode(colors?.optJSONObject(part.name))?.let { part to it }
+            }.toMap().toMutableMap()
+            // Old battery icons shared the percentage color. Migrate that choice once;
+            // new saves may deliberately omit BatteryIcon to use the automatic color.
+            if (json.optInt("colorVersion", 1) < ClockColorVersion && colors?.has(ClockColorPart.BatteryIcon.name) != true) {
+                decodedColors[ClockColorPart.Battery]?.let { decodedColors[ClockColorPart.BatteryIcon] = it }
+            }
             ClockStyle(
                 layout = ClockLayout.entries.firstOrNull { it.name == json.optString("layout") } ?: ClockLayout.SingleLine,
                 singleLine = face(ClockLayout.SingleLine, json.optJSONObject("singleLine")),
@@ -209,9 +222,7 @@ data class ClockStyle(
                     showBattery = visibility.optBoolean("showBattery", true),
                     showWeather = visibility.optBoolean("showWeather", true),
                 ),
-                colors = ClockColorPart.entries.mapNotNull { part ->
-                    IconColor.decode(colors?.optJSONObject(part.name))?.let { part to it }
-                }.toMap(),
+                colors = decodedColors,
                 regions = ClockRegions.decode(json.optJSONObject("regions")),
             )
         }.getOrDefault(ClockStyle(visibility = ClockVisibility(showBattery = legacyShowBattery)))

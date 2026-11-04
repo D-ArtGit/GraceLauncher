@@ -880,6 +880,12 @@
     <string name="clock_show_weekday">Show weekday</string>
     <string name="clock_show_date">Show date</string>
     <string name="clock_show_battery">Show battery</string>
+    <string name="clock_battery_show_percentage">Show percentage</string>
+    <string name="clock_battery_icon_android">Battery Android</string>
+    <string name="clock_battery_icon_android_frame">Battery Android Frame</string>
+    <string name="clock_battery_icon_bar">Battery Bar</string>
+    <string name="clock_battery_level">Battery %1$d%%</string>
+    <string name="clock_battery_charging">Battery %1$d%%, charging</string>
     <string name="clock_show_weather">Show weather</string>
     <string name="clock_weather_icons">Weather icons</string>
     <string name="clock_weather_icons_monochrome">Monochrome</string>
@@ -891,8 +897,12 @@
     <string name="clock_color_date_group">Date</string>
     <string name="clock_color_month">Month</string>
     <string name="clock_color_day">Day</string>
-    <string name="clock_color_battery">Battery percentage</string>
+    <string name="clock_color_battery">Battery</string>
+    <string name="clock_color_battery_percentage">Battery percentage</string>
+    <string name="clock_color_battery_icons">Battery icons</string>
     <string name="clock_color_weather">Weather text</string>
+    <string name="clock_color_weather_icons">Weather icons</string>
+    <string name="clock_color_agenda">Agenda text</string>
     <string name="app_category_pinned">Pinned</string>
     <string name="app_category_notification">Notification</string>
     <string name="category_inclusion">Include apps</string>

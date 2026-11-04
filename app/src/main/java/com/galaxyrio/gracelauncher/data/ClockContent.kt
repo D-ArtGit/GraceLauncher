@@ -5,6 +5,35 @@ import org.json.JSONObject
 
 enum class ClockAgendaField { Title, Countdown, Time, Date, Duration, Location, Color, Calendar }
 
+enum class ClockBatteryIconStyle { Android, AndroidFrame, Bar }
+
+data class ClockBattery(
+    val showIcon: Boolean = false,
+    val showPercentage: Boolean = true,
+    val iconStyle: ClockBatteryIconStyle = ClockBatteryIconStyle.Android,
+) {
+    fun normalized(): ClockBattery = if (!showIcon && !showPercentage) copy(showPercentage = true) else this
+
+    internal fun json(): JSONObject = normalized().let { value -> JSONObject().apply {
+        put("showIcon", value.showIcon)
+        put("showPercentage", value.showPercentage)
+        put("iconStyle", value.iconStyle.name)
+    } }
+
+    companion object {
+        internal fun decode(json: JSONObject?): ClockBattery {
+            val defaults = ClockBattery()
+            if (json == null) return defaults
+            return ClockBattery(
+                showIcon = json.optBoolean("showIcon", defaults.showIcon),
+                showPercentage = json.optBoolean("showPercentage", defaults.showPercentage),
+                iconStyle = ClockBatteryIconStyle.entries.firstOrNull { it.name == json.optString("iconStyle") }
+                    ?: defaults.iconStyle,
+            ).normalized()
+        }
+    }
+}
+
 enum class ClockWeatherField {
     Icon, Temperature, Description, FeelsLike, Humidity, Wind, AirQuality, UV, Location, HighLow, UpdatedAt;
 

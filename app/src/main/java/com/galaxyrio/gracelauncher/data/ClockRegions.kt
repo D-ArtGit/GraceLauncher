@@ -101,6 +101,7 @@ data class ClockRegions(
     val regionSpacing: Int = 2,
     val agenda: ClockAgenda = ClockAgenda(),
     val weather: ClockWeather = ClockWeather(),
+    val battery: ClockBattery = ClockBattery(),
 ) {
     fun face(element: ClockElement): ClockFaceStyle = (primaryFaces[element] ?: defaultFace(element)).normalized()
 
@@ -121,6 +122,7 @@ data class ClockRegions(
             regionSpacing = regionSpacing.coerceIn(0, 64),
             agenda = agenda.normalized(),
             weather = weather.normalized(),
+            battery = battery.normalized(),
         )
     }
 
@@ -169,6 +171,7 @@ data class ClockRegions(
             put("regionSpacing", regions.regionSpacing)
             put("agenda", regions.agenda.json())
             put("weather", regions.weather.json())
+            put("battery", regions.battery.json())
             put("regionOrder", JSONArray().apply { regions.regionOrder.forEach { put(it.name) } })
             put("primaryFaces", JSONObject().apply {
                 regions.primaryFaces.forEach { (element, face) ->
@@ -272,6 +275,7 @@ data class ClockRegions(
                 regionSpacing = json.optInt("regionSpacing", defaults.regionSpacing),
                 agenda = ClockAgenda.decode(json.optJSONObject("agenda")),
                 weather = ClockWeather.decode(json.optJSONObject("weather")),
+                battery = ClockBattery.decode(json.optJSONObject("battery")),
                 regionOrder = json.optJSONArray("regionOrder")?.let { array ->
                     (0 until array.length()).mapNotNull { index ->
                         ClockRegion.entries.firstOrNull { it.name == array.optString(index) }

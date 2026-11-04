@@ -94,7 +94,9 @@ private val ClockColorGroups = listOf(
     R.string.settings_clock to listOf(ClockColorPart.HourTens, ClockColorPart.HourOnes,
         ClockColorPart.MinuteTens, ClockColorPart.MinuteOnes),
     R.string.clock_color_date_group to listOf(ClockColorPart.Weekday, ClockColorPart.Month, ClockColorPart.Day),
-    R.string.settings_misc to listOf(ClockColorPart.Battery, ClockColorPart.Weather),
+    R.string.settings_weather to listOf(ClockColorPart.Weather, ClockColorPart.WeatherIcon),
+    R.string.clock_color_battery to listOf(ClockColorPart.Battery, ClockColorPart.BatteryIcon),
+    R.string.settings_agenda to listOf(ClockColorPart.Agenda),
 )
 
 @Composable
@@ -565,6 +567,9 @@ private fun ClockColorPart.label(): String = stringResource(when (this) {
     ClockColorPart.Weekday -> R.string.clock_color_weekday
     ClockColorPart.Month -> R.string.clock_color_month
     ClockColorPart.Day -> R.string.clock_color_day
-    ClockColorPart.Battery -> R.string.clock_color_battery
+    ClockColorPart.Battery -> R.string.clock_color_battery_percentage
     ClockColorPart.Weather -> R.string.clock_color_weather
+    ClockColorPart.Agenda -> R.string.clock_color_agenda
+    ClockColorPart.WeatherIcon -> R.string.clock_color_weather_icons
+    ClockColorPart.BatteryIcon -> R.string.clock_color_battery_icons
 })

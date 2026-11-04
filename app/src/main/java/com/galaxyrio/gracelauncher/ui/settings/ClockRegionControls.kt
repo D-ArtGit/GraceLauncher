@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.zIndex
 import com.galaxyrio.gracelauncher.R
 import com.galaxyrio.gracelauncher.data.*
+import com.galaxyrio.gracelauncher.ui.home.clockBatteryIcon
 import kotlin.math.abs
 
 private data class ClockControl(val key: String, val content: @Composable (Int, Int) -> Unit)
@@ -71,6 +72,15 @@ internal fun LazyListScope.clockRegionSettings(
                 index, count, "${prefix}_weather_icons", enabled = enabled, onClick = onWeatherIcons)
         })
     }
+    fun batteryControls(prefix: String): List<ClockControl> = listOf(
+        ClockControl("battery_content") { index, count ->
+            ClockControlSegment(index, count, "${prefix}_battery_content") {
+                ClockBatteryChoices(regions.battery.normalized(), enabled, "${prefix}_battery_content") { transform ->
+                    onChange { current -> current.copy(battery = transform(current.battery.normalized())) }
+                }
+            }
+        },
+    )
 
     val primary = regions.primary
     val primaryControls = mutableListOf(ClockControl("elements") { index, count ->
@@ -167,6 +177,7 @@ internal fun LazyListScope.clockRegionSettings(
                     face.showColon, index, count, "clock_show_colon", enabled) { value -> changeFace(primary) { it.copy(showColon = value) } }
             }
         }
+        if (primary == ClockElement.Battery) primaryControls += batteryControls("clock_primary")
         if (primary == ClockElement.Weather) primaryControls += weatherControls("clock_primary")
     }
     group(ClockRegion.Primary, primaryControls)
@@ -244,6 +255,7 @@ internal fun LazyListScope.clockRegionSettings(
             SettingsToggleItem(stringResource(R.string.clock_use_latin_letters), null, row.useLatinLetters,
                 index, count, "${prefix}_latin_letters", enabled) { value -> changeRow { it.copy(useLatinLetters = value) } }
         }
+        if (ClockElement.Battery in row.selected) controls += batteryControls(prefix)
         if (ClockElement.Weather in row.selected) controls += weatherControls(prefix)
         group(region, controls)
     }
@@ -355,6 +367,48 @@ private fun <T> ClockChoices(options: List<T>, selected: T, enabled: Boolean, ta
         }
     }
 }
+
+@Composable
+private fun ClockBatteryChoices(battery: ClockBattery, enabled: Boolean, tag: String,
+    onChange: ((ClockBattery) -> ClockBattery) -> Unit) {
+    val count = ClockBatteryIconStyle.entries.size + 1
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)) {
+        ClockBatteryIconStyle.entries.forEachIndexed { index, style ->
+            ToggleButton(checked = battery.showIcon && battery.iconStyle == style,
+                onCheckedChange = { checked ->
+                    onChange { current ->
+                        when {
+                            checked -> current.copy(showIcon = true, iconStyle = style)
+                            current.iconStyle == style && current.showPercentage -> current.copy(showIcon = false)
+                            else -> current
+                        }
+                    }
+                }, enabled = enabled, shapes = connectedShapes(index, count),
+                contentPadding = PaddingValues(horizontal = 4.dp, vertical = 10.dp),
+                modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("$tag:$style")) {
+                Icon(painterResource(clockBatteryIcon(style, 70, false)), style.label(), Modifier.size(24.dp))
+            }
+        }
+        val percentageLabel = stringResource(R.string.clock_battery_show_percentage)
+        ToggleButton(checked = battery.showPercentage,
+            onCheckedChange = { checked ->
+                onChange { current ->
+                    if (checked || current.showIcon) current.copy(showPercentage = checked) else current
+                }
+            }, enabled = enabled, shapes = connectedShapes(count - 1, count),
+            contentPadding = PaddingValues(horizontal = 4.dp, vertical = 10.dp),
+            modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("$tag:Percentage")) {
+            Icon(painterResource(R.drawable.ms_percent), percentageLabel, Modifier.size(24.dp))
+        }
+    }
+}
+
+@Composable
+private fun ClockBatteryIconStyle.label(): String = stringResource(when (this) {
+    ClockBatteryIconStyle.Android -> R.string.clock_battery_icon_android
+    ClockBatteryIconStyle.AndroidFrame -> R.string.clock_battery_icon_android_frame
+    ClockBatteryIconStyle.Bar -> R.string.clock_battery_icon_bar
+})
 
 /** The six slots stay mounted during a drag, so buttons and divider can cross each other. */
 @Composable

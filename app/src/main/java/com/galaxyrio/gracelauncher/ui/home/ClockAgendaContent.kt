@@ -71,8 +71,8 @@ internal fun ClockAgendaContent(
     animatePositions: Boolean = false,
     useLatinLetters: Boolean = false,
     wrapWidth: Boolean = false,
+    color: Color = LocalLauncherAppearance.current.text,
 ) {
-    val appearance = LocalLauncherAppearance.current
     val locale = LocalConfiguration.current.locales[0]
     val dateLocale = remember(locale, useLatinLetters) { clockCalendarLocale(locale, useLatinLetters) }
     val use24Hour = DateFormat.is24HourFormat(LocalContext.current)
@@ -109,13 +109,13 @@ internal fun ClockAgendaContent(
                         else -> "schedule_${field.name.lowercase()}"
                     }
                     if (field == ClockAgendaField.Color) {
-                        val color = requireNotNull(event.displayColor ?: event.calendarColor)
+                        val eventColor = requireNotNull(event.displayColor ?: event.calendarColor)
                         Text(buildAnnotatedString { appendInlineContent("event_color") },
                             modifier = movement.testTag(tag).clearAndSetSemantics {},
                             inlineContent = mapOf("event_color" to InlineTextContent(
                                 Placeholder(0.6.em, 0.6.em, PlaceholderVerticalAlign.TextCenter),
                             ) {
-                                Box(Modifier.fillMaxSize().background(Color(color).copy(alpha = 1f), CircleShape))
+                                Box(Modifier.fillMaxSize().background(Color(eventColor).copy(alpha = 1f), CircleShape))
                             }), style = style, maxLines = 1)
                     } else {
                         val value = when (field) {
@@ -130,7 +130,7 @@ internal fun ClockAgendaContent(
                         }.replace('\n', ' ').replace('\r', ' ')
                         val separator = if (index > 0 && fields[index - 1] != ClockAgendaField.Color) "· " else ""
                         Text(separator + value, modifier = movement.testTag(tag),
-                            color = if (field == ClockAgendaField.Countdown) appearance.text.copy(alpha = 0.93f) else appearance.text,
+                            color = color,
                             style = style, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
                 }

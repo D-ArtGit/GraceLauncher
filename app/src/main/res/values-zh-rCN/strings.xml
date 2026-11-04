@@ -846,6 +846,12 @@
     <string name="clock_show_weekday">显示星期</string>
     <string name="clock_show_date">显示日期</string>
     <string name="clock_show_battery">显示电量</string>
+    <string name="clock_battery_show_percentage">显示百分比</string>
+    <string name="clock_battery_icon_android">Battery Android</string>
+    <string name="clock_battery_icon_android_frame">Battery Android Frame</string>
+    <string name="clock_battery_icon_bar">Battery Bar</string>
+    <string name="clock_battery_level">电量 %1$d%%</string>
+    <string name="clock_battery_charging">电量 %1$d%%，正在充电</string>
     <string name="clock_show_weather">显示天气</string>
     <string name="clock_weather_icons">天气图标</string>
     <string name="clock_weather_icons_monochrome">单色</string>
@@ -857,8 +863,12 @@
     <string name="clock_color_date_group">日期</string>
     <string name="clock_color_month">月</string>
     <string name="clock_color_day">日</string>
-    <string name="clock_color_battery">电量百分比</string>
+    <string name="clock_color_battery">电池</string>
+    <string name="clock_color_battery_percentage">电量百分比</string>
+    <string name="clock_color_battery_icons">电池图标</string>
     <string name="clock_color_weather">天气文字</string>
+    <string name="clock_color_weather_icons">天气图标</string>
+    <string name="clock_color_agenda">日程文字</string>
     <string name="app_category_pinned">置顶</string>
     <string name="app_category_notification">通知</string>
     <string name="category_inclusion">包含应用方式</string>

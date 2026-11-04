@@ -70,7 +70,7 @@ import com.galaxyrio.gracelauncher.data.weather.WeatherSnapshot
 import com.galaxyrio.gracelauncher.ui.components.LauncherLayout
 import com.galaxyrio.gracelauncher.ui.theme.LocalLauncherAppearance
 import com.galaxyrio.gracelauncher.ui.theme.rememberAppFontFamily
-import com.galaxyrio.gracelauncher.ui.theme.rememberBatteryPercent
+import com.galaxyrio.gracelauncher.ui.theme.rememberBatteryState
 import com.galaxyrio.gracelauncher.ui.theme.resolvedFontColor
 import com.galaxyrio.gracelauncher.ui.weather.HomeWeather
 import com.galaxyrio.gracelauncher.ui.weather.hasHomeWeatherContent
@@ -123,7 +123,8 @@ internal fun HomeClockHeader(
     val dateDescription = stringResource(R.string.date_calendar_action, completeDate.text)
     val batterySelected = regions.primary == ClockElement.Battery ||
         ClockElement.Battery in regions.secondary.selected || ClockElement.Battery in regions.tertiary.selected
-    val battery = if (showCalendar && showBattery && batterySelected) rememberBatteryPercent() else null
+    val battery = if (showCalendar && showBattery && batterySelected &&
+        (regions.battery.showIcon || regions.battery.showPercentage)) rememberBatteryState() else null
     val weatherVisible = hasHomeWeatherContent(weather, regions.weather, weatherSnapshot, now)
     val agendaRows = if (showCalendar) visibleAgendaEvents(agendaEvents, now, limit = 0)
         .mapNotNull { current ->
@@ -204,12 +205,14 @@ internal fun HomeClockHeader(
                 Text(date, contentModifier, color = appearance.text, style = textStyle,
                     maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
-            ClockElement.Battery -> Text("$battery%", contentModifier, color = colors.getValue(ClockColorPart.Battery),
-                style = textStyle, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            ClockElement.Battery -> battery?.let { state ->
+                ClockBatteryContent(state, regions.battery, textStyle, colors.getValue(ClockColorPart.Battery), contentModifier,
+                    iconColor = colors.getValue(ClockColorPart.BatteryIcon))
+            }
             ClockElement.Weather -> {
                 HomeWeather(weather, colors.getValue(ClockColorPart.Weather), textStyle, contentModifier,
                     onClick = onWeatherClick.takeIf { interactive }, onLongClick = onLongClick.takeIf { interactive },
-                    iconColor = appearance.text, config = regions.weather, snapshot = weatherSnapshot, now = now)
+                    iconColor = colors.getValue(ClockColorPart.WeatherIcon), config = regions.weather, snapshot = weatherSnapshot, now = now)
             }
         }
     }
@@ -275,7 +278,7 @@ internal fun HomeClockHeader(
             Box(widthModifier.testTag("home_agenda").clip(LauncherLayout.RowShape)
                 .semantics { contentDescription = dateDescription }
                 .then(if (interactive) Modifier.combinedClickable(
-                    interactionSource = remember { MutableInteractionSource() }, indication = ripple(color = appearance.text),
+                    interactionSource = remember { MutableInteractionSource() }, indication = ripple(color = colors.getValue(ClockColorPart.Agenda)),
                     role = Role.Button, onClick = onDateClick, onLongClick = onLongClick,
                 ) else Modifier), propagateMinConstraints = wrapWidth) {
                 Column {
@@ -284,7 +287,8 @@ internal fun HomeClockHeader(
                             ClockAgendaContent(current, now, fields, regions.agenda.typography,
                                 if (inset) Modifier.padding(horizontal = LauncherLayout.ContentInset) else Modifier,
                                 animatePositions = !interactive,
-                                useLatinLetters = regions.agenda.useLatinLetters, wrapWidth = wrapWidth)
+                                useLatinLetters = regions.agenda.useLatinLetters, wrapWidth = wrapWidth,
+                                color = colors.getValue(ClockColorPart.Agenda))
                         }
                     }
                 }

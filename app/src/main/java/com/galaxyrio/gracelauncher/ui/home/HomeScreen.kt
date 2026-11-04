@@ -565,11 +565,11 @@ internal fun LegacyHomeClockHeader(
                         if (smallClockVisible || calendarText.isNotEmpty()) Spacer(Modifier.width(10.dp))
                         HomeWeather(visibleWeather, colors.getValue(ClockColorPart.Weather), dateStyle, Modifier.alignByBaseline(),
                             onClick = onWeatherClick.takeIf { interactive }, onLongClick = onLongClick.takeIf { interactive },
-                            iconColor = appearance.text)
+                            iconColor = colors.getValue(ClockColorPart.WeatherIcon))
                     }
                 }
                 if (agendaVisible) {
-                    ScheduleLine(event = event, now = now)
+                    ScheduleLine(event = event, now = now, color = colors.getValue(ClockColorPart.Agenda))
                 }
             }
         }
@@ -583,7 +583,7 @@ internal fun LegacyHomeClockHeader(
 }
 
 @Composable
-internal fun ScheduleLine(event: ScheduleEvent, now: Instant) {
+internal fun ScheduleLine(event: ScheduleEvent, now: Instant, color: Color = LocalLauncherAppearance.current.text) {
     val appearance = LocalLauncherAppearance.current
     val remaining = eventRemainingText(event, now)
     val style = MaterialTheme.typography.bodyLarge.copy(
@@ -601,7 +601,7 @@ internal fun ScheduleLine(event: ScheduleEvent, now: Instant) {
             // CJK fallback and Latin fonts can have different ascents at the same size.
             modifier = Modifier.weight(1f, fill = false).alignByBaseline().testTag("schedule_title"),
             style = style,
-            color = appearance.text,
+            color = color,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
@@ -610,7 +610,7 @@ internal fun ScheduleLine(event: ScheduleEvent, now: Instant) {
             text = "· $remaining",
             modifier = Modifier.alignByBaseline().testTag("schedule_remaining"),
             style = style,
-            color = appearance.text.copy(alpha = 0.93f),
+            color = color,
             maxLines = 1,
         )
     }
