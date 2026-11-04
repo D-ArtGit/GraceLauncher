@@ -5,6 +5,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZoneOffset
+import java.time.temporal.TemporalUnit
 
 data class ScheduleEvent(
     val id: Long,
@@ -22,7 +23,8 @@ data class EventCountdown(val unit: CountdownUnit, val value: Int = 0, val minut
 
 // Calendar Provider stores all-day boundaries as UTC dates, not local timestamps.
 internal fun ScheduleEvent.localBoundary(instant: Instant, zone: ZoneId): Instant =
-    if (isAllDay) instant.atZone(ZoneOffset.UTC).toLocalDate().atStartOfDay(zone).toInstant() else instant
+    if (isAllDay) instant.atZone(ZoneOffset.UTC).toLocalDate().atStartOfDay(zone)
+        .toInstant() else instant
 
 /** Expand multi-day occurrences without treating the exclusive all-day end as another day. */
 fun agendaDays(
@@ -36,7 +38,8 @@ fun agendaDays(
     val horizon = today.plusDays(dayCount)
     events.sortedBy { it.localBoundary(it.startsAt, zone) }.forEach { event ->
         var day = maxOf(today, event.localBoundary(event.startsAt, zone).atZone(zone).toLocalDate())
-        val lastDay = event.localBoundary(event.endsAt, zone).minusNanos(1).atZone(zone).toLocalDate()
+        val lastDay =
+            event.localBoundary(event.endsAt, zone).minusNanos(1).atZone(zone).toLocalDate()
         while (day <= lastDay && day < horizon) {
             days.getOrPut(day) { mutableListOf() }.add(event)
             day = day.plusDays(1)
@@ -50,8 +53,12 @@ fun nextVisibleEvent(
     now: Instant,
     zone: ZoneId = ZoneId.systemDefault(),
 ): ScheduleEvent? = events
-    .filter { it.localBoundary(it.endsAt, zone).isAfter(now) }
-    .minByOrNull { it.localBoundary(it.startsAt, zone) }
+    .filter {
+        it.localBoundary(it.endsAt, zone).isAfter(now) &&
+                it.localBoundary(it.startsAt, zone).isBefore(now.plusSeconds(86400))
+    }
+    .sortedWith(compareBy({ it.isAllDay }, { it.startsAt }))
+    .firstOrNull()
 
 fun eventCountdown(
     event: ScheduleEvent,
@@ -66,7 +73,12 @@ fun eventCountdown(
     val minutes = ((seconds + 59) / 60).toInt()
     return when {
         minutes < 60 -> EventCountdown(CountdownUnit.Minutes, value = minutes)
-        minutes < 24 * 60 -> EventCountdown(CountdownUnit.Hours, value = minutes / 60, minutes = minutes % 60)
+        minutes < 24 * 60 -> EventCountdown(
+            CountdownUnit.Hours,
+            value = minutes / 60,
+            minutes = minutes % 60
+        )
+
         else -> EventCountdown(CountdownUnit.Days, value = minutes / (24 * 60))
     }
 }
