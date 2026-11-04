@@ -358,9 +358,13 @@ fun HomeScreen(
                             clockStyle = uiState.settings.clockStyle,
                             weather = uiState.weather.snapshot?.current.takeIf { uiState.settings.weatherEnabled &&
                                 !uiState.isLoadingSettings && !uiState.settingsLoadFailed },
+                            weatherSnapshot = uiState.weather.snapshot.takeIf { uiState.settings.weatherEnabled &&
+                                !uiState.isLoadingSettings && !uiState.settingsLoadFailed },
                             showClock = uiState.settings.clockEnabled, showCalendar = uiState.settings.calendarAgenda,
+                            agendaEvents = if (uiState.settings.calendarAgenda) uiState.events else emptyList(),
                             calendarAboveClock = uiState.settings.calendarAboveClock,
-                            interactive = inputEnabled, onLongClick = {}, onWeatherClick = onWeatherClick)
+                            interactive = inputEnabled, onLongClick = {}, onWeatherClick = onWeatherClick,
+                            clockActive = inputEnabled)
                         // Keep the slot while empty so its height springs to zero instead of
                         // disappearing in one measure pass. Following rows flow into the gap.
                         grace == GraceWidget.Media -> Box(Modifier.fillMaxWidth().animateContentSize(
@@ -433,7 +437,7 @@ fun HomeScreen(
 }
 
 @Composable
-internal fun HomeClockHeader(
+internal fun LegacyHomeClockHeader(
     now: Instant,
     event: ScheduleEvent?,
     onDateClick: () -> Unit,
@@ -466,7 +470,10 @@ internal fun HomeClockHeader(
     val context = LocalContext.current
     val locale = LocalConfiguration.current.locales[0]
     val clockText = formatHomeClock(now, DateFormat.is24HourFormat(context), locale, leadingZero = clockStyle.face.showLeadingZero)
-    val weekday = clockCalendarDate(now, locale, true, false,
+    val weekdayLocale = remember(locale, week, clockStyle.face.useLatinLetters) {
+        clockCalendarLocale(locale, week && clockStyle.face.useLatinLetters)
+    }
+    val weekday = clockCalendarDate(now, weekdayLocale, true, false,
         colors.getValue(ClockColorPart.Weekday), colors.getValue(ClockColorPart.Month), colors.getValue(ClockColorPart.Day)).text
     val dateText = clockCalendarDate(now, locale, weekdayVisible && !week, dateVisible,
         colors.getValue(ClockColorPart.Weekday), colors.getValue(ClockColorPart.Month), colors.getValue(ClockColorPart.Day))
@@ -576,7 +583,7 @@ internal fun HomeClockHeader(
 }
 
 @Composable
-private fun ScheduleLine(event: ScheduleEvent, now: Instant) {
+internal fun ScheduleLine(event: ScheduleEvent, now: Instant) {
     val appearance = LocalLauncherAppearance.current
     val remaining = eventRemainingText(event, now)
     val style = MaterialTheme.typography.bodyLarge.copy(

@@ -62,6 +62,7 @@ data class LauncherSettings(
     /** Null until the legacy favorite order has been migrated. */
     val appCategories: List<AppCategory>? = null,
     val preferNonAccessibility: Boolean = false,
+    val calendar: CalendarPreferences = CalendarPreferences(),
 ) {
     /** Icon designer overrides precede this order; system icons always follow it. */
     val enabledIconPackPackages: List<String>

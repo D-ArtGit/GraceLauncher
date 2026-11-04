@@ -24,6 +24,8 @@ import com.galaxyrio.gracelauncher.data.LauncherAppCache
 import com.galaxyrio.gracelauncher.data.LauncherCatalogMemory
 import com.galaxyrio.gracelauncher.data.LauncherProfileSnapshot
 import com.galaxyrio.gracelauncher.data.CalendarRepository
+import com.galaxyrio.gracelauncher.data.CalendarRefreshMode
+import com.galaxyrio.gracelauncher.data.CalendarSnapshot
 import com.galaxyrio.gracelauncher.data.CatalogRefreshState
 import com.galaxyrio.gracelauncher.data.FavoritesStore
 import com.galaxyrio.gracelauncher.data.LauncherApp
@@ -82,9 +84,11 @@ import com.galaxyrio.gracelauncher.data.weather.BreezyWeatherRepository
 import com.galaxyrio.gracelauncher.data.weather.WeatherState
 import com.galaxyrio.gracelauncher.data.weather.WeatherStatus
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -377,6 +381,13 @@ class LauncherViewModel(application: Application) : AndroidViewModel(application
     private val catalogRefresh = CatalogRefreshState<CatalogInputs>()
     private var privateAppLoadJob: Job? = null
     private var scheduleLoadJob: Job? = null
+    private data class ScheduleReadRequest(val daysAhead: Int, val automatic: Boolean)
+    private var activeScheduleRead: ScheduleReadRequest? = null
+    private var pendingScheduleRead: ScheduleReadRequest? = null
+    private var schedulePollingJob: Job? = null
+    private var calendarForeground = false
+    private var calendarHomeVisible = false
+    private var calendarHomeRefreshPending = false
     private var weatherLoadJob: Job? = null
     private val usageRepository = com.galaxyrio.gracelauncher.data.UsageRepository.get(application)
     private var usageLoadJob: Job? = null
@@ -388,6 +399,9 @@ class LauncherViewModel(application: Application) : AndroidViewModel(application
     }
 
     init {
+        viewModelScope.launch {
+            calendarRepository.snapshots.collect { snapshot -> adoptCalendarSnapshot(snapshot) }
+        }
         viewModelScope.launch {
             appRepository.revision.collect {
                 styledShortcuts.evictAll()
@@ -477,8 +491,9 @@ class LauncherViewModel(application: Application) : AndroidViewModel(application
                         )
                     }
                     if (previous.isLoadingSettings ||
-                        previous.settings.calendarAgenda != snapshot.settings.calendarAgenda
-                    ) refreshSchedule()
+                        previous.settings.calendarAgenda != snapshot.settings.calendarAgenda ||
+                        previous.settings.calendar != snapshot.settings.calendar
+                    ) updateCalendarRefreshPolicy()
                     if (previous.isLoadingSettings || previous.settings.mediaPlayer != snapshot.settings.mediaPlayer) {
                         mediaRepository.setEnabled(snapshot.settings.mediaPlayer)
                     }
@@ -941,39 +956,144 @@ class LauncherViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    /** Only an explicit refresh/retry or completed permission request uses this entry point. */
     fun refreshSchedule() {
-        if (_uiState.value.isLoadingSettings || _uiState.value.settingsLoadFailed ||
-            !_uiState.value.settings.calendarAgenda
-        ) {
-            scheduleLoadJob?.cancel()
-            _uiState.update { it.copy(events = emptyList(), scheduleStatus = ScheduleStatus.Ready) }
+        requestScheduleRead(automatic = false)
+        updateCalendarRefreshPolicy()
+    }
+
+    fun setCalendarForeground(active: Boolean) {
+        if (calendarForeground == active) return
+        calendarForeground = active
+        updateCalendarRefreshPolicy()
+    }
+
+    fun setCalendarHomeVisible(visible: Boolean) {
+        if (calendarHomeVisible == visible) return
+        calendarHomeVisible = visible
+        calendarHomeRefreshPending = visible
+        if (visible) updateCalendarRefreshPolicy()
+    }
+
+    private fun hasCalendarPermission() = ContextCompat.checkSelfPermission(
+        getApplication<Application>(), Manifest.permission.READ_CALENDAR,
+    ) == PackageManager.PERMISSION_GRANTED
+
+    private fun ensureScheduleAccess(): Boolean {
+        val state = _uiState.value
+        if (state.isLoadingSettings || state.settingsLoadFailed) return false
+        if (!state.settings.calendarAgenda || !hasCalendarPermission()) {
+            pendingScheduleRead = null
+            // The physical provider read may still be finishing. Do not let a later
+            // re-enable/grant coalesce with this now-invalid request.
+            activeScheduleRead = null
+            calendarRepository.clearSnapshot()
+            _uiState.update { it.copy(events = emptyList(), scheduleStatus =
+                if (it.settings.calendarAgenda) ScheduleStatus.PermissionRequired else ScheduleStatus.Ready) }
+            return false
+        }
+        return true
+    }
+
+    private fun adoptCalendarSnapshot(snapshot: CalendarSnapshot?) {
+        val state = _uiState.value
+        if (state.isLoadingSettings || state.settingsLoadFailed) return
+        if (!state.settings.calendarAgenda || !hasCalendarPermission()) {
+            _uiState.update { it.copy(events = emptyList(), scheduleStatus =
+                if (it.settings.calendarAgenda) ScheduleStatus.PermissionRequired else ScheduleStatus.Ready) }
             return
         }
-        val application = getApplication<Application>()
-        val hasPermission = ContextCompat.checkSelfPermission(
-            application,
-            Manifest.permission.READ_CALENDAR,
-        ) == PackageManager.PERMISSION_GRANTED
-        if (!hasPermission) {
-            scheduleLoadJob?.cancel()
-            _uiState.update {
-                it.copy(events = emptyList(), scheduleStatus = ScheduleStatus.PermissionRequired)
+        val matching = snapshot?.takeIf { it.daysAhead == state.settings.calendar.daysAhead }
+        _uiState.update { it.copy(events = matching?.events.orEmpty(), scheduleStatus = when {
+            activeScheduleRead?.daysAhead == it.settings.calendar.daysAhead -> ScheduleStatus.Loading
+            else -> ScheduleStatus.Ready
+        }) }
+    }
+
+    private fun updateCalendarRefreshPolicy() {
+        schedulePollingJob?.cancel()
+        schedulePollingJob = null
+        pendingScheduleRead = pendingScheduleRead?.takeUnless { it.automatic }
+        if (!ensureScheduleAccess()) return
+        adoptCalendarSnapshot(calendarRepository.snapshots.value)
+        val preferences = _uiState.value.settings.calendar
+        if (preferences.refreshMode == CalendarRefreshMode.Manual) {
+            calendarHomeRefreshPending = false
+            pendingScheduleRead = pendingScheduleRead?.takeUnless { it.automatic }
+            return
+        }
+        if (!calendarForeground) return
+        if (calendarHomeRefreshPending && calendarHomeVisible) {
+            calendarHomeRefreshPending = false
+            requestScheduleRead(automatic = true)
+        }
+        val interval = preferences.refreshMode.intervalMillis ?: return
+        schedulePollingJob = viewModelScope.launch {
+            while (isActive) {
+                val snapshot = calendarRepository.snapshots.value?.takeIf { it.daysAhead == preferences.daysAhead }
+                val remaining = snapshot?.let {
+                    interval - (SystemClock.elapsedRealtimeNanos() - it.refreshedAtNanos) / 1_000_000L
+                } ?: 0L
+                if (remaining > 0L) {
+                    delay(remaining)
+                    continue
+                }
+                requestScheduleRead(automatic = true)
+                delay(interval)
+            }
+        }
+    }
+
+    private fun requestScheduleRead(automatic: Boolean) {
+        if (!ensureScheduleAccess()) return
+        val preferences = _uiState.value.settings.calendar
+        if (automatic && preferences.refreshMode == CalendarRefreshMode.Manual) return
+        val request = ScheduleReadRequest(preferences.daysAhead, automatic)
+        if (scheduleLoadJob?.isActive == true) {
+            // Duplicate resume/timer/manual signals share the current read. A changed
+            // horizon replaces just one pending request, rather than restarting IO.
+            if (activeScheduleRead?.daysAhead == request.daysAhead) {
+                pendingScheduleRead = null
+                if (!automatic) activeScheduleRead = request
+            } else if (pendingScheduleRead?.let { it.daysAhead == request.daysAhead && !it.automatic } != true) {
+                pendingScheduleRead = request
             }
             return
         }
-
-        scheduleLoadJob?.cancel()
-        scheduleLoadJob = viewModelScope.launch {
-            _uiState.update { it.copy(scheduleStatus = ScheduleStatus.Loading) }
-            runCatching { calendarRepository.upcomingEvents() }
-                .onSuccess { events ->
-                    _uiState.update { it.copy(events = events, scheduleStatus = ScheduleStatus.Ready) }
+        pendingScheduleRead = request
+        val load = viewModelScope.launch(start = CoroutineStart.LAZY) {
+            try {
+                while (true) {
+                    val next = pendingScheduleRead ?: break
+                    pendingScheduleRead = null
+                    if (!ensureScheduleAccess()) break
+                    val current = _uiState.value.settings.calendar
+                    if (current.daysAhead != next.daysAhead ||
+                        (next.automatic && (!calendarForeground || current.refreshMode == CalendarRefreshMode.Manual))) continue
+                    activeScheduleRead = next
+                    _uiState.update { it.copy(scheduleStatus = ScheduleStatus.Loading) }
+                    try {
+                        calendarRepository.refresh(next.daysAhead)?.let(::adoptCalendarSnapshot)
+                    } catch (cancelled: CancellationException) {
+                        throw cancelled
+                    } catch (error: Exception) {
+                        if (ensureScheduleAccess() && _uiState.value.settings.calendar.daysAhead == next.daysAhead) {
+                            _uiState.update { it.copy(scheduleStatus = ScheduleStatus.Error) }
+                        }
+                    } finally {
+                        activeScheduleRead = null
+                    }
                 }
-                .onFailure {
-                    if (it is CancellationException) throw it
-                    _uiState.update { it.copy(events = emptyList(), scheduleStatus = ScheduleStatus.Error) }
+            } finally {
+                activeScheduleRead = null
+                scheduleLoadJob = null
+                _uiState.update {
+                    if (it.scheduleStatus == ScheduleStatus.Loading) it.copy(scheduleStatus = ScheduleStatus.Ready) else it
                 }
+            }
         }
+        scheduleLoadJob = load
+        load.start()
     }
 
     fun launch(app: LauncherApp, bounds: Rect? = null, options: Bundle? = null, fromSearch: Boolean = false): Boolean {
@@ -1212,7 +1332,10 @@ class LauncherViewModel(application: Application) : AndroidViewModel(application
         try {
             // A manager opened from an unsaved clock editor can delete its draft font.
             val available = com.galaxyrio.gracelauncher.data.ClockFontStore(getApplication()).list().map { it.id }.toSet()
-            val missing = (listOf(style.singleLine, style.twoLines) + style.presets.values).mapNotNull { it.fontId }
+            val regions = style.resolvedRegions()
+            val fontIds = (listOf(style.singleLine, style.twoLines) + style.presets.values + regions.primaryFaces.values).mapNotNull { it.fontId } +
+                listOfNotNull(regions.secondary.typography.fontId, regions.tertiary.typography.fontId, regions.agenda.typography.fontId)
+            val missing = fontIds
                 .filter { com.galaxyrio.gracelauncher.data.ClockFontStore.displayName(it) != null && it !in available }.toSet()
             settingsRepository.mutateSettings { it.copy(clockStyle = style.withoutFonts(missing)) }
             _uiState.update { it.copy(settingsSaveFailed = false) }

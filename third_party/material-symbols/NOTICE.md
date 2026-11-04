@@ -177,3 +177,11 @@ The None option draws no icon.
   (Official Material Symbols Outlined Android vector, optical size 24, weight 400,
   grade 0 and fill 0. The original path and 960px viewport are retained; the root
   tint is removed and the path fill is black, with Compose supplying its color.)
+
+### Clock region icons added 2026-11-03
+
+- `ms_view_week.xml`: https://raw.githubusercontent.com/google/material-design-icons/master/symbols/web/view_week/materialsymbolsoutlined/view_week_24px.svg
+- `ms_battery_android_5.xml`: https://raw.githubusercontent.com/google/material-design-icons/master/symbols/web/battery_android_5/materialsymbolsoutlined/battery_android_5_24px.svg
+
+Official Material Symbols Outlined SVG paths retained using the 24dp conversion
+above (optical size 24, weight 400, grade 0, fill 0). Same Apache-2.0 license.

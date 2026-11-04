@@ -57,28 +57,142 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.galaxyrio.gracelauncher.R
+import com.galaxyrio.gracelauncher.data.ClockWeather
+import com.galaxyrio.gracelauncher.data.ClockWeatherField
 import com.galaxyrio.gracelauncher.data.weather.WeatherCondition
 import com.galaxyrio.gracelauncher.data.weather.WeatherCurrent
 import com.galaxyrio.gracelauncher.data.weather.WeatherDay
+import com.galaxyrio.gracelauncher.data.weather.WeatherMeasure
 import com.galaxyrio.gracelauncher.data.weather.WeatherSnapshot
 import com.galaxyrio.gracelauncher.data.weather.WeatherTemperature
+import com.galaxyrio.gracelauncher.data.weather.WeatherWind
+import java.text.NumberFormat
 import java.time.Duration
 import java.time.Instant
 import java.time.format.DateTimeFormatter
+import java.util.Locale
+
+/** The header uses the same availability rules as the rendered row, including metadata-only choices. */
+fun hasHomeWeatherContent(
+    current: WeatherCurrent?,
+    config: ClockWeather,
+    snapshot: WeatherSnapshot? = null,
+    now: Instant = Instant.now(),
+): Boolean = homeWeatherFields(current, config, snapshot, now).isNotEmpty()
+
+private val WeatherSpeedUnits = setOf("mps", "kph", "kn", "mph", "ftps", "bf")
+
+private fun WeatherTemperature?.isAvailable(): Boolean =
+    this != null && value.isFinite() && unit in setOf("c", "f", "k")
+
+private fun WeatherMeasure?.isAvailable(unit: String, maximum: Double = Double.POSITIVE_INFINITY): Boolean =
+    this != null && this.unit == unit && value.isFinite() && value >= 0 && value <= maximum
+
+private fun WeatherWind?.hasDirection(): Boolean = this?.degree?.let {
+    it.isFinite() && (it == -1.0 || it in 0.0..360.0)
+} == true
+
+private fun WeatherWind?.hasSpeed(): Boolean = this?.speed?.let {
+    it.value.isFinite() && it.value >= 0 && it.unit in WeatherSpeedUnits
+} == true
+
+private fun WeatherSnapshot?.currentDay(now: Instant): WeatherDay? {
+    if (this == null) return null
+    val today = now.atZone(location.timeZone).toLocalDate()
+    return daily.firstOrNull { it.date == today }
+}
+
+private fun homeWeatherFields(current: WeatherCurrent?, config: ClockWeather, snapshot: WeatherSnapshot?, now: Instant): List<ClockWeatherField> {
+    val day = snapshot.currentDay(now)
+    return config.visibleFields.filter { field ->
+        when (field) {
+            ClockWeatherField.Icon -> current != null && current.condition != WeatherCondition.Unknown
+            ClockWeatherField.Temperature -> current?.temperature.isAvailable()
+            ClockWeatherField.Description -> current != null &&
+                (!current.description.isNullOrBlank() || current.condition != WeatherCondition.Unknown)
+            ClockWeatherField.FeelsLike -> current?.feelsLike.isAvailable()
+            ClockWeatherField.Humidity -> current?.humidity.isAvailable("percent", 100.0)
+            ClockWeatherField.Wind -> current?.wind.hasDirection() || current?.wind.hasSpeed()
+            ClockWeatherField.AirQuality -> current?.airQuality.isAvailable("aqi")
+            ClockWeatherField.UV -> current?.uv.isAvailable("uvi")
+            ClockWeatherField.Location -> !snapshot?.location?.name.isNullOrBlank()
+            ClockWeatherField.HighLow -> day?.high.isAvailable() || day?.low.isAvailable()
+            ClockWeatherField.UpdatedAt -> snapshot?.updatedAt != null
+        }
+    }
+}
+
+private data class HomeWeatherPart(val field: ClockWeatherField, val text: String, val spoken: String = text)
 
 @Composable
 fun HomeWeather(
-    current: WeatherCurrent,
+    current: WeatherCurrent?,
     color: Color,
     textStyle: TextStyle,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null,
     iconColor: Color = color,
+    config: ClockWeather = ClockWeather(),
+    snapshot: WeatherSnapshot? = null,
+    now: Instant = Instant.now(),
 ) {
-    val temperature = current.temperature ?: return
-    val description = weatherDescription(current.condition, current.description)
-    val summary = stringResource(R.string.weather_current_description, description, temperature.format(showUnit = true))
+    val fields = homeWeatherFields(current, config, snapshot, now)
+    if (fields.isEmpty()) return
+    val locale = LocalConfiguration.current.locales[0]
+    val use24Hour = DateFormat.is24HourFormat(LocalContext.current)
+    val description = weatherDescription(current?.condition ?: WeatherCondition.Unknown, current?.description)
+    val day = snapshot.currentDay(now)
+    val parts = fields.map { field ->
+        when (field) {
+            ClockWeatherField.Icon -> HomeWeatherPart(field, "", description)
+            ClockWeatherField.Temperature -> HomeWeatherPart(field, current!!.temperature!!.format(),
+                current.temperature.format(showUnit = true))
+            ClockWeatherField.Description -> HomeWeatherPart(field, description)
+            ClockWeatherField.FeelsLike -> HomeWeatherPart(field,
+                stringResource(R.string.weather_feels_like_value, current!!.feelsLike!!.format()),
+                stringResource(R.string.weather_feels_like_value, current.feelsLike.format(showUnit = true)))
+            ClockWeatherField.Humidity -> HomeWeatherPart(field, stringResource(R.string.weather_humidity_value,
+                NumberFormat.getPercentInstance(locale).apply { maximumFractionDigits = 1 }.format(current!!.humidity!!.value / 100)))
+            ClockWeatherField.Wind -> HomeWeatherPart(field,
+                stringResource(R.string.weather_wind_value, homeWindText(current!!.wind!!, locale)))
+            ClockWeatherField.AirQuality -> {
+                val measure = current!!.airQuality!!
+                val text = stringResource(R.string.weather_air_quality_value, weatherNumber(measure.value, locale))
+                HomeWeatherPart(field, text, listOfNotNull(text, measure.description?.takeIf(String::isNotBlank)).joinToString(", "))
+            }
+            ClockWeatherField.UV -> {
+                val measure = current!!.uv!!
+                val text = stringResource(R.string.weather_uv_value, weatherNumber(measure.value, locale))
+                HomeWeatherPart(field, text, listOfNotNull(text, measure.description?.takeIf(String::isNotBlank)).joinToString(", "))
+            }
+            ClockWeatherField.Location -> HomeWeatherPart(field, snapshot!!.location.name)
+            ClockWeatherField.HighLow -> {
+                val high = day?.high?.takeIf { it.isAvailable() }
+                val low = day?.low?.takeIf { it.isAvailable() }
+                val text = listOfNotNull(
+                    high?.let { stringResource(R.string.weather_high_value, it.format()) },
+                    low?.let { stringResource(R.string.weather_low_value, it.format()) },
+                ).joinToString(" ")
+                val spoken = listOfNotNull(
+                    high?.let { stringResource(R.string.weather_high_value, it.format(showUnit = true)) },
+                    low?.let { stringResource(R.string.weather_low_value, it.format(showUnit = true)) },
+                ).joinToString(" ")
+                HomeWeatherPart(field, text, spoken)
+            }
+            ClockWeatherField.UpdatedAt -> {
+                val updated = snapshot!!.updatedAt!!
+                val today = now.atZone(snapshot.location.timeZone).toLocalDate()
+                val date = if (updated.atZone(snapshot.location.timeZone).toLocalDate() == today) "" else "MMMd"
+                val pattern = DateFormat.getBestDateTimePattern(locale, date + if (use24Hour) "Hm" else "hm")
+                val formatted = DateTimeFormatter.ofPattern(pattern, locale).withZone(snapshot.location.timeZone).format(updated)
+                HomeWeatherPart(field, stringResource(R.string.weather_updated, formatted))
+            }
+        }
+    }
+    val summary = if (fields == listOf(ClockWeatherField.Icon, ClockWeatherField.Temperature))
+        stringResource(R.string.weather_current_description, description, current!!.temperature!!.format(showUnit = true))
+    else parts.map { it.spoken }.distinct().joinToString(", ")
     Box(
         modifier.testTag("home_weather")
             .clip(MaterialTheme.shapes.small)
@@ -98,17 +212,54 @@ fun HomeWeather(
         // Align to the font's text metrics, not the line box (which includes
         // leading). An em-sized icon also follows the user's font-size setting.
         Text(
-            text = buildAnnotatedString { appendInlineContent("weather"); append(" ${temperature.format()}") },
+            text = buildAnnotatedString {
+                parts.forEachIndexed { index, part ->
+                    if (index > 0) append(" ")
+                    if (part.field == ClockWeatherField.Icon) appendInlineContent("weather", part.spoken)
+                    else append(part.text)
+                }
+            },
             modifier = Modifier.testTag("home_weather_temperature"),
             inlineContent = mapOf("weather" to InlineTextContent(
                 Placeholder(1.15.em, 1.15.em, PlaceholderVerticalAlign.TextCenter),
             ) {
-                WeatherIcon(current.condition, current.isDaylight,
+                WeatherIcon(current?.condition ?: WeatherCondition.Unknown, current?.isDaylight != false,
                     Modifier.fillMaxSize().testTag("home_weather_icon"), tint = iconColor)
             }),
-            style = textStyle, color = color, maxLines = 1,
+            style = textStyle, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis,
         )
     }
+}
+
+private fun weatherNumber(value: Double, locale: Locale): String = NumberFormat.getNumberInstance(locale).apply {
+    maximumFractionDigits = 1
+    isGroupingUsed = false
+}.format(value)
+
+@Composable
+private fun homeWindText(wind: WeatherWind, locale: Locale): String {
+    val direction = if (!wind.hasDirection()) null else stringResource(
+        if (wind.degree == -1.0) R.string.weather_wind_variable else {
+            val directions = listOf(R.string.weather_wind_north, R.string.weather_wind_northeast,
+                R.string.weather_wind_east, R.string.weather_wind_southeast, R.string.weather_wind_south,
+                R.string.weather_wind_southwest, R.string.weather_wind_west, R.string.weather_wind_northwest)
+            directions[((wind.degree!! + 22.5) / 45).toInt() % directions.size]
+        },
+    )
+    val speed = if (!wind.hasSpeed()) null else {
+        val measure = wind.speed!!
+        val number = weatherNumber(measure.value, locale)
+        if (measure.unit == "bf") stringResource(R.string.weather_wind_beaufort, number)
+        else "$number ${when (measure.unit) {
+            "mps" -> "m/s"
+            "kph" -> "km/h"
+            "kn" -> "kn"
+            "mph" -> "mph"
+            "ftps" -> "ft/s"
+            else -> measure.unit
+        }}"
+    }
+    return listOfNotNull(direction, speed).joinToString(" ")
 }
 
 @Composable
@@ -117,7 +268,8 @@ fun DailyWeather(
     current: WeatherCurrent?,
     modifier: Modifier = Modifier,
 ) {
-    if (day == null && current == null) return
+    if (day == null && (current == null || (current.temperature == null &&
+            current.condition == WeatherCondition.Unknown && current.description.isNullOrBlank()))) return
     val condition = day?.condition ?: current!!.condition
     val description = weatherDescription(condition, day?.description ?: current?.description)
     val high = day?.high

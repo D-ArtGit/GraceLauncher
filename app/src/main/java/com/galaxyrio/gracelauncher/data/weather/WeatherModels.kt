@@ -53,7 +53,17 @@ data class WeatherCurrent(
     val condition: WeatherCondition,
     val isDaylight: Boolean,
     val description: String?,
+    val feelsLike: WeatherTemperature? = null,
+    val humidity: WeatherMeasure? = null,
+    val wind: WeatherWind? = null,
+    val airQuality: WeatherMeasure? = null,
+    val uv: WeatherMeasure? = null,
 )
+
+/** Keep the provider's unit and description rather than assuming a regional scale. */
+data class WeatherMeasure(val value: Double, val unit: String, val description: String? = null)
+
+data class WeatherWind(val degree: Double? = null, val speed: WeatherMeasure? = null)
 
 data class WeatherHour(
     val at: Instant,

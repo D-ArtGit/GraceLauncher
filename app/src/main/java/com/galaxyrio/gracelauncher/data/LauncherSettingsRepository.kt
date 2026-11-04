@@ -91,6 +91,7 @@ class LauncherSettingsRepository(private val database: LauncherDatabase) {
             widgetScreenJson = settings.widgetScreen.encode(),
             appCategoriesJson = settings.appCategories?.let(AppCategory::encode),
             preferNonAccessibility = settings.preferNonAccessibility,
+            calendarPreferencesJson = settings.calendar.encode(),
         ))
     }
 
@@ -268,6 +269,7 @@ private fun LauncherSettingsEntity.toSettings() = LauncherSettings(
     widgetScreen = WidgetScreenSettings.decode(widgetScreenJson),
     appCategories = AppCategory.decode(appCategoriesJson),
     preferNonAccessibility = preferNonAccessibility,
+    calendar = CalendarPreferences.decode(calendarPreferencesJson),
 )
 
 private fun decodeIconPackOrder(json: String?): List<String> = runCatching {

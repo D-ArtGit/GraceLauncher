@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -69,8 +70,9 @@ fun AgendaSheet(uiState: LauncherUiState, actions: LauncherActions, onRequestCal
         weather?.daily.orEmpty().filter { it.date >= today && it.date < today.plusDays(forecastDays.toLong()) }.associateBy { it.date }
     }
     val events = uiState.events.takeIf { uiState.settings.calendarAgenda }.orEmpty()
-    val groups = remember(events, forecasts, today, zone, forecastDays) {
-        weatherAgendaDays(events, forecasts.keys.toList(), today, forecastDays, zone)
+    val calendarDays = uiState.settings.calendar.daysAhead
+    val groups = remember(events, forecasts, today, zone, forecastDays, calendarDays) {
+        weatherAgendaDays(events, forecasts.keys.toList(), today, forecastDays, zone, calendarDayCount = calendarDays)
     }
     val dateFormat = remember(locale) { DateTimeFormatter.ofPattern(DateFormat.getBestDateTimePattern(locale, "MMMEd"), locale) }
     val compactDateFormat = remember(locale) { DateTimeFormatter.ofPattern(DateFormat.getBestDateTimePattern(locale, "MMMd"), locale) }
@@ -148,7 +150,8 @@ fun AgendaSheet(uiState: LauncherUiState, actions: LauncherActions, onRequestCal
                 item(key = "space:$date") { Spacer(Modifier.height(20.dp)) }
             }
             if (uiState.settings.calendarAgenda && events.isEmpty() && uiState.scheduleStatus == ScheduleStatus.Ready) item {
-                Text(stringResource(R.string.no_upcoming_events), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(pluralStringResource(R.plurals.calendar_no_upcoming_events, calendarDays, calendarDays),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }
