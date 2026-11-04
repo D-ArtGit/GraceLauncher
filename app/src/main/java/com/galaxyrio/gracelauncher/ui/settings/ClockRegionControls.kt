@@ -221,6 +221,12 @@ internal fun LazyListScope.clockRegionSettings(
         }
         if (ClockElement.Clock in row.selected) {
             val face = regions.face(ClockElement.Clock)
+            controls += ClockControl("fixed_clock_width") { index, count ->
+                SettingsToggleItem(stringResource(R.string.clock_fixed_width), null, row.fixedClockWidth,
+                    index, count, "${prefix}_fixed_clock_width", enabled) { value ->
+                    changeRow { it.copy(fixedClockWidth = value) }
+                }
+            }
             controls += ClockControl("leading_zero") { index, count ->
                 SettingsToggleItem(stringResource(R.string.clock_show_leading_zero), null, face.showLeadingZero,
                     index, count, "${prefix}_show_leading_zero", enabled) { value ->

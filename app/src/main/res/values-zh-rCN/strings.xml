@@ -837,6 +837,7 @@
     <string name="clock_tab_style">样式</string>
     <string name="clock_show_leading_zero">显示首位的 0</string>
     <string name="clock_show_seconds">显示秒</string>
+    <string name="clock_fixed_width">固定时钟宽度</string>
     <string name="clock_equal_width_characters">字符等宽排列</string>
     <string name="clock_center_characters">居中等宽字符</string>
     <string name="clock_use_latin_letters">始终使用拉丁字母</string>

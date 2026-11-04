@@ -28,6 +28,7 @@ data class ClockRegionRow(
     val typography: ClockRowTypography = ClockRowTypography(),
     val showSeconds: Boolean = false,
     val useLatinLetters: Boolean = false,
+    val fixedClockWidth: Boolean = true,
 ) {
     val leftItems: List<ClockElement> get() = completeOrder().takeWhile { it != null }.filterNotNull().filter { it in selected }
     val rightItems: List<ClockElement> get() = completeOrder().dropWhile { it != null }.filterNotNull().filter { it in selected }
@@ -48,6 +49,7 @@ data class ClockRegionRow(
             })
             put("showSeconds", row.showSeconds)
             put("useLatinLetters", row.useLatinLetters)
+            put("fixedClockWidth", row.fixedClockWidth)
         }
     }
 
@@ -77,6 +79,7 @@ data class ClockRegionRow(
             ),
                 showSeconds = json.optBoolean("showSeconds", defaults.showSeconds),
                 useLatinLetters = json.optBoolean("useLatinLetters", defaults.useLatinLetters),
+                fixedClockWidth = json.optBoolean("fixedClockWidth", defaults.fixedClockWidth),
             ).normalized()
         }
     }

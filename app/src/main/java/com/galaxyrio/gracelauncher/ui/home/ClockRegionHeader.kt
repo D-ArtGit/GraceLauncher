@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
@@ -152,7 +153,7 @@ internal fun HomeClockHeader(
 
     @Composable
     fun element(element: ClockElement, primary: Boolean, textStyle: TextStyle, elementModifier: Modifier,
-        showSeconds: Boolean = false, useLatinLetters: Boolean = false) {
+        showSeconds: Boolean = false, useLatinLetters: Boolean = false, fixedClockWidth: Boolean = false) {
         val calendarLocale = remember(locale, useLatinLetters) { clockCalendarLocale(locale, useLatinLetters) }
         val action = when (element) {
             ClockElement.Clock -> onClockClick
@@ -190,7 +191,7 @@ internal fun HomeClockHeader(
         when (element) {
             ClockElement.Clock -> ClockRegionTime(now, primary, showSeconds, clockActive,
                 if (primary) faceStyle(element) else ClockStyle(singleLine = clockFace),
-                textStyle, appearance.text, digitColors, contentModifier)
+                textStyle, appearance.text, digitColors, contentModifier, fixedClockWidth = fixedClockWidth)
             ClockElement.Weekday -> {
                 val weekday = clockCalendarDate(now, calendarLocale, true, false,
                     colors.getValue(ClockColorPart.Weekday), colors.getValue(ClockColorPart.Month), colors.getValue(ClockColorPart.Day))
@@ -256,9 +257,11 @@ internal fun HomeClockHeader(
             (left + right).forEach { item ->
                 key(item) {
                     if (interactive) element(item, false, rowStyle, Modifier,
-                        showSeconds = row.showSeconds, useLatinLetters = row.useLatinLetters)
+                        showSeconds = row.showSeconds, useLatinLetters = row.useLatinLetters,
+                        fixedClockWidth = row.fixedClockWidth)
                     else ClockRegionItemMotion { movement -> element(item, false, rowStyle, movement,
-                        showSeconds = row.showSeconds, useLatinLetters = row.useLatinLetters) }
+                        showSeconds = row.showSeconds, useLatinLetters = row.useLatinLetters,
+                        fixedClockWidth = row.fixedClockWidth) }
                 }
             }
         }
@@ -464,18 +467,28 @@ private fun ClockRegionTime(
     color: Color,
     digitColors: List<Color>,
     modifier: Modifier,
+    fixedClockWidth: Boolean = false,
 ) {
     val clockNow = if (showSeconds && active) {
         val ticking by rememberHomeTime(showSeconds = true)
         ticking
     } else now
     val locale = LocalConfiguration.current.locales[0]
-    val text = formatHomeClock(clockNow, DateFormat.is24HourFormat(LocalContext.current), locale,
+    val use24Hour = DateFormat.is24HourFormat(LocalContext.current)
+    val text = formatHomeClock(clockNow, use24Hour, locale,
         leadingZero = style.face.showLeadingZero, showSeconds = showSeconds)
     val description = stringResource(R.string.clock_action, text)
     val described = modifier.semantics { contentDescription = description }
+    val clockModifier = if (!primary && fixedClockWidth) described.width(rememberFixedClockWidth(
+        textStyle = textStyle,
+        use24Hour = use24Hour,
+        showLeadingZero = style.face.showLeadingZero,
+        showColon = style.face.showColon,
+        showSeconds = showSeconds,
+        locale = locale,
+    )) else described
     if (primary) ClockFace(text, style, color, described, digitColors = digitColors)
-    else ClockTimeLabel(text, style, textStyle, color, described, digitColors = digitColors, useStandardSpacing = true)
+    else ClockTimeLabel(text, style, textStyle, color, clockModifier, digitColors = digitColors, useStandardSpacing = true)
 }
 
 /** Animate the preview ink while its slot keeps the row's final width and baseline. */

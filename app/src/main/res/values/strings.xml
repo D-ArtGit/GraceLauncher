@@ -871,6 +871,7 @@
     <string name="clock_tab_style">Style</string>
     <string name="clock_show_leading_zero">Show leading zero</string>
     <string name="clock_show_seconds">Show seconds</string>
+    <string name="clock_fixed_width">Fixed clock width</string>
     <string name="clock_equal_width_characters">Equal character widths</string>
     <string name="clock_center_characters">Center characters</string>
     <string name="clock_use_latin_letters">Always use Latin letters</string>
