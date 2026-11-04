@@ -396,8 +396,8 @@
     <string name="icon_pack_unavailable">Paquete de iconas non dispoñible · úsanse as iconas do sistema</string>
     <string name="icon_pack_missing">%1$s non está dispoñible. Usaranse outros paquetes activados ou iconas do sistema.</string>
     <string name="icon_pack_load_failed">Non se puideron cargar os paquetes de iconas. Téntao de novo.</string>
-    <string name="weather_settings_enabled_summary">Pantalla de inicio e axenda · Breezy Weather</string>
-    <string name="weather_settings_disabled_summary">Opcional · require Breezy Weather</string>
+    <string name="weather_settings_enabled_summary">O tempo na pantalla de inicio e na túa axenda</string>
+    <string name="weather_settings_disabled_summary">Conecta unha aplicación meteorolóxica</string>
     <string name="weather_settings_enable">Amosar o tempo</string>
     <string name="weather_settings_enable_summary">Amosa o tempo xunto á data e na túa axenda.</string>
     <string name="weather_settings_about">A función meteorolóxica integrada utiliza as localizacións e predicións gardadas en Breezy Weather. Concede permiso para compartir eses datos con Grace Launcher.</string>
@@ -961,4 +961,14 @@
     <string name="clock_color_battery_icons">Iconas da batería</string>
     <string name="clock_color_weather_icons">Iconas do tempo</string>
     <string name="clock_color_agenda">Texto da axenda</string>
+    <string name="weather_mode_location_update_notifier">Notificador de actualización de localización</string>
+    <string name="weather_mode_gadgetbridge">Gadgetbridge</string>
+    <string name="weather_gadgetbridge_setup">Activa a compartición con Gadgetbridge na túa aplicación meteorolóxica. Se che pide unha aplicación receptora, selecciona Grace Launcher e, a continuación, actualiza a información meteorolóxica. Os novos datos aparecerán aquí automaticamente.</string>
+    <string name="weather_gadgetbridge_waiting">Agardando polos datos meteorolóxicos.</string>
+    <string name="weather_gadgetbridge_loading">Cargando a información meteorolóxica gardada…</string>
+    <string name="weather_gadgetbridge_unavailable">Non foi posible ler a información meteorolóxica gardada. Actualiza a información meteorolóxica na aplicación conectada para enviar unha nova actualización.</string>
+    <string name="weather_gadgetbridge_first_location">Primeira localización recibida</string>
+    <string name="weather_temperature_unit">Unidades de temperatura</string>
+    <string name="weather_temperature_celsius">Celsius (°C)</string>
+    <string name="weather_temperature_fahrenheit">Fahrenheit (°F)</string>
 </resources>
