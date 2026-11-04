@@ -4,6 +4,7 @@ import android.text.format.DateFormat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -217,11 +218,11 @@ fun HomeWeather(
     val summary = if (fields == listOf(ClockWeatherField.Icon, ClockWeatherField.Temperature))
         stringResource(R.string.weather_current_description, description, current!!.temperature!!.format(showUnit = true))
     else parts.map { it.spoken }.distinct().joinToString(", ")
+    val interactions = remember { MutableInteractionSource() }
     Box(
         modifier.testTag("home_weather")
-            .clip(MaterialTheme.shapes.small)
             .then(if (onClick != null) Modifier.combinedClickable(
-                interactionSource = remember { MutableInteractionSource() }, indication = ripple(color = color),
+                interactionSource = interactions, indication = null,
                 role = Role.Button, onClick = onClick, onLongClick = onLongClick,
             ) else Modifier)
             .clearAndSetSemantics {
@@ -267,6 +268,11 @@ fun HomeWeather(
             },
             style = textStyle, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis,
         )
+        if (onClick != null) {
+            // Round only the feedback layer: clipping the text cuts into raised glyphs such as °.
+            Box(Modifier.matchParentSize().clip(MaterialTheme.shapes.small)
+                .indication(interactions, ripple(color = color)))
+        }
     }
 }
 
