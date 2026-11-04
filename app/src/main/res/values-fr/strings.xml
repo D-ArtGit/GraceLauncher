@@ -612,7 +612,7 @@
     <string name="font_delete">Supprimer</string>
     <string name="font_delete_title">Supprimer les polices ?</string>
     <string name="font_delete_summary">Supprimer les %1$d polices importées ? Les composants qui les utilisent reviendront à la police par défaut.</string>
-    <string name="settings_favorites_app_list">Favoris et liste des applications</string>
+    <string name="settings_favorites_app_list">Liste des applications</string>
     <string name="list_app_spacing">Espacement des applications</string>
     <string name="list_side_padding">Marges latérales de la liste</string>
     <string name="list_icon_name_gap">Espacement entre l\'icône et le nom</string>
