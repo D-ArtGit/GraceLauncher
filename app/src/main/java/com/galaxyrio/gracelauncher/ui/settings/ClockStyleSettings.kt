@@ -280,6 +280,13 @@ internal fun ClockStyleSettings(uiState: LauncherUiState, actions: LauncherActio
                                     current.copy(weather = current.weather.copy(order = order))
                                 } },
                                 onClose = { editingContent = null }, modifier = controlsModifier.padding(bottom = 16.dp),
+                                labelShown = { field ->
+                                    if (field.supportsLabel) field in regions.weather.labeledFields else null
+                                },
+                                onLabelChange = { field, shown -> if (enabled) updateRegions { current ->
+                                    current.copy(weather = current.weather.copy(labeledFields = if (shown)
+                                        current.weather.labeledFields + field else current.weather.labeledFields - field))
+                                } },
                             )
                         }
                     } else LazyColumn(

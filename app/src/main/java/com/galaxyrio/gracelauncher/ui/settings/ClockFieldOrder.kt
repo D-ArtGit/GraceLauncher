@@ -51,6 +51,8 @@ internal fun <T : Enum<T>> ClockContentPicker(
     onReorder: (List<T>) -> Unit,
     onClose: () -> Unit,
     modifier: Modifier = Modifier,
+    labelShown: (T) -> Boolean? = { null },
+    onLabelChange: (T, Boolean) -> Unit = { _, _ -> },
 ) {
     Column(modifier.fillMaxSize().testTag("${tag}_picker")
         .clip(ListItemDefaults.segmentedShapes(0, 1).shape)
@@ -64,7 +66,7 @@ internal fun <T : Enum<T>> ClockContentPicker(
             }
         }
         ClockFieldOrder(order, selected, enabled, hapticsEnabled, tag, label, onSelect, onReorder,
-            Modifier.weight(1f))
+            Modifier.weight(1f), labelShown, onLabelChange)
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
             FilledTonalButton(onClose, Modifier.testTag("${tag}_done")) { Text(stringResource(R.string.done)) }
         }
@@ -83,6 +85,8 @@ internal fun <T : Enum<T>> ClockFieldOrder(
     onSelect: (T, Boolean) -> Unit,
     onReorder: (List<T>) -> Unit,
     modifier: Modifier = Modifier,
+    labelShown: (T) -> Boolean? = { null },
+    onLabelChange: (T, Boolean) -> Unit = { _, _ -> },
 ) {
     val list = rememberLazyListState()
     val fields by rememberUpdatedState(order.associateBy { it.name })
@@ -149,6 +153,18 @@ internal fun <T : Enum<T>> ClockFieldOrder(
                 )
                 Text(title, Modifier.weight(1f), maxLines = 2, overflow = TextOverflow.Ellipsis,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = if (enabled) 1f else .38f))
+                labelShown(field)?.let { shown ->
+                    IconToggleButton(
+                        checked = shown,
+                        onCheckedChange = { onLabelChange(field, it) },
+                        enabled = enabled,
+                        modifier = Modifier.testTag("${tag}_label:$key"),
+                    ) {
+                        Icon(painterResource(if (shown) R.drawable.ms_label else R.drawable.ms_label_off),
+                            stringResource(if (shown) R.string.clock_hide_field_label else R.string.clock_show_field_label, title),
+                            Modifier.size(24.dp))
+                    }
+                }
                 var menu by remember { mutableStateOf(false) }
                 Box {
                     IconButton(

@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
@@ -34,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -122,7 +124,12 @@ private fun homeWeatherFields(current: WeatherCurrent?, config: ClockWeather, sn
     }
 }
 
-private data class HomeWeatherPart(val field: ClockWeatherField, val text: String, val spoken: String = text)
+private data class HomeWeatherPart(
+    val field: ClockWeatherField,
+    val text: String,
+    val spoken: String = text,
+    val labelIcon: Int? = null,
+)
 
 @Composable
 fun HomeWeather(
@@ -144,41 +151,57 @@ fun HomeWeather(
     val description = weatherDescription(current?.condition ?: WeatherCondition.Unknown, current?.description)
     val day = snapshot.currentDay(now)
     val parts = fields.map { field ->
+        val labeled = field in config.labeledFields
         when (field) {
             ClockWeatherField.Icon -> HomeWeatherPart(field, "", description)
             ClockWeatherField.Temperature -> HomeWeatherPart(field, current!!.temperature!!.format(),
                 current.temperature.format(showUnit = true))
             ClockWeatherField.Description -> HomeWeatherPart(field, description)
-            ClockWeatherField.FeelsLike -> HomeWeatherPart(field,
-                stringResource(R.string.weather_feels_like_value, current!!.feelsLike!!.format()),
-                stringResource(R.string.weather_feels_like_value, current.feelsLike.format(showUnit = true)))
-            ClockWeatherField.Humidity -> HomeWeatherPart(field, stringResource(R.string.weather_humidity_value,
-                NumberFormat.getPercentInstance(locale).apply { maximumFractionDigits = 1 }.format(current!!.humidity!!.value / 100)))
-            ClockWeatherField.Wind -> HomeWeatherPart(field,
-                stringResource(R.string.weather_wind_value, homeWindText(current!!.wind!!, locale)))
+            ClockWeatherField.FeelsLike -> {
+                val temperature = current!!.feelsLike!!
+                HomeWeatherPart(field,
+                    if (labeled) stringResource(R.string.weather_feels_like_value, temperature.format()) else temperature.format(),
+                    stringResource(R.string.weather_feels_like_value, temperature.format(showUnit = true)))
+            }
+            ClockWeatherField.Humidity -> {
+                val value = NumberFormat.getPercentInstance(locale).apply { maximumFractionDigits = 1 }
+                    .format(current!!.humidity!!.value / 100)
+                HomeWeatherPart(field, value, stringResource(R.string.weather_humidity_value, value),
+                    labelIcon = R.drawable.ms_humidity_percentage.takeIf { labeled })
+            }
+            ClockWeatherField.Wind -> {
+                val value = homeWindText(current!!.wind!!, locale)
+                val spoken = stringResource(R.string.weather_wind_value, value)
+                HomeWeatherPart(field, if (labeled) spoken else value, spoken)
+            }
             ClockWeatherField.AirQuality -> {
                 val measure = current!!.airQuality!!
-                val text = stringResource(R.string.weather_air_quality_value, weatherNumber(measure.value, locale))
-                HomeWeatherPart(field, text, listOfNotNull(text, measure.description?.takeIf(String::isNotBlank)).joinToString(", "))
+                val value = weatherNumber(measure.value, locale)
+                val spoken = stringResource(R.string.weather_air_quality_value, value)
+                HomeWeatherPart(field, if (labeled) "AQI $value" else value,
+                    listOfNotNull(spoken, measure.description?.takeIf(String::isNotBlank)).joinToString(", "))
             }
             ClockWeatherField.UV -> {
                 val measure = current!!.uv!!
-                val text = stringResource(R.string.weather_uv_value, weatherNumber(measure.value, locale))
-                HomeWeatherPart(field, text, listOfNotNull(text, measure.description?.takeIf(String::isNotBlank)).joinToString(", "))
+                val value = weatherNumber(measure.value, locale)
+                val spoken = stringResource(R.string.weather_uv_value, value)
+                HomeWeatherPart(field, if (labeled) "UV $value" else value,
+                    listOfNotNull(spoken, measure.description?.takeIf(String::isNotBlank)).joinToString(", "))
             }
-            ClockWeatherField.Location -> HomeWeatherPart(field, snapshot!!.location.name)
+            ClockWeatherField.Location -> {
+                val value = snapshot!!.location.name
+                HomeWeatherPart(field, value, "${stringResource(R.string.clock_weather_field_location)} $value",
+                    labelIcon = R.drawable.ms_location_on.takeIf { labeled })
+            }
             ClockWeatherField.HighLow -> {
                 val high = day?.high?.takeIf { it.isAvailable() }
                 val low = day?.low?.takeIf { it.isAvailable() }
-                val text = listOfNotNull(
-                    high?.let { stringResource(R.string.weather_high_value, it.format()) },
-                    low?.let { stringResource(R.string.weather_low_value, it.format()) },
-                ).joinToString(" ")
+                val text = listOfNotNull(high?.format(), low?.format()).joinToString(" / ")
                 val spoken = listOfNotNull(
                     high?.let { stringResource(R.string.weather_high_value, it.format(showUnit = true)) },
                     low?.let { stringResource(R.string.weather_low_value, it.format(showUnit = true)) },
                 ).joinToString(" ")
-                HomeWeatherPart(field, text, spoken)
+                HomeWeatherPart(field, text, spoken, labelIcon = R.drawable.ms_mode_heat_cool.takeIf { labeled })
             }
             ClockWeatherField.UpdatedAt -> {
                 val updated = snapshot!!.updatedAt!!
@@ -186,7 +209,8 @@ fun HomeWeather(
                 val date = if (updated.atZone(snapshot.location.timeZone).toLocalDate() == today) "" else "MMMd"
                 val pattern = DateFormat.getBestDateTimePattern(locale, date + if (use24Hour) "Hm" else "hm")
                 val formatted = DateTimeFormatter.ofPattern(pattern, locale).withZone(snapshot.location.timeZone).format(updated)
-                HomeWeatherPart(field, stringResource(R.string.weather_updated, formatted))
+                HomeWeatherPart(field, formatted, stringResource(R.string.weather_updated, formatted),
+                    labelIcon = R.drawable.ms_update.takeIf { labeled })
             }
         }
     }
@@ -216,16 +240,31 @@ fun HomeWeather(
                 parts.forEachIndexed { index, part ->
                     if (index > 0) append(" ")
                     if (part.field == ClockWeatherField.Icon) appendInlineContent("weather", part.spoken)
-                    else append(part.text)
+                    else {
+                        if (part.labelIcon != null) {
+                            appendInlineContent("weather_label_${part.field.name}")
+                            append(" ")
+                        }
+                        append(part.text)
+                    }
                 }
             },
             modifier = Modifier.testTag("home_weather_temperature"),
-            inlineContent = mapOf("weather" to InlineTextContent(
-                Placeholder(1.15.em, 1.15.em, PlaceholderVerticalAlign.TextCenter),
-            ) {
-                WeatherIcon(current?.condition ?: WeatherCondition.Unknown, current?.isDaylight != false,
-                    Modifier.fillMaxSize().testTag("home_weather_icon"), tint = iconColor)
-            }),
+            inlineContent = buildMap {
+                val placeholder = Placeholder(1.15.em, 1.15.em, PlaceholderVerticalAlign.TextCenter)
+                put("weather", InlineTextContent(placeholder) {
+                    WeatherIcon(current?.condition ?: WeatherCondition.Unknown, current?.isDaylight != false,
+                        Modifier.fillMaxSize().testTag("home_weather_icon"), tint = iconColor)
+                })
+                parts.forEach { part ->
+                    part.labelIcon?.let { icon ->
+                        put("weather_label_${part.field.name}", InlineTextContent(placeholder) {
+                            Icon(painterResource(icon), contentDescription = null,
+                                modifier = Modifier.fillMaxSize().testTag("home_weather_label:${part.field.name}"), tint = iconColor)
+                        })
+                    }
+                }
+            },
             style = textStyle, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis,
         )
     }

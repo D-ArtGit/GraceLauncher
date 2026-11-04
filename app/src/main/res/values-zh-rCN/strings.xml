@@ -916,6 +916,8 @@
     <string name="clock_agenda_preview_location">咖啡馆</string>
     <string name="clock_agenda_preview_calendar">个人</string>
     <string name="clock_weather_contents">天气内容</string>
+    <string name="clock_show_field_label">显示%1$s标签</string>
+    <string name="clock_hide_field_label">隐藏%1$s标签</string>
     <string name="clock_weather_preview_location">城市</string>
     <string name="clock_weather_field_icon">图标</string>
     <string name="clock_weather_field_temperature">温度</string>

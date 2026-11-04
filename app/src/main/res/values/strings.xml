@@ -950,6 +950,8 @@
     <string name="clock_agenda_preview_location">Café</string>
     <string name="clock_agenda_preview_calendar">Personal</string>
     <string name="clock_weather_contents">Weather content</string>
+    <string name="clock_show_field_label">Show %1$s label</string>
+    <string name="clock_hide_field_label">Hide %1$s label</string>
     <string name="clock_weather_preview_location">City</string>
     <string name="clock_weather_field_icon">Icon</string>
     <string name="clock_weather_field_temperature">Temperature</string>

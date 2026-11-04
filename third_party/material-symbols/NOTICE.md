@@ -185,3 +185,15 @@ The None option draws no icon.
 
 Official Material Symbols Outlined SVG paths retained using the 24dp conversion
 above (optical size 24, weight 400, grade 0, fill 0). Same Apache-2.0 license.
+
+### Clock content icons added 2026-11-04
+
+- `ms_label.xml`: https://raw.githubusercontent.com/google/material-design-icons/master/symbols/web/label/materialsymbolsoutlined/label_24px.svg
+- `ms_label_off.xml`: https://raw.githubusercontent.com/google/material-design-icons/master/symbols/web/label_off/materialsymbolsoutlined/label_off_24px.svg
+- `ms_humidity_percentage.xml`: https://raw.githubusercontent.com/google/material-design-icons/master/symbols/web/humidity_percentage/materialsymbolsoutlined/humidity_percentage_24px.svg
+- `ms_location_on.xml`: https://raw.githubusercontent.com/google/material-design-icons/master/symbols/web/location_on/materialsymbolsoutlined/location_on_24px.svg
+- `ms_mode_heat_cool.xml`: https://raw.githubusercontent.com/google/material-design-icons/master/symbols/web/mode_heat_cool/materialsymbolsoutlined/mode_heat_cool_24px.svg
+- `ms_update.xml`: https://raw.githubusercontent.com/google/material-design-icons/master/symbols/web/update/materialsymbolsoutlined/update_24px.svg
+
+Official Material Symbols Outlined SVG paths retained using the 24dp conversion
+above (optical size 24, weight 400, grade 0, fill 0). Same Apache-2.0 license.

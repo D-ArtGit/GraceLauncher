@@ -5,19 +5,33 @@ import org.json.JSONObject
 
 enum class ClockAgendaField { Title, Countdown, Time, Date, Duration, Location, Color, Calendar }
 
-enum class ClockWeatherField { Icon, Temperature, Description, FeelsLike, Humidity, Wind, AirQuality, UV, Location, HighLow, UpdatedAt }
+enum class ClockWeatherField {
+    Icon, Temperature, Description, FeelsLike, Humidity, Wind, AirQuality, UV, Location, HighLow, UpdatedAt;
+
+    val supportsLabel: Boolean get() = when (this) {
+        Icon, Temperature, Description -> false
+        FeelsLike, Humidity, Wind, AirQuality, UV, Location, HighLow, UpdatedAt -> true
+    }
+}
 
 data class ClockWeather(
     val order: List<ClockWeatherField> = ClockWeatherField.entries,
     val selected: Set<ClockWeatherField> = setOf(ClockWeatherField.Icon, ClockWeatherField.Temperature),
+    val labeledFields: Set<ClockWeatherField> = setOf(
+        ClockWeatherField.FeelsLike, ClockWeatherField.AirQuality, ClockWeatherField.UV, ClockWeatherField.UpdatedAt,
+    ),
 ) {
     val visibleFields: List<ClockWeatherField> get() = normalized().order.filter { it in selected }
 
-    fun normalized() = copy(order = (order + ClockWeatherField.entries).distinct())
+    fun normalized() = copy(
+        order = (order + ClockWeatherField.entries).distinct(),
+        labeledFields = labeledFields.filter { it.supportsLabel }.toSet(),
+    )
 
     internal fun json(): JSONObject = normalized().let { value -> JSONObject().apply {
         put("order", JSONArray(value.order.map { it.name }))
         put("selected", JSONArray(value.order.filter { it in value.selected }.map { it.name }))
+        put("labeledFields", JSONArray(value.order.filter { it in value.labeledFields }.map { it.name }))
     } }
 
     companion object {
@@ -27,6 +41,7 @@ data class ClockWeather(
             return ClockWeather(
                 order = json.enumList("order", ClockWeatherField.entries) ?: defaults.order,
                 selected = json.enumList("selected", ClockWeatherField.entries)?.toSet() ?: defaults.selected,
+                labeledFields = json.enumList("labeledFields", ClockWeatherField.entries)?.toSet() ?: defaults.labeledFields,
             ).normalized()
         }
     }
