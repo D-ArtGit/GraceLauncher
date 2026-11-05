@@ -971,4 +971,28 @@
     <string name="weather_temperature_unit">Unidades de temperatura</string>
     <string name="weather_temperature_celsius">Celsius (°C)</string>
     <string name="weather_temperature_fahrenheit">Fahrenheit (°F)</string>
+    <string name="calendar_sources">Escoller calendarios</string>
+    <string name="calendar_sources_visible">Calendarios visibles para o sistema</string>
+    <plurals name="calendar_sources_selected">
+        <item quantity="one">%1$d calendario seleccionado</item>
+        <item quantity="other">%1$d calendarios seleccionados</item>
+    </plurals>
+    <string name="calendar_sources_loading">Cargando calendarios…</string>
+    <string name="calendar_sources_error">Non se puideron cargar os calendarios</string>
+    <string name="calendar_sources_empty">Non se atoparon calendarios</string>
+    <string name="calendar_local">Neste dispositivo</string>
+    <string name="calendar_unnamed">Calendario sen nome</string>
+    <string name="calendar_hidden">Agochado no calendario do sistema</string>
+    <string name="calendar_open_events">Abrir eventos</string>
+    <string name="calendar_app">Aplicación de calendario predeterminada</string>
+    <string name="calendar_system_default_app">Predeterminado do sistema</string>
+    <string name="calendar_choose_app_description">Escolle a aplicación empregada para abrir eventos do calendario.</string>
+    <string name="calendar_deprioritize_all_day">Baixa prioridade para os eventos de todo o día</string>
+    <string name="calendar_deprioritize_all_day_summary">Amosar eventos programados antes que eventos de todo o día o mesmo día</string>
+    <string name="calendar_display">Visualizar</string>
+    <string name="media_preview_title">Título da canción</string>
+    <string name="media_preview_artist">Artista</string>
+    <string name="clock_preset_agenda_title">Axenda</string>
+    <string name="clock_color_second_tens">Segundo díxito das decenas</string>
+    <string name="clock_color_second_ones">Díxito das unidades</string>
 </resources>
