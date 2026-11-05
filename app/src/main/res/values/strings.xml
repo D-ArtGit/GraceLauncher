@@ -3,7 +3,26 @@
     <string name="clock_enable">Enable clock</string>
     <string name="calendar_enable">Enable calendar and agenda</string>
     <string name="calendar_reading">Calendar data</string>
+    <string name="calendar_sources">Choose calendars</string>
+    <string name="calendar_sources_visible">System-visible calendars</string>
+    <plurals name="calendar_sources_selected">
+        <item quantity="one">%1$d calendar selected</item>
+        <item quantity="other">%1$d calendars selected</item>
+    </plurals>
+    <string name="calendar_sources_loading">Loading calendars…</string>
+    <string name="calendar_sources_error">Couldn’t load calendars</string>
+    <string name="calendar_sources_empty">No calendars found</string>
+    <string name="calendar_local">On this device</string>
+    <string name="calendar_unnamed">Unnamed calendar</string>
+    <string name="calendar_hidden">Hidden in the system calendar</string>
+    <string name="calendar_open_events">Open events</string>
+    <string name="calendar_app">Default calendar app</string>
+    <string name="calendar_system_default_app">System default</string>
+    <string name="calendar_choose_app_description">Choose the app used to open calendar events.</string>
     <string name="calendar_read_days">Days to read ahead</string>
+    <string name="calendar_deprioritize_all_day">Lower priority for all-day events</string>
+    <string name="calendar_deprioritize_all_day_summary">Show timed events before all-day events on the same day</string>
+    <string name="calendar_display">Display</string>
     <plurals name="calendar_days_value">
         <item quantity="one">%1$d day</item>
         <item quantity="other">%1$d days</item>
@@ -27,6 +46,8 @@
     <string name="media_fallback_app">App to open when no media is available</string>
     <string name="media_idle_title">Nothing playing</string>
     <string name="media_idle_summary">Tap play to resume</string>
+    <string name="media_preview_title">Song title</string>
+    <string name="media_preview_artist">Artist</string>
     <string name="settings_none">None</string>
     <string name="settings_grace_button">Grace button</string>
     <string name="settings_grace_button_summary">Floating action button</string>
@@ -878,6 +899,7 @@
     <string name="wallpaper_color_access_allow">Allow</string>
     <string name="wallpaper_color_access_decline">Not now</string>
     <string name="clock_tab_presets">Presets</string>
+    <string name="clock_preset_agenda_title">Agenda</string>
     <string name="clock_tab_style">Style</string>
     <string name="clock_show_leading_zero">Show leading zero</string>
     <string name="clock_show_seconds">Show seconds</string>
@@ -903,6 +925,8 @@
     <string name="clock_color_hour_ones">Hour ones digit</string>
     <string name="clock_color_minute_tens">Minute tens digit</string>
     <string name="clock_color_minute_ones">Minute ones digit</string>
+    <string name="clock_color_second_tens">Second tens digit</string>
+    <string name="clock_color_second_ones">Second ones digit</string>
     <string name="clock_color_weekday">Weekday</string>
     <string name="clock_color_date_group">Date</string>
     <string name="clock_color_month">Month</string>

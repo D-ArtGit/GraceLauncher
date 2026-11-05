@@ -15,7 +15,25 @@
     <string name="clock_enable">启用时钟</string>
     <string name="calendar_enable">启用日历和日程</string>
     <string name="calendar_reading">日历数据</string>
+    <string name="calendar_sources">选择日历</string>
+    <string name="calendar_sources_visible">系统可见日历</string>
+    <plurals name="calendar_sources_selected">
+        <item quantity="other">已选择 %1$d 个日历</item>
+    </plurals>
+    <string name="calendar_sources_loading">正在读取日历…</string>
+    <string name="calendar_sources_error">无法读取日历</string>
+    <string name="calendar_sources_empty">未找到日历</string>
+    <string name="calendar_local">此设备上的日历</string>
+    <string name="calendar_unnamed">未命名日历</string>
+    <string name="calendar_hidden">在系统日历中隐藏</string>
+    <string name="calendar_open_events">打开日程</string>
+    <string name="calendar_app">默认日历应用</string>
+    <string name="calendar_system_default_app">跟随系统默认</string>
+    <string name="calendar_choose_app_description">选择用于打开日程的应用。</string>
     <string name="calendar_read_days">要读取的天数</string>
+    <string name="calendar_deprioritize_all_day">降低全天事件的优先级</string>
+    <string name="calendar_deprioritize_all_day_summary">同一天内优先显示有时间段的事件</string>
+    <string name="calendar_display">显示</string>
     <plurals name="calendar_days_value">
         <item quantity="other">%1$d 天</item>
     </plurals>
@@ -37,6 +55,8 @@
     <string name="media_fallback_app">没有可播放内容时打开的应用</string>
     <string name="media_idle_title">暂无播放内容</string>
     <string name="media_idle_summary">点击播放以继续</string>
+    <string name="media_preview_title">歌曲名称</string>
+    <string name="media_preview_artist">歌手</string>
     <string name="settings_none">无</string>
     <string name="settings_grace_button">Grace 按钮</string>
     <string name="settings_grace_button_summary">悬浮操作按钮</string>
@@ -844,6 +864,7 @@
     <string name="wallpaper_color_access_allow">允许</string>
     <string name="wallpaper_color_access_decline">暂不允许</string>
     <string name="clock_tab_presets">预设</string>
+    <string name="clock_preset_agenda_title">Agenda</string>
     <string name="clock_tab_style">样式</string>
     <string name="clock_show_leading_zero">显示首位的 0</string>
     <string name="clock_show_seconds">显示秒</string>
@@ -869,6 +890,8 @@
     <string name="clock_color_hour_ones">小时个位</string>
     <string name="clock_color_minute_tens">分钟十位</string>
     <string name="clock_color_minute_ones">分钟个位</string>
+    <string name="clock_color_second_tens">秒十位</string>
+    <string name="clock_color_second_ones">秒个位</string>
     <string name="clock_color_weekday">星期</string>
     <string name="clock_color_date_group">日期</string>
     <string name="clock_color_month">月</string>

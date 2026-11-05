@@ -5,7 +5,6 @@ import android.app.Activity
 import android.app.KeyguardManager
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.ContentUris
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.LauncherApps
@@ -85,6 +84,7 @@ import androidx.lifecycle.withResumed
 import androidx.core.net.toUri
 import androidx.core.content.ContextCompat
 import com.galaxyrio.gracelauncher.R
+import com.galaxyrio.gracelauncher.platform.openCalendarEvent
 import com.galaxyrio.gracelauncher.MainActivity
 import com.galaxyrio.gracelauncher.WidgetSetupActivity
 import com.galaxyrio.gracelauncher.data.LauncherApp
@@ -202,7 +202,10 @@ fun LauncherRoute(
     }
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
-    ) { viewModel.refreshSchedule() }
+    ) {
+        viewModel.refreshSchedule()
+        viewModel.refreshCalendarSources()
+    }
     val homeRoleLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         viewModel.refreshProfiles()
     }
@@ -457,11 +460,12 @@ fun LauncherRoute(
                 .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, System.currentTimeMillis() + 3_600_000))
         },
         openEvent = {
-            openSystemApp(Intent(Intent.ACTION_VIEW, ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, it.id))
-                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, it.startsAt.toEpochMilli())
-                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, it.endsAt.toEpochMilli()))
+            if (!openCalendarEvent(context, it, viewModel.uiState.value.settings.calendar.appPackage)) {
+                Toast.makeText(context, R.string.app_unavailable, Toast.LENGTH_SHORT).show()
+            }
         },
         refreshAgenda = viewModel::refreshSchedule,
+        refreshCalendarSources = viewModel::refreshCalendarSources,
         textMode = viewModel::setTextMode,
         themedIcons = viewModel::setThemedIcons,
         refreshIconPacks = viewModel::refreshApps,

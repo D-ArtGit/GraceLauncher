@@ -48,6 +48,7 @@ data class LauncherActions(
     val newEvent: () -> Unit = {},
     val openEvent: (ScheduleEvent) -> Unit = {},
     val refreshAgenda: () -> Unit = {},
+    val refreshCalendarSources: () -> Unit = {},
     val textMode: (WallpaperTextMode) -> Unit = {},
     val themedIcons: (Boolean) -> Unit = {},
     val refreshIconPacks: () -> Unit = {},
