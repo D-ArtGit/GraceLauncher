@@ -99,6 +99,7 @@ import com.galaxyrio.gracelauncher.data.ClockColorPart
 import com.galaxyrio.gracelauncher.data.GraceButtonGesture
 import com.galaxyrio.gracelauncher.data.nextVisibleEvent
 import com.galaxyrio.gracelauncher.data.media.MediaCommand
+import com.galaxyrio.gracelauncher.data.IconDesign
 import com.galaxyrio.gracelauncher.data.media.NowPlaying
 import com.galaxyrio.gracelauncher.data.media.IdleMediaSessionId
 import com.galaxyrio.gracelauncher.data.weather.WeatherCurrent
@@ -376,6 +377,9 @@ fun HomeScreen(
                             animationSpec = spring(dampingRatio = 1f, stiffness = 400f),
                         )) {
                             if (media != null) HomeMediaPlayer(media, onMediaCommand,
+                                style = uiState.settings.mediaStyle,
+                                iconDesign = uiState.settings.iconDesign?.design ?: IconDesign(),
+                                albumContainerColor = rememberMediaAlbumContainerColor(media.artworkSeedColor, uiState.settings),
                                 keepWhilePlaying = uiState.settings.mediaKeepWhilePlaying,
                                 dismissResistance = uiState.settings.dismissResistance,
                                 dismissThresholdDp = uiState.settings.dismissThresholdDp,

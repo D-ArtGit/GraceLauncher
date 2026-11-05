@@ -72,6 +72,7 @@ import com.galaxyrio.gracelauncher.platform.PrivateSpaceState
 import com.galaxyrio.gracelauncher.platform.DefaultHome
 import com.galaxyrio.gracelauncher.platform.BreezyWeatherUpdates
 import com.galaxyrio.gracelauncher.data.media.MediaCommand
+import com.galaxyrio.gracelauncher.data.MediaPlayerStyle
 import com.galaxyrio.gracelauncher.data.media.MediaSessionRepository
 import com.galaxyrio.gracelauncher.data.media.MediaSnapshot
 import com.galaxyrio.gracelauncher.data.media.NowPlaying
@@ -1384,6 +1385,19 @@ class LauncherViewModel(application: Application) : AndroidViewModel(application
 
     fun updateSettings(transform: (LauncherSettings) -> LauncherSettings) = persistSettings {
         settingsRepository.mutateSettings(transform)
+    }
+
+    suspend fun applyMediaStyle(style: MediaPlayerStyle): Boolean = settingsWriteMutex.withLock {
+        try {
+            settingsRepository.mutateSettings { it.copy(mediaStyle = style.normalized()) }
+            _uiState.update { it.copy(settingsSaveFailed = false) }
+            true
+        } catch (error: Exception) {
+            if (error is CancellationException) throw error
+            Log.e("LauncherViewModel", "Unable to save media style", error)
+            _uiState.update { it.copy(settingsSaveFailed = true) }
+            false
+        }
     }
 
     suspend fun applyClockStyle(style: ClockStyle): Boolean = settingsWriteMutex.withLock {

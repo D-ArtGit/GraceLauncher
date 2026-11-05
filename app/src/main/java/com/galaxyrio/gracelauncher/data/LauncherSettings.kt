@@ -31,6 +31,7 @@ data class LauncherSettings(
     val dismissResistance: Int = 75,
     val dismissThresholdDp: Int = 72,
     val mediaAppKey: String? = null,
+    val mediaStyle: MediaPlayerStyle = MediaPlayerStyle(),
     val weatherEnabled: Boolean = false,
     val weatherForecastDays: Int = 7,
     val weatherLocationId: String? = null,

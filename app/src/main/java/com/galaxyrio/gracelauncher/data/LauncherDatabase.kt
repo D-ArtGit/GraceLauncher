@@ -40,6 +40,7 @@ data class LauncherSettingsEntity(
     @ColumnInfo(defaultValue = "55") val dismissResistance: Int = 75,
     @ColumnInfo(defaultValue = "72") val dismissThresholdDp: Int = 72,
     val mediaAppKey: String? = null,
+    @ColumnInfo(defaultValue = "NULL") val mediaStyleJson: String? = null,
     val graceButtonJson: String? = null,
     @ColumnInfo(defaultValue = "0") val weatherEnabled: Boolean = false,
     @ColumnInfo(defaultValue = "7") val weatherForecastDays: Int = 7,
@@ -134,7 +135,7 @@ abstract class LauncherSettingsDao {
     entities = [LauncherSettingsEntity::class, HiddenAppEntity::class,
         LauncherFolderEntity::class, ItemIconEntity::class,
         SavedShortcutEntity::class, AppPopupEntity::class],
-    version = 31,
+    version = 32,
     exportSchema = true,
 )
 abstract class LauncherDatabase : RoomDatabase() {
@@ -359,12 +360,18 @@ abstract class LauncherDatabase : RoomDatabase() {
             }
         }
 
+        val Migration31To32 = object : Migration(31, 32) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE launcher_settings ADD COLUMN mediaStyleJson TEXT DEFAULT NULL")
+            }
+        }
+
         fun getInstance(context: Context): LauncherDatabase = instance ?: synchronized(this) {
             instance ?: Room.databaseBuilder(
                 context.applicationContext,
                 LauncherDatabase::class.java,
                 "grace_launcher.db",
-            ).addMigrations(Migration1To2, Migration2To3, Migration3To4, Migration4To5, Migration5To6, Migration6To7, Migration7To8, Migration8To9, Migration9To10, Migration10To11, Migration11To12, Migration12To13, Migration13To14, Migration14To15, Migration15To16, Migration16To17, Migration17To18, Migration18To19, Migration19To20, Migration20To21, Migration21To22, Migration22To23, Migration23To24, Migration24To25, Migration25To26, Migration26To27, Migration27To28, Migration28To29, Migration29To30, Migration30To31).build().also { instance = it }
+            ).addMigrations(Migration1To2, Migration2To3, Migration3To4, Migration4To5, Migration5To6, Migration6To7, Migration7To8, Migration8To9, Migration9To10, Migration10To11, Migration11To12, Migration12To13, Migration13To14, Migration14To15, Migration15To16, Migration16To17, Migration17To18, Migration18To19, Migration19To20, Migration20To21, Migration21To22, Migration22To23, Migration23To24, Migration24To25, Migration25To26, Migration26To27, Migration27To28, Migration28To29, Migration29To30, Migration30To31, Migration31To32).build().also { instance = it }
         }
     }
 }

@@ -312,7 +312,7 @@ fun LauncherSettingsScreen(
                     SettingsPage.GraceButtonPosition -> GraceButtonPositionSettings(uiState, actions, back)
                     SettingsPage.AgendaAppearance -> SettingsPlaceholder(stringResource(R.string.settings_agenda), "agenda_appearance", back)
                     SettingsPage.SearchAppearance -> SettingsPlaceholder(stringResource(R.string.settings_search), "search_appearance", back)
-                    SettingsPage.MediaPlayerAppearance -> MediaPlayerAppearanceSettings(uiState, back)
+                    SettingsPage.MediaPlayerAppearance -> MediaPlayerAppearanceSettings(uiState, actions, back)
                     SettingsPage.ClockStyle -> ClockStyleSettings(uiState, actions, back) { navigate(SettingsPage.Fonts) }
                     SettingsPage.Fonts -> FontSettings(uiState, actions, back) { navigate(SettingsPage.FontColors) }
                     SettingsPage.FontColors -> FontColorSettings(uiState, actions, back)

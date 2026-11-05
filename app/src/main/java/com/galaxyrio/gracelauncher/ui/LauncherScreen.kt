@@ -471,6 +471,7 @@ fun LauncherRoute(
         refreshIconPacks = viewModel::refreshApps,
         refreshApps = viewModel::refreshApps,
         applyClockStyle = viewModel::applyClockStyle,
+        applyMediaStyle = viewModel::applyMediaStyle,
         deleteFonts = viewModel::deleteFonts,
         applyIconDesign = viewModel::applyIconDesign,
         deleteIconDesigns = viewModel::deleteIconDesigns,
