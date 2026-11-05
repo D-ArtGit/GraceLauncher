@@ -982,4 +982,29 @@
     <string name="weather_temperature_unit">Unidades de temperatura</string>
     <string name="weather_temperature_celsius">Celsius (°C)</string>
     <string name="weather_temperature_fahrenheit">Fahrenheit (°F)</string>
+    <string name="calendar_sources">Escoger calendarios</string>
+    <string name="calendar_sources_visible">Calendarios visibles para el sistema</string>
+    <plurals name="calendar_sources_selected">
+        <item quantity="one">%1$d calendario seleccionado</item>
+        <item quantity="many">%1$d calendarios seleccionados</item>
+        <item quantity="other">%1$d calendarios seleccionados</item>
+    </plurals>
+    <string name="calendar_sources_loading">Cargando calendarios…</string>
+    <string name="calendar_sources_error">No se pudieron cargar los calendarios</string>
+    <string name="calendar_sources_empty">No se encontraron calendarios</string>
+    <string name="calendar_local">En este dispositivo</string>
+    <string name="calendar_unnamed">Calendario sin nombre</string>
+    <string name="calendar_hidden">Oculto en el calendario del sistema</string>
+    <string name="calendar_open_events">Abrir eventos</string>
+    <string name="calendar_app">Aplicación de calendario predeterminada</string>
+    <string name="calendar_system_default_app">Predeterminado del sistema</string>
+    <string name="calendar_choose_app_description">Elige la aplicación que se utilizará para abrir los eventos del calendario.</string>
+    <string name="calendar_deprioritize_all_day">Baja prioridad para los eventos de todo el día</string>
+    <string name="calendar_deprioritize_all_day_summary">Mostrar los eventos programados antes de los eventos de todo el día en la misma jornada</string>
+    <string name="calendar_display">Visualizar</string>
+    <string name="media_preview_title">Título de la canción</string>
+    <string name="media_preview_artist">Artista</string>
+    <string name="clock_preset_agenda_title">Agenda</string>
+    <string name="clock_color_second_tens">Segundo dígito de las decenas</string>
+    <string name="clock_color_second_ones">Dígito de las unidades</string>
 </resources>
