@@ -24,6 +24,7 @@ import com.galaxyrio.gracelauncher.ui.LauncherActions
 import com.galaxyrio.gracelauncher.ui.LauncherUiState
 import com.galaxyrio.gracelauncher.ui.home.HomeScreen
 import com.galaxyrio.gracelauncher.ui.settings.GraceButtonActionSettings
+import com.galaxyrio.gracelauncher.ui.settings.LabGestureSettings
 import com.galaxyrio.gracelauncher.ui.theme.GraceLauncherTheme
 import org.junit.Assert.*
 import org.junit.Rule
@@ -34,7 +35,6 @@ import org.junit.runner.RunWith
 class PullProtectionInteractionTest {
     @get:Rule val compose = createComposeRule()
     private var settings by mutableStateOf(GraceButtonSettings.homeDefaults().copy(protectSwipeUp = true, protectSwipeDown = true))
-    private var direction by mutableStateOf(GraceButtonGesture.SwipeUp)
     private var pressed = false
     private var feedback = 0
     private var feedbackWhileHeld = false
@@ -107,18 +107,26 @@ class PullProtectionInteractionTest {
         compose.runOnIdle { assertEquals(listOf(GraceButtonGesture.SwipeUp, GraceButtonGesture.SwipeDown), gestures); assertEquals(0, feedback) }
     }
 
-    @Test fun sensitivityIsIndependentForEachDirection() {
-        settings = settings.copy(swipeUpPullSensitivity = 200, swipeDownPullSensitivity = 50)
+    @Test fun existingSensitivityControlsBothProtectedDirections() {
+        settings = settings.copy(swipeSensitivity = 200)
         showHome()
         pull(-120f, release = true)
-        pull(200f, release = true)
+        pull(120f, release = true)
         compose.runOnIdle {
-            assertEquals(listOf(GraceButtonGesture.SwipeUp), gestures); assertEquals(1, feedback)
-            settings = settings.copy(swipeUpPullSensitivity = 50, swipeDownPullSensitivity = 200)
+            assertEquals(listOf(GraceButtonGesture.SwipeUp, GraceButtonGesture.SwipeDown), gestures)
+            assertEquals(2, feedback)
+            settings = settings.copy(swipeSensitivity = 50)
         }
         pull(-200f, release = true)
-        pull(120f, release = true)
-        compose.runOnIdle { assertEquals(listOf(GraceButtonGesture.SwipeUp, GraceButtonGesture.SwipeDown), gestures); assertEquals(2, feedback) }
+        pull(200f, release = true)
+        compose.runOnIdle { assertEquals(2, gestures.size); assertEquals(2, feedback) }
+        pull(-340f, release = true)
+        pull(340f, release = true)
+        compose.runOnIdle {
+            assertEquals(listOf(GraceButtonGesture.SwipeUp, GraceButtonGesture.SwipeDown,
+                GraceButtonGesture.SwipeUp, GraceButtonGesture.SwipeDown), gestures)
+            assertEquals(4, feedback)
+        }
     }
 
     @Test fun deliberatePullAlsoWorksWithThePlatformStretchEffect() {
@@ -128,32 +136,58 @@ class PullProtectionInteractionTest {
         compose.runOnIdle { assertEquals(listOf(GraceButtonGesture.SwipeUp), gestures); assertEquals(1, feedback) }
     }
 
-    @Test fun controlsPersistIndependentValuesAndRestoreLegacyDefaultsSafely() {
+    @Test fun advancedControlsReuseSensitivityAndPersistIndependentProtection() {
+        compose.setContent {
+            GraceLauncherTheme(dynamicColor = false) {
+                LabGestureSettings(LauncherUiState(settings = LauncherSettings(homeGestures = settings)),
+                    LauncherActions(updateSettings = { transform -> settings = transform(LauncherSettings(homeGestures = settings)).homeGestures }),
+                    onBack = {})
+            }
+        }
+        compose.onAllNodesWithTag("lab_swipe_sensitivity").assertCountEquals(1)
+        advancedControl("lab_swipe_sensitivity").performSemanticsAction(SemanticsActions.SetProgress) { it(180f) }
+        advancedControl("home_pull_protection:SwipeUp").performClick()
+        compose.runOnIdle {
+            assertFalse(settings.protectSwipeUp); assertTrue(settings.protectSwipeDown)
+            assertEquals(180, settings.swipeSensitivity)
+        }
+        advancedControl("home_pull_protection:SwipeDown").performClick()
+        advancedControl("home_pull_protection:SwipeUp").performClick()
+        compose.runOnIdle {
+            assertTrue(settings.protectSwipeUp); assertFalse(settings.protectSwipeDown)
+            val restored = GraceButtonSettings.decode(settings.encode(), GraceButtonSettings.homeDefaults())
+            assertEquals(settings, restored)
+            val legacy = GraceButtonSettings.decode("{}", GraceButtonSettings.homeDefaults())
+            assertFalse(legacy.protectSwipeUp); assertFalse(legacy.protectSwipeDown)
+            assertEquals(100, legacy.swipeSensitivity)
+            assertFalse(GraceButtonSettings.decode("{}").protectSwipeUp)
+        }
+        advancedControl("lab_swipe_sensitivity_reset").performClick()
+        compose.runOnIdle { assertEquals(100, settings.swipeSensitivity) }
+    }
+
+    @Test fun gestureActionPagesDoNotDuplicateAdvancedControls() {
+        var home by mutableStateOf(true)
+        var direction by mutableStateOf(GraceButtonGesture.SwipeUp)
         compose.setContent {
             GraceLauncherTheme(dynamicColor = false) {
                 GraceButtonActionSettings(direction, LauncherUiState(settings = LauncherSettings(homeGestures = settings)),
-                    LauncherActions(updateSettings = { transform -> settings = transform(LauncherSettings(homeGestures = settings)).homeGestures }),
-                    onBack = {}, home = true, onChooseTarget = {})
+                    LauncherActions(), onBack = {}, home = home, onChooseTarget = {})
             }
         }
-        compose.onNodeWithTag("home_pull_sensitivity:SwipeUp").performSemanticsAction(SemanticsActions.SetProgress) { it(180f) }
-        compose.onNodeWithTag("home_pull_protection:SwipeUp").performClick()
-        compose.onNodeWithTag("home_pull_sensitivity:SwipeUp").assertIsNotEnabled()
-        compose.runOnIdle {
-            assertFalse(settings.protectSwipeUp); assertTrue(settings.protectSwipeDown)
-            assertEquals(180, settings.swipeUpPullSensitivity); assertEquals(100, settings.swipeDownPullSensitivity)
-            direction = GraceButtonGesture.SwipeDown
+        for ((isHome, gesture) in listOf(true to GraceButtonGesture.SwipeUp,
+            true to GraceButtonGesture.SwipeDown, false to GraceButtonGesture.SwipeUp)) {
+            compose.runOnIdle { home = isHome; direction = gesture }
+            compose.onNodeWithTag("grace_action_page").assertIsDisplayed()
+            compose.onNodeWithTag("home_pull_protection:${gesture.name}").assertDoesNotExist()
+            compose.onNodeWithTag("home_pull_sensitivity:${gesture.name}").assertDoesNotExist()
+            compose.onNodeWithTag("lab_swipe_sensitivity").assertDoesNotExist()
         }
-        compose.onNodeWithTag("home_pull_sensitivity:SwipeDown").performSemanticsAction(SemanticsActions.SetProgress) { it(65f) }
-        compose.runOnIdle {
-            val restored = GraceButtonSettings.decode(settings.encode(), GraceButtonSettings.homeDefaults())
-            assertEquals(settings, restored)
-            assertEquals(65, restored.swipeDownPullSensitivity)
-            val legacy = GraceButtonSettings.decode("{}", GraceButtonSettings.homeDefaults())
-            assertFalse(legacy.protectSwipeUp); assertFalse(legacy.protectSwipeDown)
-            assertEquals(100, legacy.swipeUpPullSensitivity)
-            assertFalse(GraceButtonSettings.decode("{}").protectSwipeUp)
-        }
+    }
+
+    private fun advancedControl(tag: String): SemanticsNodeInteraction {
+        compose.onNodeWithTag("settings_list").performScrollToNode(hasTestTag(tag))
+        return compose.onNodeWithTag(tag)
     }
 
     private fun home() = compose.onNodeWithTag("home_content")

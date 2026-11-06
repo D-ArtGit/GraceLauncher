@@ -51,8 +51,6 @@ data class GraceButtonSettings(
     /** Home boundary pulls can require deliberate distance rather than fling velocity. */
     val protectSwipeUp: Boolean = false,
     val protectSwipeDown: Boolean = false,
-    val swipeUpPullSensitivity: Int = 100,
-    val swipeDownPullSensitivity: Int = 100,
     /** null follows the system double-tap timeout. */
     val doubleTapIntervalMs: Int? = null,
     val layout: GraceButtonLayout = GraceButtonLayout(),
@@ -100,8 +98,6 @@ data class GraceButtonSettings(
         put("swipeSensitivity", swipeSensitivity.coerceIn(50, 200))
         put("protectSwipeUp", protectSwipeUp)
         put("protectSwipeDown", protectSwipeDown)
-        put("swipeUpPullSensitivity", swipeUpPullSensitivity.coerceIn(50, 200))
-        put("swipeDownPullSensitivity", swipeDownPullSensitivity.coerceIn(50, 200))
         put("doubleTapIntervalMs", doubleTapIntervalMs?.coerceIn(150, 700))
         val placement = layout.normalized()
         put("layout", JSONObject().put("alignment", placement.alignment.name)
@@ -133,8 +129,6 @@ data class GraceButtonSettings(
                 swipeSensitivity = data.optInt("swipeSensitivity", defaults.swipeSensitivity).coerceIn(50, 200),
                 protectSwipeUp = data.optBoolean("protectSwipeUp", defaults.protectSwipeUp),
                 protectSwipeDown = data.optBoolean("protectSwipeDown", defaults.protectSwipeDown),
-                swipeUpPullSensitivity = data.optInt("swipeUpPullSensitivity", defaults.swipeUpPullSensitivity).coerceIn(50, 200),
-                swipeDownPullSensitivity = data.optInt("swipeDownPullSensitivity", defaults.swipeDownPullSensitivity).coerceIn(50, 200),
                 doubleTapIntervalMs = if (data.has("doubleTapIntervalMs") && !data.isNull("doubleTapIntervalMs"))
                     data.optInt("doubleTapIntervalMs", 300).coerceIn(150, 700) else defaults.doubleTapIntervalMs,
                 layout = if (layout == null) defaults.layout else GraceButtonLayout(

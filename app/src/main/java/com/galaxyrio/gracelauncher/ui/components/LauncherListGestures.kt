@@ -57,7 +57,7 @@ internal suspend fun PointerInputScope.observeBlankDoubleTaps(doubleTapSlop: Flo
     }
 }
 
-/** Home and search share sensitivity; protected search opening requires a deliberate edge pull. */
+/** Home and search share sensitivity; protected home gestures require a deliberate edge pull. */
 @Composable
 internal fun rememberLauncherListGestureConnection(
     effect: OverscrollEffect?,
@@ -67,8 +67,6 @@ internal fun rememberLauncherListGestureConnection(
     onGesture: (GraceButtonGesture) -> Unit,
     protectSwipeUp: Boolean = false,
     protectSwipeDown: Boolean = false,
-    swipeUpPullSensitivity: Int = 100,
-    swipeDownPullSensitivity: Int = 100,
     onPullReady: () -> Unit = {},
 ): LauncherListGestureConnection {
     val density = LocalDensity.current
@@ -76,7 +74,7 @@ internal fun rememberLauncherListGestureConnection(
     val latestCanTrigger by rememberUpdatedState(canTrigger)
     val latestOnGesture by rememberUpdatedState(onGesture)
     val latestOnPullReady by rememberUpdatedState(onPullReady)
-    return remember(effect, list, density, sensitivity, protectSwipeUp, protectSwipeDown, swipeUpPullSensitivity, swipeDownPullSensitivity) {
+    return remember(effect, list, density, sensitivity, protectSwipeUp, protectSwipeDown) {
         LauncherListGestureConnection(effect, list,
             pullThreshold = with(density) { 96.dp.toPx() } / sensitivity,
             flingThreshold = with(density) { 3000.dp.toPx() } / sensitivity,
@@ -84,8 +82,6 @@ internal fun rememberLauncherListGestureConnection(
             onGesture = { latestOnGesture(it) },
             protectSwipeUp = protectSwipeUp,
             protectSwipeDown = protectSwipeDown,
-            upPullThreshold = with(density) { 144.dp.toPx() } / (swipeUpPullSensitivity.coerceIn(50, 200) / 100f),
-            downPullThreshold = with(density) { 144.dp.toPx() } / (swipeDownPullSensitivity.coerceIn(50, 200) / 100f),
             onPullReady = { latestOnPullReady() })
     }
 }
@@ -125,8 +121,7 @@ internal class LauncherListGestureConnection(
     private val onGesture: (GraceButtonGesture) -> Unit,
     private val protectSwipeUp: Boolean = false,
     private val protectSwipeDown: Boolean = false,
-    private val upPullThreshold: Float = pullThreshold * 1.5f,
-    private val downPullThreshold: Float = pullThreshold * 1.5f,
+    private val protectedPullThreshold: Float = pullThreshold * 1.5f,
     private val onPullReady: () -> Unit = {},
 ) : NestedScrollConnection {
     private var edgePull = 0f
@@ -159,11 +154,8 @@ internal class LauncherListGestureConnection(
     }
     private fun eligible(gesture: GraceButtonGesture): Boolean =
         if (gesture == GraceButtonGesture.SwipeUp) upPullEligible else downPullEligible
-    private fun threshold(gesture: GraceButtonGesture?): Float = when {
-        gesture == GraceButtonGesture.SwipeUp && protectSwipeUp -> upPullThreshold
-        gesture == GraceButtonGesture.SwipeDown && protectSwipeDown -> downPullThreshold
-        else -> pullThreshold
-    }
+    private fun threshold(gesture: GraceButtonGesture?): Float =
+        if (protected(gesture)) protectedPullThreshold else pullThreshold
 
     private fun trigger(delta: Float, fromFling: Boolean = false): Boolean {
         val gesture = boundaryGesture(delta) ?: return false
