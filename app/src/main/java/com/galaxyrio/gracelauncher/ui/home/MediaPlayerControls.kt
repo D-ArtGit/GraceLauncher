@@ -3,6 +3,11 @@
 package com.galaxyrio.gracelauncher.ui.home
 
 import android.os.SystemClock
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.core.rememberTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -38,6 +43,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -60,11 +68,11 @@ import kotlinx.coroutines.delay
 
 @Composable
 internal fun MediaPlayerControls(media: NowPlaying, style: MediaPlayerStyle, enabled: Boolean, interactive: Boolean,
-    onCommand: (String, MediaCommand) -> Unit, modifier: Modifier = Modifier) {
+    onCommand: (String, MediaCommand) -> Unit, modifier: Modifier = Modifier, trackRipple: MediaTrackRipple? = null) {
     // Keep the native controls while opting out of their extra 48dp layout reservation here.
     CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 0.dp) {
         Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(if (style.hasSeparateProgress) 6.dp else 0.dp)) {
-            if (style.showPlaybackControls) MediaTransportButtons(media, style, enabled, interactive, onCommand)
+            if (style.showPlaybackControls) MediaTransportButtons(media, style, enabled, interactive, onCommand, trackRipple)
             if (style.hasSeparateProgress) MediaProgress(media, style.progressStyle, enabled, interactive, onCommand)
         }
     }
@@ -90,7 +98,7 @@ private enum class TransportButton(val tag: String, val command: MediaCommand) {
 
 @Composable
 private fun MediaTransportButtons(media: NowPlaying, style: MediaPlayerStyle, enabled: Boolean, interactive: Boolean,
-    onCommand: (String, MediaCommand) -> Unit) {
+    onCommand: (String, MediaCommand) -> Unit, trackRipple: MediaTrackRipple?) {
     val color = LocalLauncherAppearance.current.text
     val disabledColor = color.copy(alpha = color.alpha * .38f)
     val height = if (style.hasSeparateProgress) 24.dp else 40.dp
@@ -108,6 +116,7 @@ private fun MediaTransportButtons(media: NowPlaying, style: MediaPlayerStyle, en
                         modifier = Modifier.width(48.dp).height(height).clip(CircleShape).testTag(button.tag)
                             .semantics { contentDescription = label },
                         color = color, disabledColor = disabledColor,
+                        trackRipple = trackRipple.takeIf { button != TransportButton.PlayPause },
                     ) {
                         Box(Modifier.width(48.dp).height(height), contentAlignment = Alignment.Center) {
                             MediaTransportGlyph(button, style.playbackButtonStyle, media.playing)
@@ -153,7 +162,7 @@ internal fun MediaProgressStylePreview(style: MediaProgressStyle, buttonStyle: M
             MediaTransportGlyph(TransportButton.PlayPause, buttonStyle, playing = false)
             MediaProgressRing({ .4f }, color)
         }
-    } else MediaSeekBar(.4f, style, color, enabled = true, interactive = false, animating = false, modifier = modifier)
+    } else MediaSeekBar(.4f, style, color, enabled = true, interactive = false, playing = true, modifier = modifier)
 }
 
 /** Position ticks stay in the progress leaf; playback never remeasures artwork or metadata. */
@@ -203,7 +212,7 @@ private fun MediaProgress(media: NowPlaying, style: MediaProgressStyle, enabled:
     MediaSeekBar(
         progress = dragging ?: if (media.durationMs > 0) (position.toFloat() / duration).coerceIn(0f, 1f) else 0f,
         style = style, color = LocalLauncherAppearance.current.text,
-        enabled = active, interactive = interactive, animating = interactive && enabled && media.playing && media.durationMs > 0,
+        enabled = active, interactive = interactive, playing = enabled && media.playing && media.durationMs > 0,
         onValueChange = { dragging = it },
         onValueChangeFinished = {
             dragging?.let { onCommand(media.sessionId, MediaCommand.Seek((it * duration).toLong(), media.revision)) }
@@ -215,7 +224,7 @@ private fun MediaProgress(media: NowPlaying, style: MediaProgressStyle, enabled:
 
 @Composable
 private fun MediaSeekBar(progress: Float, style: MediaProgressStyle, color: Color, enabled: Boolean, interactive: Boolean,
-    animating: Boolean, modifier: Modifier = Modifier, onValueChange: (Float) -> Unit = {}, onValueChangeFinished: () -> Unit = {}) {
+    playing: Boolean, modifier: Modifier = Modifier, onValueChange: (Float) -> Unit = {}, onValueChangeFinished: () -> Unit = {}) {
     val interactions = remember { MutableInteractionSource() }
     val shownColor = if (enabled) color else color.copy(alpha = color.alpha * .38f)
     val trackColor = color.copy(alpha = color.alpha * (if (enabled) .24f else .12f))
@@ -230,9 +239,8 @@ private fun MediaSeekBar(progress: Float, style: MediaProgressStyle, color: Colo
             },
             track = { state ->
                 if (style == MediaProgressStyle.Wavy) {
-                    LinearWavyProgressIndicator(progress = { state.value },
-                        modifier = Modifier.fillMaxWidth().clearAndSetSemantics {}, color = shownColor, trackColor = trackColor,
-                        gapSize = 5.dp, stopSize = 0.dp, wavelength = 20.dp, waveSpeed = if (animating) 20.dp else 0.dp)
+                    MediaWavyTrack(progress = { state.value }, color = shownColor, trackColor = trackColor,
+                        playing = playing, interactive = interactive)
                 } else SliderDefaults.Track(sliderState = state, modifier = Modifier.height(4.dp), enabled = enabled,
                     colors = colors, drawStopIndicator = null, thumbTrackGapSize = 3.dp, trackInsideCornerSize = 2.dp)
             },
@@ -241,11 +249,46 @@ private fun MediaSeekBar(progress: Float, style: MediaProgressStyle, color: Colo
 }
 
 @Composable
+private fun MediaWavyTrack(progress: () -> Float, color: Color, trackColor: Color, playing: Boolean, interactive: Boolean) {
+    val waveState = remember { MutableTransitionState(false) }
+    waveState.targetState = playing
+    val transition = rememberTransition(waveState, label = "mediaWave")
+    val drawingHeight by transition.animateDp(
+        transitionSpec = { tween(durationMillis = if (targetState) 500 else 350, easing = FastOutSlowInEasing) },
+        label = "mediaWaveHeight",
+    ) { waving -> if (waving) 10.dp else 4.dp }
+
+    // Keep the slider's layout and stroke width fixed. Only the drawing height changes,
+    // smoothly reducing the wave's amplitude to zero when it equals the 4dp stroke.
+    // The native renderer resets its phase when waveSpeed becomes zero, so stop it only
+    // after the wave is flat, including when play/pause interrupts an earlier transition.
+    val moving = interactive && (playing || drawingHeight > 4.dp)
+    Box(Modifier.fillMaxWidth().height(10.dp), contentAlignment = Alignment.Center) {
+        LinearWavyProgressIndicator(progress = progress,
+            modifier = Modifier.fillMaxWidth().height(drawingHeight).clearAndSetSemantics {},
+            color = color, trackColor = trackColor, amplitude = { 1f },
+            gapSize = 5.dp, stopSize = 0.dp, wavelength = 20.dp, waveSpeed = if (moving) 20.dp else 0.dp)
+    }
+}
+
+@Composable
 private fun MediaControlButton(onClick: () -> Unit, enabled: Boolean, interactive: Boolean, modifier: Modifier,
-    color: Color, disabledColor: Color, content: @Composable () -> Unit) {
-    if (interactive) IconButton(onClick = onClick, enabled = enabled, modifier = modifier,
-        colors = IconButtonDefaults.iconButtonColors(contentColor = color, disabledContentColor = disabledColor), content = content)
-    else CompositionLocalProvider(LocalContentColor provides if (enabled) color else disabledColor) {
+    color: Color, disabledColor: Color, trackRipple: MediaTrackRipple?, content: @Composable () -> Unit) {
+    if (interactive) {
+        val interactions = remember { MutableInteractionSource() }
+        val buttonInteractions = remember(interactions, trackRipple) {
+            if (trackRipple == null) interactions else MediaButtonIndicationSource(interactions)
+        }
+        val scale = rememberMediaButtonScale(interactions)
+        var coordinates by remember { mutableStateOf<LayoutCoordinates?>(null) }
+        ForwardMediaTrackRipple(interactions, trackRipple) { coordinates }
+        IconButton(onClick = onClick, enabled = enabled, modifier = modifier.onGloballyPositioned { coordinates = it },
+            interactionSource = buttonInteractions,
+            colors = IconButtonDefaults.iconButtonColors(contentColor = color, disabledContentColor = disabledColor)) {
+            // Animate only the visuals, keeping the button's bounds and touch target still.
+            Box(Modifier.graphicsLayer { scaleX = scale.value; scaleY = scale.value }) { content() }
+        }
+    } else CompositionLocalProvider(LocalContentColor provides if (enabled) color else disabledColor) {
         Box(modifier, contentAlignment = Alignment.Center) { content() }
     }
 }

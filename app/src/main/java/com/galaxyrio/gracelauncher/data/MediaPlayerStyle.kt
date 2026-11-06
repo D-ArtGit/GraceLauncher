@@ -63,10 +63,9 @@ data class MediaPlayerStyle(
 
     fun coverDesign(iconDesign: IconDesign): IconDesign {
         if (layout != MediaCoverLayout.Mini) return coverShape
-        val shape = miniCoverShape ?: return iconDesign
-        return iconDesign.copy(shape = shape.shape, cookieSides = shape.cookieSides,
-            pebbleRoundness = shape.pebbleRoundness, squareCornerRadius = shape.squareCornerRadius,
-            squareAspectRatio = shape.squareAspectRatio)
+        // The cover inherits the mask, never the icon foreground's scale, offset or rotation.
+        // Its overall display size is already supplied by the shared iconSize setting.
+        return (miniCoverShape ?: iconDesign).coverGeometry()
     }
 
     fun withCoverShape(design: IconDesign, iconDesign: IconDesign): MediaPlayerStyle =
