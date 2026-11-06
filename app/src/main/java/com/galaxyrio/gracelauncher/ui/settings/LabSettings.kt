@@ -181,7 +181,7 @@ internal fun LabDismissSettings(uiState: LauncherUiState, actions: LauncherActio
 
 /** Keep local drag feedback smooth and persist only the released value. */
 @Composable
-private fun LabSliderItem(title: String, value: Int, default: Int, range: IntRange, index: Int, count: Int, tag: String,
+internal fun LabSliderItem(title: String, value: Int, default: Int, range: IntRange, index: Int, count: Int, tag: String,
     enabled: Boolean = true, valueFormat: Int = R.string.lab_milliseconds, description: String? = null,
     hasOverride: Boolean = value != default,
     onReset: () -> Unit, onChange: (Int) -> Unit) {

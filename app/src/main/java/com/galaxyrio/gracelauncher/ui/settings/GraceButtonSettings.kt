@@ -70,7 +70,20 @@ internal fun GraceButtonSettingsScreen(uiState: LauncherUiState, actions: Launch
 @Composable
 internal fun GraceButtonActionSettings(gesture: GraceButtonGesture, uiState: LauncherUiState, actions: LauncherActions,
     onBack: () -> Unit, home: Boolean = false, onChooseTarget: (GraceButtonAction) -> Unit) {
-    val target = uiState.settings.gestureSettings(home).target(gesture)
+    val gestureSettings = uiState.settings.gestureSettings(home)
+    val target = gestureSettings.target(gesture)
+    val pullControls = home && gesture in listOf(GraceButtonGesture.SwipeUp, GraceButtonGesture.SwipeDown)
+    val upward = gesture == GraceButtonGesture.SwipeUp
+    val protection = if (upward) gestureSettings.protectSwipeUp else gestureSettings.protectSwipeDown
+    val sensitivity = if (upward) gestureSettings.swipeUpPullSensitivity else gestureSettings.swipeDownPullSensitivity
+    fun changePull(enabled: Boolean? = null, value: Int? = null) {
+        actions.updateSettings { current -> current.withGestureSettings(home) {
+            if (upward) it.copy(protectSwipeUp = enabled ?: it.protectSwipeUp,
+                swipeUpPullSensitivity = value ?: it.swipeUpPullSensitivity)
+            else it.copy(protectSwipeDown = enabled ?: it.protectSwipeDown,
+                swipeDownPullSensitivity = value ?: it.swipeDownPullSensitivity)
+        } }
+    }
     var websiteDialog by rememberSaveable { mutableStateOf(false) }
     var accessDialog by rememberSaveable { mutableStateOf(false) }
     val options = GraceButtonAction.entries.filterNot { it == GraceButtonAction.Disabled }
@@ -81,6 +94,21 @@ internal fun GraceButtonActionSettings(gesture: GraceButtonGesture, uiState: Lau
     SettingsScaffold(stringResource(if (home && gesture == GraceButtonGesture.DoubleTap) R.string.home_gesture_double_tap else gesture.labelRes), "grace_action_page", onBack) { padding ->
         SettingsList(padding) {
             item { Spacer(Modifier.height(24.dp)) }
+            if (pullControls) {
+                item {
+                    SettingsToggleItem(stringResource(R.string.home_pull_protection),
+                        stringResource(R.string.home_pull_protection_summary), protection, 0, 2,
+                        "home_pull_protection:${gesture.name}") { changePull(enabled = it) }
+                }
+                item {
+                    LabSliderItem(stringResource(R.string.home_pull_sensitivity), sensitivity, 100,
+                        50..200, 1, 2, "home_pull_sensitivity:${gesture.name}", enabled = protection,
+                        valueFormat = R.string.lab_percentage,
+                        description = stringResource(R.string.home_pull_sensitivity_summary),
+                        onReset = { changePull(value = 100) }, onChange = { changePull(value = it) })
+                }
+                item { Spacer(Modifier.height(24.dp)) }
+            }
             options.forEachIndexed { index, action ->
                 item {
                     val checked = target.action == action

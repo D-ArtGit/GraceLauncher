@@ -362,7 +362,7 @@
     <string name="settings_debug">Debug</string>
     <string name="lab_animation">Animation</string>
     <string name="lab_swipe_sensitivity">Swipe sensitivity</string>
-    <string name="lab_swipe_sensitivity_summary">Higher values make home-screen swipes and swiping down to close search easier to trigger. 100% keeps the default distance and speed thresholds.</string>
+    <string name="lab_swipe_sensitivity_summary">Controls unprotected home swipes and swiping down to close search. Protected pulls have separate sensitivity controls under each home gesture.</string>
     <string name="lab_double_tap_interval">Double-tap interval</string>
     <string name="lab_double_tap_interval_summary">Maximum time between taps on empty home-screen space. A longer interval makes double-tapping easier.</string>
     <string name="lab_milliseconds">%1$d ms</string>
@@ -1059,4 +1059,8 @@
     <string name="clock_rotate_above_primary">Rotate regions above primary</string>
     <string name="clock_rotate_primary">Rotate primary region</string>
     <string name="clock_rotate_all">Rotate all regions</string>
+    <string name="home_pull_protection">Accidental swipe protection</string>
+    <string name="home_pull_protection_summary">Prevents accidental activation while scrolling. Pull again at the end of the list; release when it vibrates.</string>
+    <string name="home_pull_sensitivity">Pull sensitivity</string>
+    <string name="home_pull_sensitivity_summary">Higher values require a shorter pull. Lower values require a longer pull.</string>
 </resources>
