@@ -663,10 +663,10 @@
     <string name="popup_widget_background">Fondo</string>
     <string name="popup_widget_content_scale">Escala do contido · %1$d%%</string>
     <string name="lab_popup">Fiestra emerxente</string>
-    <string name="lab_popup_distance">Distancia de esvaramento adicional</string>
+    <string name="lab_popup_distance">Distancia de esvarado adicional</string>
     <string name="lab_popup_distance_summary">Distancia adicional para esvarar cara á dereita antes de abrir unha aplicación ou unha fiestra emerxente de cartafol. Uns valores máis altos fan que sexa máis difícil activalo.</string>
-    <string name="lab_popup_angle">Ángulo de deslizamento permitido</string>
-    <string name="lab_popup_angle_summary">Desviación máxima por riba ou por debaixo da dirección horizontal cara á dereita. Uns valores máis baixos requiren un movemento de esvaramento máis recto.</string>
+    <string name="lab_popup_angle">Ángulo de esvarado permitido</string>
+    <string name="lab_popup_angle_summary">Desviación máxima por riba ou por debaixo da dirección horizontal cara á dereita. Uns valores máis baixos requiren un movemento de esvarado máis recto.</string>
     <string name="lab_dp">%1$d dp</string>
     <string name="lab_degrees">±%1$d°</string>
     <string name="icon_designer_apply_to_shortcuts">Aplicar tamén a configuración aos atallos</string>
@@ -714,9 +714,9 @@
     <string name="widget_settings_button">Configuración</string>
     <string name="widget_configuration_launch_error">Non foi posible abrir a configuración deste widget. Téntao de novo.</string>
     <string name="media_keep_while_playing">Manter mentres reproduce</string>
-    <string name="media_keep_while_playing_summary">Os esvaramentos volven á posición orixinal en lugar de descartar o reprodutor durante a reprodución</string>
+    <string name="media_keep_while_playing_summary">Os esvarados volven á posición orixinal en lugar de descartar o reprodutor durante a reprodución</string>
     <string name="lab_swipe_dismiss">Esvara para descartar</string>
-    <string name="lab_dismiss_resistance">Resistencia ao esvaramento</string>
+    <string name="lab_dismiss_resistance">Resistencia ao esvarado</string>
     <string name="lab_dismiss_resistance_summary">Compartido polas notificacións e o reprodutor multimedia. Os valores máis altos crean máis resistencia; o 0 % segue ao teu dedo.</string>
     <string name="lab_dismiss_threshold">Limiar de avance</string>
     <string name="lab_dismiss_threshold_summary">Distancia antes de que ceda a resistencia. Compartido polas notificacións e o reprodutor multimedia; limitado pola anchura dispoñible.</string>
@@ -1020,4 +1020,6 @@
     <string name="media_progress_style_circular">Circular</string>
     <string name="media_progress">Barra de progreso</string>
     <string name="media_unsaved_message">Non se gardaron os cambios no reprodutor multimedia.</string>
+    <string name="settings_allow_screen_rotation">Permitir a rotación da pantalla</string>
+    <string name="settings_allow_screen_rotation_summary">Siga a configuración de rotación do sistema. Desactiva para manter a pantalla de inicio en retrato.</string>
 </resources>
