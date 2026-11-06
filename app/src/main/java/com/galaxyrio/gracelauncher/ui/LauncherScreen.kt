@@ -475,13 +475,7 @@ fun LauncherRoute(
         deleteFonts = viewModel::deleteFonts,
         applyIconDesign = viewModel::applyIconDesign,
         deleteIconDesigns = viewModel::deleteIconDesigns,
-        updateSettings = { change ->
-            val enableCalendar = change(uiState.settings).calendarAgenda && !uiState.settings.calendarAgenda
-            viewModel.updateSettings(change)
-            if (enableCalendar) {
-                permissionLauncher.launch(Manifest.permission.READ_CALENDAR)
-            }
-        },
+        updateSettings = viewModel::updateSettings,
         setHiddenApps = viewModel::setHiddenApps,
         hideApp = viewModel::hideApp,
         setFolderAutoHide = viewModel::setFolderAutoHide,

@@ -347,7 +347,7 @@ fun LauncherSettingsScreen(
                         onAppearance = { navigate(SettingsPage.ClockStyle) })
                     SettingsPage.CalendarSources -> CalendarSourcesSettings(uiState, actions, back)
                     SettingsPage.CalendarApp -> CalendarAppSettings(uiState, actions, back)
-                    SettingsPage.Advanced -> AdvancedSettings(back, navigate,
+                    SettingsPage.Advanced -> AdvancedSettings(uiState, actions, back, navigate,
                         onChooseDefaultHome = { if (isCurrent()) actions.requestDefaultHome() })
                     SettingsPage.LabGraceButton -> LabGraceButtonSettings(uiState, actions, back)
                     SettingsPage.LabGesture -> LabGestureSettings(uiState, actions, back)

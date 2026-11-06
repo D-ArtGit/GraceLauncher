@@ -1,6 +1,7 @@
 package com.galaxyrio.gracelauncher
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
 import android.view.MotionEvent
@@ -13,12 +14,18 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.galaxyrio.gracelauncher.platform.LauncherAppTransitions
 import com.galaxyrio.gracelauncher.ui.LauncherAppTheme
 import com.galaxyrio.gracelauncher.ui.LauncherRoute
 import com.galaxyrio.gracelauncher.ui.LauncherViewModel
 import com.galaxyrio.gracelauncher.ui.components.LocalAppTransitions
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private val launcherViewModel: LauncherViewModel by viewModels()
@@ -32,6 +39,19 @@ class MainActivity : ComponentActivity() {
             statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
             navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
         )
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launcherViewModel.uiState
+                    .filter { !it.isLoadingSettings && !it.settingsLoadFailed }
+                    .map { it.settings.allowScreenRotation }
+                    .distinctUntilChanged()
+                    .collect { allowRotation ->
+                        val orientation = if (allowRotation) ActivityInfo.SCREEN_ORIENTATION_USER
+                            else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                        if (requestedOrientation != orientation) requestedOrientation = orientation
+                    }
+            }
+        }
         setContent {
             CompositionLocalProvider(LocalAppTransitions provides appTransitions) {
                 LauncherAppTheme(launcherViewModel) {
