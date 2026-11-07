@@ -69,7 +69,7 @@ internal class SearchContacts(context: Context) {
                 val id = cursor.getLong(0)
                 val uri = cursor.getString(1)?.let { Contacts.getLookupUri(id, it) }
                     ?: ContentUris.withAppendedId(Contacts.CONTENT_URI, id)
-                val name = cursor.getString(2)?.takeIf(String::isNotBlank) ?: context.getString(R.string.search_unnamed_contact)
+                val name = cursor.getString(2)?.takeIf(String::isNotBlank) ?: ContextCompat.getString(context, R.string.search_unnamed_contact)
                 val photo = cursor.getString(3)?.toUri()?.takeIf { it.scheme == "content" }
                 contacts[id] = SearchContact(id, uri, name, photo, emptyList())
             }

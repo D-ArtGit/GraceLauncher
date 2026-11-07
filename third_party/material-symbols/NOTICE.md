@@ -20,6 +20,13 @@ current content tint.
 
 ## Sources
 
+### Language icon added 2026-11-07
+
+- `ms_language.xml`: https://raw.githubusercontent.com/google/material-design-icons/master/symbols/android/language/materialsymbolsoutlined/language_24px.xml
+
+Official Android vector path and viewport retained. Tint is supplied by Compose.
+Same Apache-2.0 license.
+
 ### Music widget icons added 2026-11-05
 
 - `ms_play_arrow_filled.xml` (fill 1): https://raw.githubusercontent.com/google/material-design-icons/master/symbols/android/play_arrow/materialsymbolsoutlined/play_arrow_fill1_24px.xml

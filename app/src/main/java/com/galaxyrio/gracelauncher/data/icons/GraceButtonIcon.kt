@@ -17,7 +17,7 @@ internal object GraceButtonIcon {
     val key: String = component.flattenToString()
     val defaults: IconDesign = IconDesign.defaults().copy(shape = IconShape.Circle)
 
-    fun item(context: Context) = LauncherApp(component, context.getString(R.string.settings_grace_button),
+    fun item(context: Context) = LauncherApp(component, ContextCompat.getString(context, R.string.settings_grace_button),
         icon = null, isAdaptiveIcon = true)
 
     fun choice(saved: ItemIcon?): ItemIcon = (saved ?: ItemIcon.System).let {

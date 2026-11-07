@@ -76,7 +76,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 internal enum class SettingsPage {
-    Root, Productivity, Clock, ClockStyle, Calendar, CalendarSources, CalendarApp, Weather, Themes, Advanced, About, HiddenApps, Folders, FolderEditor,
+    Root, Productivity, Clock, ClockStyle, Calendar, CalendarSources, CalendarApp, Weather, Themes, Advanced, Language, About, HiddenApps, Folders, FolderEditor,
     Changelog, Licenses, AppLicense, IconPacks, IconDesigner, IconDesignerApp, PrivateSpace, PrivateSpaceEditor, Search,
     MediaPlayer, GraceButton, GraceAction, GraceApp, GraceShortcut, GraceFolder, Gestures, WorkProfile, WorkProfileEditor,
     LabGraceButton, LabGesture, LabPopup, LabAccessibility, LabDismiss, Fonts, FontColors, ListAppearance, Alphabet, ShortcutsFolders, AppStacks,
@@ -349,6 +349,7 @@ fun LauncherSettingsScreen(
                     SettingsPage.CalendarApp -> CalendarAppSettings(uiState, actions, back)
                     SettingsPage.Advanced -> AdvancedSettings(uiState, actions, back, navigate,
                         onChooseDefaultHome = { if (isCurrent()) actions.requestDefaultHome() })
+                    SettingsPage.Language -> LanguageSettings(back)
                     SettingsPage.LabGraceButton -> LabGraceButtonSettings(uiState, actions, back)
                     SettingsPage.LabGesture -> LabGestureSettings(uiState, actions, back)
                     SettingsPage.LabPopup -> LabPopupSettings(uiState, actions, back)
@@ -405,10 +406,12 @@ private fun SettingsHome(
     navigate: (SettingsPage) -> Unit,
 ) {
     val showDefaultHomeBanner = isDefaultHome == false
+    val languageTag by rememberAppLanguage()
     val categories = listOf(
         SettingsPage.Productivity to LauncherSymbol.Star,
         SettingsPage.Themes to LauncherSymbol.Palette,
         SettingsPage.Advanced to LauncherSymbol.Settings,
+        SettingsPage.Language to LauncherSymbol.Language,
         SettingsPage.About to LauncherSymbol.Info,
     )
     SettingsScaffold(stringResource(R.string.settings_title), "settings_root", onBack) { padding ->
@@ -424,16 +427,18 @@ private fun SettingsHome(
                         SettingsPage.Productivity -> R.string.settings_productivity
                         SettingsPage.Themes -> R.string.settings_themes
                         SettingsPage.Advanced -> R.string.settings_advanced
+                        SettingsPage.Language -> R.string.settings_language
                         else -> R.string.settings_about
                     }
                     val summary = when (page) {
-                        SettingsPage.Productivity -> R.string.settings_productivity_summary
-                        SettingsPage.Themes -> R.string.settings_themes_summary
-                        SettingsPage.Advanced -> R.string.settings_advanced_summary
-                        else -> R.string.settings_about_summary
+                        SettingsPage.Productivity -> stringResource(R.string.settings_productivity_summary)
+                        SettingsPage.Themes -> stringResource(R.string.settings_themes_summary)
+                        SettingsPage.Advanced -> stringResource(R.string.settings_advanced_summary)
+                        SettingsPage.Language -> appLanguageSummary(languageTag)
+                        else -> stringResource(R.string.settings_about_summary)
                     }
                     SettingsActionItem(
-                        stringResource(title), stringResource(summary), index, categories.size,
+                        stringResource(title), summary, index, categories.size,
                         tag = "settings_category_${page.name.lowercase()}",
                         leading = {
                             Box(
@@ -459,7 +464,7 @@ private fun SettingsHome(
 
 @Composable
 private fun DefaultHomeBanner(onClick: () -> Unit) {
-    // A separate highlighted action, not a checked switch or a fifth category.
+    // The default-home action has its own banner above the settings categories.
     Surface(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth().testTag("settings_default_home"),

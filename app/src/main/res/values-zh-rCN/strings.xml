@@ -345,6 +345,7 @@
     <string name="settings_themes">外观</string>
     <string name="settings_themes_summary">颜色、外观与个性化</string>
     <string name="settings_advanced">高级</string>
+    <string name="settings_language">语言</string>
     <string name="settings_allow_screen_rotation">允许屏幕旋转</string>
     <string name="settings_allow_screen_rotation_summary">遵循系统旋转设置，关闭后桌面固定为竖屏。</string>
     <string name="settings_tablets_foldables">平板与折叠屏</string>

@@ -354,6 +354,7 @@
     <string name="settings_themes">Appearance</string>
     <string name="settings_themes_summary">Colors, appearance, and personalization</string>
     <string name="settings_advanced">Advanced</string>
+    <string name="settings_language">Language</string>
     <string name="settings_allow_screen_rotation">Allow screen rotation</string>
     <string name="settings_allow_screen_rotation_summary">Follow system rotation settings. Turn off to keep the home screen in portrait.</string>
     <string name="settings_tablets_foldables">Tablets &amp; foldables</string>

@@ -36,10 +36,19 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:localeConfig="@xml/locales_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.GraceLauncher"
         tools:targetApi="33">
+        <!-- AndroidX persists app languages before Android 13 and hands them to
+             the system when the device upgrades. This is metadata, not a running service. -->
+        <service
+            android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
+            android:enabled="false"
+            android:exported="false">
+            <meta-data android:name="autoStoreLocales" android:value="true" />
+        </service>
         <!-- The official Breezy notifier requires an exported receiver and defines no
              sender permission. Payloads are ignored; signals only coalesce a read of
              the permission-protected, package-verified provider while enabled. -->

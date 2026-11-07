@@ -9,7 +9,7 @@ import android.os.Bundle
 import android.os.Process
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -46,7 +46,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /** Owns Android's binding/configuration round trips, including activity recreation. */
-class WidgetSetupActivity : ComponentActivity() {
+class WidgetSetupActivity : AppCompatActivity() {
     private val viewModel: LauncherViewModel by viewModels()
     private val repository by lazy { LauncherSettingsRepository(LauncherDatabase.getInstance(this)) }
     private val itemsRepository by lazy { LauncherItemsRepository(LauncherDatabase.getInstance(this)) }
