@@ -268,6 +268,9 @@ fun HomeScreen(
         overscroll, listState, uiState.settings.homeGestures.swipeSensitivity,
         canTrigger = { latestEnabled && latestGestures.target(it).active },
         onGesture = { latestOnGesture(it, windowOffset + pointerPosition) },
+        protectSwipeUp = uiState.settings.homeGestures.protectSwipeUp,
+        protectSwipeDown = uiState.settings.homeGestures.protectSwipeDown,
+        onPullReady = { haptics.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate) },
     )
     LaunchedEffect(gesturesEnabled) { if (!gesturesEnabled) scrollConnection.cancelGesture() }
     BoxWithConstraints(modifier.fillMaxSize()

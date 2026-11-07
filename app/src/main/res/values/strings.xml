@@ -1061,4 +1061,6 @@
     <string name="clock_rotate_above_primary">Rotate regions above primary</string>
     <string name="clock_rotate_primary">Rotate primary region</string>
     <string name="clock_rotate_all">Rotate all regions</string>
+    <string name="home_pull_protection">Accidental swipe protection</string>
+    <string name="home_pull_protection_summary">Prevents accidental activation while scrolling. Pull again at the list edge, then release to activate.</string>
 </resources>
