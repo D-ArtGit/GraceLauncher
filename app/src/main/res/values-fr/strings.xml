@@ -878,4 +878,10 @@
     <string name="list_appearance_tab_notification">Notification</string>
     <string name="list_preview_folder">Dossier</string>
     <string name="list_preview_notification_title">Test</string>
+    <plurals name="app_category_item_count">
+        <item quantity="one">un %1$d objet</item>
+        <item quantity="many">De nombreux %1$d objets</item>
+        <item quantity="other">Des</item>
+    </plurals>
+    <string name="media_keep_while_playing_summary">Balayer l\'écran ramène au menu au lieu d\'arrêter le processus pendant le visionnage</string>
 </resources>
