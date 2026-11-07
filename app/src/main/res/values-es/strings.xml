@@ -1034,4 +1034,6 @@
     <string name="media_unsaved_message">Los cambios de tu reproductor multimedia no se han guardado.</string>
     <string name="settings_allow_screen_rotation">Permitir rotación de pantalla</string>
     <string name="settings_allow_screen_rotation_summary">Seguur la configuración de rotación del sistema. Desactívalo para mantener la pantalla de inicio en vertical.</string>
+    <string name="home_pull_protection">Protección contra deslizamientos accidentales</string>
+    <string name="home_pull_protection_summary">Evita la activación accidental al desplazarse. Vuelve a tirar del borde de la lista y, a continuación, suelta para activarlo.</string>
 </resources>
