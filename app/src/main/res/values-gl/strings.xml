@@ -1022,4 +1022,6 @@
     <string name="media_unsaved_message">Non se gardaron os cambios no reprodutor multimedia.</string>
     <string name="settings_allow_screen_rotation">Permitir a rotación da pantalla</string>
     <string name="settings_allow_screen_rotation_summary">Siga a configuración de rotación do sistema. Desactiva para manter a pantalla de inicio en retrato.</string>
+    <string name="home_pull_protection">Protección contra esvarados accidentais</string>
+    <string name="home_pull_protection_summary">Evita a activación accidental ao desprazar. Tira de novo desde o bordo da lista e solta para activar.</string>
 </resources>
