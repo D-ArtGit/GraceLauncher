@@ -899,9 +899,9 @@
     <string name="clock_center_characters">Centrar caracteres</string>
     <string name="clock_use_latin_letters">Usar siempre letras latinas</string>
     <string name="clock_layout_section">Disposición</string>
-    <string name="clock_primary_region">Región primaria</string>
-    <string name="clock_secondary_region">Región secundaria</string>
-    <string name="clock_tertiary_region">Región terciaria</string>
+    <string name="clock_primary_region">Primera región</string>
+    <string name="clock_secondary_region">Segunda región</string>
+    <string name="clock_tertiary_region">Tercera región</string>
     <string name="clock_agenda_region">Región de la agenda</string>
     <string name="clock_region_spacing">Espaciado entre regiones</string>
     <string name="clock_agenda_contents">Contenido de la agenda</string>
@@ -959,8 +959,8 @@
     <string name="clock_move_left">Mover a la izquierda</string>
     <string name="clock_move_right">Mover a la derecha</string>
     <string name="clock_unsaved_message">Los cambios en tu reloj y calendario no se han guardado.</string>
-    <string name="clock_rotate_above_primary">Rotar regiones por encima del primario</string>
-    <string name="clock_rotate_primary">Rotar la región primaria</string>
+    <string name="clock_rotate_above_primary">Rotar regiones por encima de la primera</string>
+    <string name="clock_rotate_primary">Rotar la primera región</string>
     <string name="clock_rotate_all">Rotar todas las regiones</string>
     <string name="clock_battery_show_percentage">Mostrar porcentaje</string>
     <string name="clock_battery_icon_android">Batería de Android</string>
@@ -1036,4 +1036,5 @@
     <string name="settings_allow_screen_rotation_summary">Seguur la configuración de rotación del sistema. Desactívalo para mantener la pantalla de inicio en vertical.</string>
     <string name="home_pull_protection">Protección contra deslizamientos accidentales</string>
     <string name="home_pull_protection_summary">Evita la activación accidental al desplazarse. Vuelve a tirar del borde de la lista y, a continuación, suelta para activarlo.</string>
+    <string name="settings_language">Idioma</string>
 </resources>
