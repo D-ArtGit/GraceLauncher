@@ -888,9 +888,9 @@
     <string name="clock_center_characters">Centrar caracteres</string>
     <string name="clock_use_latin_letters">Usar sempre letras latinas</string>
     <string name="clock_layout_section">Disposición</string>
-    <string name="clock_primary_region">Rexión primaria</string>
-    <string name="clock_secondary_region">Rexión secundaria</string>
-    <string name="clock_tertiary_region">Rexión terciaria</string>
+    <string name="clock_primary_region">Primeira rexión</string>
+    <string name="clock_secondary_region">Segunda rexión</string>
+    <string name="clock_tertiary_region">Terceira rexión</string>
     <string name="clock_agenda_region">Rexión da axenda</string>
     <string name="clock_region_spacing">Espazamento entre rexións</string>
     <string name="clock_agenda_contents">Contido da axenda</string>
@@ -948,8 +948,8 @@
     <string name="clock_move_left">Mover cara á esquerda</string>
     <string name="clock_move_right">Mover cara á dereita</string>
     <string name="clock_unsaved_message">Non se gardaron os cambios no reloxo nin no calendario.</string>
-    <string name="clock_rotate_above_primary">Rotar as rexións por riba da primaria</string>
-    <string name="clock_rotate_primary">Rotar a rexión primaria</string>
+    <string name="clock_rotate_above_primary">Rotar as rexións por riba da primeira</string>
+    <string name="clock_rotate_primary">Rotar a primeira rexión</string>
     <string name="clock_rotate_all">Rotar todas as rexións</string>
     <string name="clock_battery_show_percentage">Amosar porcentaxe</string>
     <string name="clock_battery_icon_android">Batería Android</string>
@@ -1024,4 +1024,5 @@
     <string name="settings_allow_screen_rotation_summary">Siga a configuración de rotación do sistema. Desactiva para manter a pantalla de inicio en retrato.</string>
     <string name="home_pull_protection">Protección contra esvarados accidentais</string>
     <string name="home_pull_protection_summary">Evita a activación accidental ao desprazar. Tira de novo desde o bordo da lista e solta para activar.</string>
+    <string name="settings_language">Idioma</string>
 </resources>
