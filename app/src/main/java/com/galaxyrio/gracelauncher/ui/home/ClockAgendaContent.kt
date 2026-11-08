@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.galaxyrio.gracelauncher.R
 import com.galaxyrio.gracelauncher.data.ClockAgendaField
+import com.galaxyrio.gracelauncher.data.ClockAlignment
 import com.galaxyrio.gracelauncher.data.ClockRowTypography
 import com.galaxyrio.gracelauncher.data.ScheduleEvent
 import com.galaxyrio.gracelauncher.ui.components.eventRemainingText
@@ -72,6 +73,7 @@ internal fun ClockAgendaContent(
     useLatinLetters: Boolean = false,
     wrapWidth: Boolean = false,
     color: Color = LocalLauncherAppearance.current.text,
+    alignment: ClockAlignment = ClockAlignment.Left,
 ) {
     val locale = LocalConfiguration.current.locales[0]
     val dateLocale = remember(locale, useLatinLetters) { clockCalendarLocale(locale, useLatinLetters) }
@@ -99,7 +101,7 @@ internal fun ClockAgendaContent(
     val countdown = if (ClockAgendaField.Countdown in fields) eventRemainingText(event, now) else ""
 
     AgendaFieldsLayout(fields, modifier.then(if (wrapWidth) Modifier else Modifier.fillMaxWidth())
-        .testTag("schedule_line"), wrapWidth) {
+        .testTag("schedule_line"), wrapWidth, alignment) {
         fields.forEachIndexed { index, field ->
             key(field) {
                 val draw: @Composable (Modifier) -> Unit = { movement ->
@@ -159,6 +161,7 @@ private fun AgendaFieldsLayout(
     fields: List<ClockAgendaField>,
     modifier: Modifier,
     wrapWidth: Boolean,
+    alignment: ClockAlignment,
     content: @Composable () -> Unit,
 ) {
     Layout(content = content, modifier = modifier) { measurables, constraints ->
@@ -187,7 +190,13 @@ private fun AgendaFieldsLayout(
         val above = baselines.maxOrNull() ?: 0
         val below = placeables.indices.maxOfOrNull { placeables[it].height - baselines[it] } ?: 0
         layout(layoutWidth, constraints.constrainHeight(above + below), mapOf(FirstBaseline to above)) {
-            var x = 0
+            val remaining = (layoutWidth.toLong() - placeables.sumOf { it.width.toLong() } - gaps)
+                .coerceAtLeast(0).toInt()
+            var x = when (alignment) {
+                ClockAlignment.Left -> 0
+                ClockAlignment.Center -> remaining / 2
+                ClockAlignment.Right -> remaining
+            }
             placeables.forEachIndexed { index, placeable ->
                 placeable.place(x, above - baselines[index])
                 x += placeable.width + gap

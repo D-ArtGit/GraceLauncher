@@ -82,6 +82,7 @@ data class ClockAgenda(
     val typography: ClockRowTypography = ClockRowTypography(),
     val eventCount: Int = 1,
     val useLatinLetters: Boolean = false,
+    val alignment: ClockAlignment = ClockAlignment.Left,
 ) {
     val visibleFields: List<ClockAgendaField> get() = normalized().order.filter { it in selected }
 
@@ -99,6 +100,7 @@ data class ClockAgenda(
         })
         put("eventCount", value.eventCount)
         put("useLatinLetters", value.useLatinLetters)
+        put("alignment", value.alignment.name)
     } }
 
     companion object {
@@ -117,6 +119,8 @@ data class ClockAgenda(
                 ),
                 eventCount = json.optInt("eventCount", defaults.eventCount),
                 useLatinLetters = json.optBoolean("useLatinLetters", defaults.useLatinLetters),
+                alignment = ClockAlignment.entries.firstOrNull { it.name == json.optString("alignment") }
+                    ?: defaults.alignment,
             ).normalized()
         }
     }

@@ -193,6 +193,7 @@ internal fun LazyListScope.clockRegionSettings(
             ClockControlSegment(index, count, "${prefix}_elements") {
                 ClockElementButtons(region, row.order, row.selected, enabled, hapticsEnabled,
                     disabledElements = setOfNotNull(primary),
+                    centered = row.centered,
                     onSelect = { element, checked ->
                         onChange { current ->
                             if (element != current.primary) current.select(region, element, checked) else current
@@ -201,6 +202,10 @@ internal fun LazyListScope.clockRegionSettings(
                     onReorder = { order -> changeRow { it.copy(order = order) } })
             }
         })
+        if (row.selected.isNotEmpty()) controls += ClockControl("centered") { index, count ->
+            SettingsToggleItem(stringResource(R.string.grace_button_align_center), null, row.centered,
+                index, count, "${prefix}_centered", enabled) { value -> changeRow { it.copy(centered = value) } }
+        }
         if (ClockElement.Clock in row.selected) controls += ClockControl("seconds") { index, count ->
             SettingsToggleItem(stringResource(R.string.clock_show_seconds), null, row.showSeconds,
                 index, count, "${prefix}_show_seconds", enabled) { value -> changeRow { it.copy(showSeconds = value) } }
@@ -278,6 +283,12 @@ internal fun LazyListScope.clockRegionSettings(
     }
     if (agenda.selected.isNotEmpty()) {
         val defaults = ClockRowTypography()
+        agendaControls += ClockControl("alignment") { index, count ->
+            ClockControlSegment(index, count, "clock_agenda_alignment") {
+                ClockChoices(ClockAlignment.entries, agenda.alignment, enabled, "clock_agenda_alignment",
+                    label = { it.label() }, onSelect = { alignment -> changeAgenda { it.copy(alignment = alignment) } })
+            }
+        }
         agendaControls += ClockControl("font") { index, count ->
             SettingsActionItem(stringResource(R.string.settings_font), appFontLabel(agenda.typography.fontId), index, count,
                 "clock_agenda_font_selector", enabled = enabled) { onRegionFont(ClockRegion.Agenda) }
@@ -419,6 +430,7 @@ private fun ClockElementButtons(
     enabled: Boolean,
     hapticsEnabled: Boolean,
     disabledElements: Set<ClockElement> = emptySet(),
+    centered: Boolean = false,
     onSelect: (ClockElement, Boolean) -> Unit,
     onReorder: ((List<ClockElement?>) -> Unit)? = null,
 ) {
@@ -471,7 +483,11 @@ private fun ClockElementButtons(
                 val label = element?.label() ?: stringResource(R.string.clock_alignment_divider)
                 val left = stringResource(R.string.clock_move_left)
                 val right = stringResource(R.string.clock_move_right)
-                val side = stringResource(if (index < order.indexOf(null)) R.string.grace_button_align_left else R.string.grace_button_align_right)
+                val side = stringResource(when {
+                    centered -> R.string.grace_button_align_center
+                    index < order.indexOf(null) -> R.string.grace_button_align_left
+                    else -> R.string.grace_button_align_right
+                })
                 val slot = if (element == null) Modifier.width(24.dp) else Modifier.weight(1f)
                 Box(slot.heightIn(min = 48.dp).zIndex(if (isDragging || released != null) 1f else 0f)
                     .onGloballyPositioned { coordinates ->

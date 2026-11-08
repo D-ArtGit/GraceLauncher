@@ -261,7 +261,7 @@ internal fun HomeClockHeader(
         ClockRegionRowLayout(left.size, right.size,
             Modifier.then(if (wrapWidth) Modifier else Modifier.fillMaxWidth())
                 .then(if (inset) Modifier.padding(horizontal = LauncherLayout.ContentInset) else Modifier)
-                .testTag("clock_region:$name"), wrapWidth = wrapWidth) {
+                .testTag("clock_region:$name"), wrapWidth = wrapWidth, centered = row.centered) {
             (left + right).forEach { item ->
                 key(item) {
                     if (interactive) element(item, false, rowStyle, Modifier,
@@ -291,10 +291,10 @@ internal fun HomeClockHeader(
                     agendaRows.forEach { (current, fields) ->
                         key(current.id, current.startsAt) {
                             ClockAgendaContent(current, now, fields, regions.agenda.typography,
-                                if (inset) Modifier.padding(horizontal = LauncherLayout.ContentInset) else Modifier,
+                                Modifier.fillMaxWidth().then(if (inset) Modifier.padding(horizontal = LauncherLayout.ContentInset) else Modifier),
                                 animatePositions = !interactive,
                                 useLatinLetters = regions.agenda.useLatinLetters, wrapWidth = wrapWidth,
-                                color = colors.getValue(ClockColorPart.Agenda))
+                                color = colors.getValue(ClockColorPart.Agenda), alignment = regions.agenda.alignment)
                         }
                     }
                 }
@@ -547,9 +547,10 @@ private fun ClockQuarterTurn(maxRotatedHeightPx: Int, content: @Composable () ->
     }
 }
 
-/** Preserve both edge groups when large text needs truncation; place them physically left and right. */
+/** Center the complete ordered row or preserve its two edge groups when text needs truncation. */
 @Composable
 private fun ClockRegionRowLayout(leftCount: Int, rightCount: Int, modifier: Modifier, wrapWidth: Boolean = false,
+    centered: Boolean = false,
     content: @Composable () -> Unit) {
     Layout(content = content, modifier = modifier) { measurables, constraints ->
         val gap = 8.dp.roundToPx()
@@ -571,10 +572,15 @@ private fun ClockRegionRowLayout(leftCount: Int, rightCount: Int, modifier: Modi
         val above = baselines.maxOrNull() ?: 0
         val below = placeables.indices.maxOfOrNull { placeables[it].height - baselines[it] } ?: 0
         layout(layoutWidth, constraints.constrainHeight(above + below), mapOf(FirstBaseline to above)) {
+            var centerX = (layoutWidth - placeables.sumOf { it.width } - leftGaps - rightGaps - betweenGroups)
+                .coerceAtLeast(0) / 2
             var leftX = 0
             var rightX = layoutWidth - placeables.drop(leftCount).sumOf { it.width } - rightGaps
             placeables.forEachIndexed { index, placeable ->
-                if (index < leftCount) {
+                if (centered) {
+                    placeable.place(centerX, above - baselines[index])
+                    centerX += placeable.width + gap
+                } else if (index < leftCount) {
                     placeable.place(leftX, above - baselines[index])
                     leftX += placeable.width + gap
                 } else {
