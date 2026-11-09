@@ -974,7 +974,7 @@
     <string name="clock_color_agenda">Texto de la agenda</string>
     <string name="weather_mode_location_update_notifier">Notificador de actualización de ubicación</string>
     <string name="weather_mode_gadgetbridge">Gadgetbridge</string>
-    <string name="weather_gadgetbridge_setup">Habilita el uso compartido mediante Gadgetbridge en tu aplicación meteorológica. Si te solicita una aplicación receptora, selecciona Grace Launcher y, a continuación, actualiza la información meteorológica. Los nuevos datos aparecerán aquí automáticamente.</string>
+    <string name="weather_gadgetbridge_setup">Breezy Weather: habilita el uso compartido con Gadgetbridge, selecciona Grace Launcher y actualiza la información meteorológica.</string>
     <string name="weather_gadgetbridge_waiting">Esperando datos meteorológicos.</string>
     <string name="weather_gadgetbridge_loading">Cargando información meteorológica guardada…</string>
     <string name="weather_gadgetbridge_unavailable">No se pudo leer la información meteorológica guardada. Actualiza los datos del tiempo en la aplicación conectada para enviar una nueva actualización.</string>
@@ -1095,4 +1095,16 @@
     <string name="tasks_overdue_minutes">%1$dm vencida</string>
     <string name="tasks_overdue_hours">%1$dh vencida</string>
     <string name="tasks_overdue_days">%1$dd vencida</string>
+    <string name="agenda_undated_tasks">Tareas</string>
+    <string name="agenda_days_ago">Hace %1$dd</string>
+    <string name="tasks_no_unfinished">Sin tareas pendientes</string>
+    <string name="tasks_mark_complete">Marcar %1$s completada</string>
+    <string name="tasks_write_permission_required">Habilita la edición de tareas en los permisos de la aplicación para poder marcar las tareas como completadas.</string>
+    <string name="tasks_read_only">Esta tarea no se puede editar.</string>
+    <string name="tasks_task_unavailable">Esta tarea ya no está disponible.</string>
+    <string name="tasks_complete_error">No se pudo completar la tarea. Inténtalo de nuevo.</string>
+    <string name="weather_gadgetbridge_weathermaster_setup">WeatherMaster: Habilita el uso compartido con Gadgetbridge y las actualizaciones en segundo plano; luego, establece una ubicación predeterminada.</string>
+    <string name="weather_app">Aplicación a abrir</string>
+    <string name="weather_default_app">Breezy Weather (predeterminada)</string>
+    <string name="weather_choose_app_description">Elige qué aplicación se abre al tocar la información meteorológica.</string>
 </resources>
