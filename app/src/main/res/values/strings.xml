@@ -667,7 +667,8 @@
     <string name="weather_settings_forecast_days">Forecast days</string>
     <string name="weather_mode_location_update_notifier">Location Update Notifier</string>
     <string name="weather_mode_gadgetbridge">Gadgetbridge</string>
-    <string name="weather_gadgetbridge_setup">Enable Gadgetbridge sharing in your weather app. If it asks for a receiving app, select Grace Launcher, then refresh the weather. New data appears here automatically.</string>
+    <string name="weather_gadgetbridge_setup">Enable Gadgetbridge sharing in your weather app. If it asks for a receiving app, select Grace Launcher. Shared weather appears here automatically. In Breezy Weather, refresh the weather to send an update.</string>
+    <string name="weather_gadgetbridge_weathermaster_setup">WeatherMaster also needs background weather updates and a default location. Return to the home screen and wait for the next background update. Refreshing inside the app does not send data immediately.</string>
     <string name="weather_gadgetbridge_waiting">Waiting for weather data.</string>
     <string name="weather_gadgetbridge_loading">Loading saved weather…</string>
     <string name="weather_gadgetbridge_unavailable">Saved weather could not be read. Refresh the weather in the connected app to send a new update.</string>
@@ -675,6 +676,9 @@
     <string name="weather_temperature_unit">Temperature unit</string>
     <string name="weather_temperature_celsius">Celsius (°C)</string>
     <string name="weather_temperature_fahrenheit">Fahrenheit (°F)</string>
+    <string name="weather_app">App to open</string>
+    <string name="weather_default_app">Breezy Weather (default)</string>
+    <string name="weather_choose_app_description">Choose which app opens when you tap the weather.</string>
     <plurals name="weather_settings_days_value">
         <item quantity="one">%1$d day</item>
         <item quantity="other">%1$d days</item>

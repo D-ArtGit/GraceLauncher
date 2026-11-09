@@ -370,6 +370,19 @@ fun LauncherRoute(
                 }
             }
         },
+        openWeatherApp = {
+            val state = viewModel.uiState.value
+            val key = state.settings.weatherConnection.appKey
+            if (key == null) {
+                val intent = context.packageManager.getLaunchIntentForPackage(BreezyWeatherRepository.PACKAGE_NAME)
+                if (intent != null) openSystemApp(intent)
+                else Toast.makeText(context, R.string.app_unavailable, Toast.LENGTH_SHORT).show()
+            } else {
+                val app = state.allApps.firstOrNull { it.key == key && it.shortcut == null }
+                if (app != null) launchApp(app, null)
+                else Toast.makeText(context, R.string.app_unavailable, Toast.LENGTH_SHORT).show()
+            }
+        },
         openBreezyWeather = {
             val intent = context.packageManager.getLaunchIntentForPackage(BreezyWeatherRepository.PACKAGE_NAME)
             if (intent != null) openSystemApp(intent)
@@ -1149,7 +1162,7 @@ internal fun LauncherScreen(
                     overlay = LauncherOverlay.Agenda
                 },
                 onClockClick = onClockClick,
-                onWeatherClick = actions.openBreezyWeather,
+                onWeatherClick = actions.openWeatherApp,
                 onWidgetMenu = { overlay = LauncherOverlay.HomeWidgetMenu },
                 onCustomWidgetMenu = { overlay = LauncherOverlay.CustomWidgetMenu },
                 actions = actions,

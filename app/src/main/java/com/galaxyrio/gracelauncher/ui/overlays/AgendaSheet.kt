@@ -122,7 +122,7 @@ fun AgendaSheet(uiState: LauncherUiState, actions: LauncherActions, onRequestCal
                 if (date == today) {
                     if (weather != null) item(key = "today_weather") {
                         HourlyWeather(weather, now)
-                        WeatherSourceNote(weather, now, actions.openBreezyWeather)
+                        WeatherSourceNote(weather, now, actions.openWeatherApp)
                     }
                     else if (weatherEnabled && uiState.weather.status != WeatherStatus.Loading) item(key = "weather_unavailable") {
                         WeatherConnectionNotice(uiState.weather.status, actions,

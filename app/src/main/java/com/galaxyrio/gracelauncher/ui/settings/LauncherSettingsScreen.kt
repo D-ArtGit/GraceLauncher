@@ -76,7 +76,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 internal enum class SettingsPage {
-    Root, Productivity, Clock, ClockStyle, Calendar, CalendarSources, CalendarApp, Weather, Themes, Advanced, Language, About, HiddenApps, Folders, FolderEditor,
+    Root, Productivity, Clock, ClockStyle, Calendar, CalendarSources, CalendarApp, Weather, WeatherApp, Themes, Advanced, Language, About, HiddenApps, Folders, FolderEditor,
     Changelog, Licenses, AppLicense, IconPacks, IconDesigner, IconDesignerApp, PrivateSpace, PrivateSpaceEditor, Search,
     MediaPlayer, GraceButton, GraceAction, GraceApp, GraceShortcut, GraceFolder, Gestures, WorkProfile, WorkProfileEditor,
     LabGraceButton, LabGesture, LabPopup, LabAccessibility, LabDismiss, Fonts, FontColors, ListAppearance, Alphabet, ShortcutsFolders, AppStacks,
@@ -299,7 +299,9 @@ fun LauncherSettingsScreen(
                                 }
                             })
                     }
-                    SettingsPage.Weather -> WeatherSettings(uiState, actions, back)
+                    SettingsPage.Weather -> WeatherSettings(uiState, actions, back,
+                        onChooseApp = { navigate(SettingsPage.WeatherApp) })
+                    SettingsPage.WeatherApp -> WeatherAppSettings(uiState, actions, back)
                     SettingsPage.Themes -> ThemeSettings(uiState, actions, back,
                         onClockStyle = { navigate(SettingsPage.ClockStyle) }, onIconPacks = { navigate(SettingsPage.IconPacks) },
                         onFonts = { navigate(SettingsPage.Fonts) }, onListAppearance = { navigate(SettingsPage.ListAppearance) },

@@ -46,7 +46,7 @@ import com.galaxyrio.gracelauncher.ui.LauncherUiState
 import com.galaxyrio.gracelauncher.ui.weather.WeatherAttribution
 
 @Composable
-internal fun WeatherSettings(uiState: LauncherUiState, actions: LauncherActions, onBack: () -> Unit) {
+internal fun WeatherSettings(uiState: LauncherUiState, actions: LauncherActions, onBack: () -> Unit, onChooseApp: () -> Unit = {}) {
     val settings = uiState.settings
     val connection = settings.weatherConnection
     val gadgetbridge = connection.mode == WeatherConnectionMode.Gadgetbridge
@@ -118,6 +118,10 @@ internal fun WeatherSettings(uiState: LauncherUiState, actions: LauncherActions,
                     actions.updateSettings { it.copy(weatherConnection = it.weatherConnection.copy(mode = mode)) }
                 }
             }
+            item {
+                SettingsActionItem(stringResource(R.string.weather_app), weatherAppSummary(uiState),
+                    0, 1, "weather_app", onClick = onChooseApp)
+            }
             item { SettingsHeading(stringResource(if (gadgetbridge) R.string.weather_mode_gadgetbridge else R.string.weather_settings_connection)) }
             if (status != WeatherStatus.Ready && status != WeatherStatus.Disabled) item {
                 Text(
@@ -131,6 +135,14 @@ internal fun WeatherSettings(uiState: LauncherUiState, actions: LauncherActions,
                 Text(
                     stringResource(if (gadgetbridge) R.string.weather_gadgetbridge_setup else R.string.weather_settings_update_notifier),
                     Modifier.padding(horizontal = 4.dp, vertical = 8.dp).testTag("weather_update_notifier_hint"),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            if (settings.weatherEnabled && gadgetbridge) item {
+                Text(
+                    stringResource(R.string.weather_gadgetbridge_weathermaster_setup),
+                    Modifier.padding(horizontal = 4.dp, vertical = 8.dp).testTag("weather_weathermaster_hint"),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

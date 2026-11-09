@@ -562,7 +562,9 @@ class LauncherViewModel(application: Application) : AndroidViewModel(application
                     }
                     if (previous.isLoadingSettings || previous.settings.weatherEnabled != snapshot.settings.weatherEnabled ||
                         previous.settings.weatherLocationId != snapshot.settings.weatherLocationId ||
-                        previous.settings.weatherConnection != snapshot.settings.weatherConnection
+                        previous.settings.weatherConnection.mode != snapshot.settings.weatherConnection.mode ||
+                        previous.settings.weatherConnection.gadgetbridgeLocationId != snapshot.settings.weatherConnection.gadgetbridgeLocationId ||
+                        previous.settings.weatherConnection.temperatureUnit != snapshot.settings.weatherConnection.temperatureUnit
                     ) refreshWeather()
                     if (previous.isLoadingSettings) {
                         val favorites = _uiState.value.favoriteApps
@@ -589,7 +591,7 @@ class LauncherViewModel(application: Application) : AndroidViewModel(application
         val state = _uiState.value
         val saved = favorites + state.hiddenAppKeys + state.popups.flatMap { (owner, items) -> items.map { it.key } + owner } +
             state.settings.appCategories.orEmpty().flatMap { it.itemKeys } +
-            listOfNotNull(state.settings.mediaAppKey, state.settings.clockAppKey)
+            listOfNotNull(state.settings.mediaAppKey, state.settings.clockAppKey, state.settings.weatherConnection.appKey)
         val renames = renamedAppKeys(saved, installed)
         if (renames.isEmpty()) return
         renamingApps = viewModelScope.launch {

@@ -99,6 +99,7 @@ data class LauncherActions(
     val removeWidget: () -> Unit = {},
     val moveWidget: () -> Unit = {},
     val refreshWeather: () -> Unit = {},
+    val openWeatherApp: () -> Unit = {},
     val openBreezyWeather: () -> Unit = {},
     val installBreezyWeather: () -> Unit = {},
 )

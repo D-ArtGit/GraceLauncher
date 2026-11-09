@@ -204,6 +204,9 @@ class LauncherSettingsRepository(private val database: LauncherDatabase) {
         dao.readSettings()?.let {
             dao.saveSettings(it.copy(iconDesignJson = json(it.iconDesignJson), mediaAppKey = json(it.mediaAppKey),
                 graceButtonJson = json(it.graceButtonJson), clockAppKey = json(it.clockAppKey), clockStyleJson = json(it.clockStyleJson),
+                weatherConnectionJson = WeatherConnectionPreferences.decode(it.weatherConnectionJson).let { weather ->
+                    weather.copy(appKey = weather.appKey?.let(::key)).encode()
+                },
                 homeLayoutJson = json(it.homeLayoutJson), listAppearanceJson = json(it.listAppearanceJson),
                 privateSpaceJson = json(it.privateSpaceJson), workProfileJson = json(it.workProfileJson),
                 homeGesturesJson = json(it.homeGesturesJson), searchJson = json(it.searchJson),

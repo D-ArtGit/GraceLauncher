@@ -411,7 +411,7 @@ private fun HourlyWeatherCell(
 }
 
 @Composable
-fun WeatherSourceNote(snapshot: WeatherSnapshot, now: Instant, onOpenBreezy: () -> Unit) {
+fun WeatherSourceNote(snapshot: WeatherSnapshot, now: Instant, onOpenWeatherApp: () -> Unit) {
     val locale = LocalConfiguration.current.locales[0]
     val use24Hour = DateFormat.is24HourFormat(LocalContext.current)
     val timeFormat = remember(locale, use24Hour, snapshot.location.timeZone) {
@@ -430,7 +430,7 @@ fun WeatherSourceNote(snapshot: WeatherSnapshot, now: Instant, onOpenBreezy: () 
         Text(
             "${snapshot.location.name} · $updateLabel",
             modifier = Modifier.fillMaxWidth().testTag("weather_location")
-                .clip(RoundedCornerShape(8.dp)).clickable(role = Role.Button, onClick = onOpenBreezy)
+                .clip(RoundedCornerShape(8.dp)).clickable(role = Role.Button, onClick = onOpenWeatherApp)
                 .padding(vertical = 4.dp),
             fontSize = 11.sp, lineHeight = 16.sp,
             color = if (stale) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
