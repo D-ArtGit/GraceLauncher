@@ -372,7 +372,7 @@ fun HomeScreen(
                             agendaEvents = if (uiState.settings.calendarAgenda) uiState.events else emptyList(),
                             tasks = uiState.tasks.tasks, showTasks = uiState.settings.calendar.tasksOrg.enabled,
                             taskPreferences = uiState.settings.calendar.tasksOrg,
-                            onTaskClick = actions.openTask,
+                            onTaskClick = { onDateClick() },
                             calendarAboveClock = uiState.settings.calendarAboveClock,
                             deprioritizeAllDay = uiState.settings.calendar.deprioritizeAllDay,
                             interactive = inputEnabled, onLongClick = {}, onWeatherClick = onWeatherClick,

@@ -297,6 +297,9 @@
     <string name="themed_icons">Themed icons</string>
     <string name="themed_icons_description">For apps with a monochrome icon</string>
     <string name="your_agenda">Your agenda</string>
+    <string name="agenda_undated_tasks">No due date</string>
+    <string name="agenda_days_ago">%1$dd ago</string>
+    <string name="tasks_no_unfinished">No unfinished tasks</string>
     <string name="today">today</string>
     <string name="new_event">New event</string>
     <string name="calendar_permission_description">Connect your calendar to show upcoming events. Your agenda stays on this device.</string>
@@ -667,8 +670,8 @@
     <string name="weather_settings_forecast_days">Forecast days</string>
     <string name="weather_mode_location_update_notifier">Location Update Notifier</string>
     <string name="weather_mode_gadgetbridge">Gadgetbridge</string>
-    <string name="weather_gadgetbridge_setup">Enable Gadgetbridge sharing in your weather app. If it asks for a receiving app, select Grace Launcher. Shared weather appears here automatically. In Breezy Weather, refresh the weather to send an update.</string>
-    <string name="weather_gadgetbridge_weathermaster_setup">WeatherMaster also needs background weather updates and a default location. Return to the home screen and wait for the next background update. Refreshing inside the app does not send data immediately.</string>
+    <string name="weather_gadgetbridge_setup">Breezy Weather: Enable Gadgetbridge sharing, select Grace Launcher, and refresh the weather.</string>
+    <string name="weather_gadgetbridge_weathermaster_setup">WeatherMaster: Enable Gadgetbridge sharing and background updates, then set a default location.</string>
     <string name="weather_gadgetbridge_waiting">Waiting for weather data.</string>
     <string name="weather_gadgetbridge_loading">Loading saved weather…</string>
     <string name="weather_gadgetbridge_unavailable">Saved weather could not be read. Refresh the weather in the connected app to send a new update.</string>

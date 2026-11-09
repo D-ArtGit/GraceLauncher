@@ -32,14 +32,12 @@ import com.galaxyrio.gracelauncher.data.ClockTaskField
 import com.galaxyrio.gracelauncher.data.ClockTasks
 import com.galaxyrio.gracelauncher.data.tasks.TaskItem
 import com.galaxyrio.gracelauncher.data.tasks.TaskPriority
+import com.galaxyrio.gracelauncher.ui.components.taskRemainingText
 import com.galaxyrio.gracelauncher.ui.theme.rememberAppFontFamily
-import java.time.Duration
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.DecimalStyle
-import java.time.temporal.ChronoUnit
-import kotlin.math.abs
 
 internal fun clockTaskFields(task: TaskItem, requested: List<ClockTaskField>): List<ClockTaskField> = requested.filter {
     when (it) {
@@ -118,28 +116,5 @@ internal fun ClockTaskContent(
                 if (animatePositions) ClockRegionItemMotion(draw) else draw(Modifier)
             }
         }
-    }
-}
-
-@Composable
-private fun taskRemainingText(task: TaskItem, now: Instant): String {
-    val due = task.dueAt ?: return ""
-    if (task.dueAllDay) {
-        val zone = ZoneId.systemDefault()
-        val days = ChronoUnit.DAYS.between(now.atZone(zone).toLocalDate(), due.atZone(zone).toLocalDate())
-        return when {
-            days == 0L -> stringResource(R.string.tasks_due_today)
-            days > 0L -> stringResource(R.string.event_in_days, days)
-            else -> stringResource(R.string.tasks_overdue_days, -days)
-        }
-    }
-    val seconds = Duration.between(now, due).seconds
-    val distance = abs(seconds)
-    val minutes = (distance / 60 + if (distance % 60 > 0) 1 else 0).coerceAtLeast(1)
-    return when {
-        distance < 60 -> stringResource(if (seconds < 0) R.string.tasks_overdue_now else R.string.tasks_due_now)
-        minutes < 60 -> stringResource(if (seconds < 0) R.string.tasks_overdue_minutes else R.string.event_in_minutes, minutes)
-        minutes < 1440 -> stringResource(if (seconds < 0) R.string.tasks_overdue_hours else R.string.event_in_hours, minutes / 60)
-        else -> stringResource(if (seconds < 0) R.string.tasks_overdue_days else R.string.event_in_days, minutes / 1440)
     }
 }

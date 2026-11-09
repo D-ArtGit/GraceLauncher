@@ -294,6 +294,9 @@
     <string name="themed_icons">主题图标</string>
     <string name="themed_icons_description">适用于提供单色图标的应用</string>
     <string name="your_agenda">你的日程</string>
+    <string name="agenda_undated_tasks">无截止日期</string>
+    <string name="agenda_days_ago">%1$d 天前</string>
+    <string name="tasks_no_unfinished">没有未完成的任务</string>
     <string name="today">今天</string>
     <string name="new_event">新建日程</string>
     <string name="calendar_permission_description">连接日历以显示即将到来的日程。日程数据仅保留在本机。</string>
@@ -649,8 +652,8 @@
     <string name="weather_settings_forecast_days">预报天数</string>
     <string name="weather_mode_location_update_notifier">Location Update Notifier</string>
     <string name="weather_mode_gadgetbridge">Gadgetbridge</string>
-    <string name="weather_gadgetbridge_setup">在天气应用中开启 Gadgetbridge 数据共享；如需选择接收应用，请选择 Grace Launcher。共享的天气会自动显示在此处。使用 Breezy Weather 时，可刷新天气以发送更新。</string>
-    <string name="weather_gadgetbridge_weathermaster_setup">WeatherMaster 还需要开启后台天气更新并设置默认地点。返回桌面后，等待下一次后台更新；仅在应用内手动刷新不会立即发送数据。</string>
+    <string name="weather_gadgetbridge_setup">Breezy Weather：开启 Gadgetbridge 共享，选择 Grace Launcher，然后刷新天气。</string>
+    <string name="weather_gadgetbridge_weathermaster_setup">WeatherMaster：开启 Gadgetbridge 共享和后台更新，设置默认地点。</string>
     <string name="weather_gadgetbridge_waiting">正在等待天气数据。</string>
     <string name="weather_gadgetbridge_loading">正在读取已保存的天气…</string>
     <string name="weather_gadgetbridge_unavailable">无法读取已保存的天气。请在已连接的天气应用中刷新天气，发送新的数据。</string>
