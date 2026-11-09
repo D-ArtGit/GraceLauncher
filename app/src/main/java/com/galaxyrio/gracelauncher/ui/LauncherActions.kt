@@ -13,6 +13,7 @@ import com.galaxyrio.gracelauncher.data.ClockStyle
 import com.galaxyrio.gracelauncher.data.MediaPlayerStyle
 import com.galaxyrio.gracelauncher.data.LauncherShortcut
 import com.galaxyrio.gracelauncher.data.ScheduleEvent
+import com.galaxyrio.gracelauncher.data.tasks.TaskItem
 import com.galaxyrio.gracelauncher.data.ShortcutResult
 import com.galaxyrio.gracelauncher.data.ShortcutStatus
 import com.galaxyrio.gracelauncher.data.WallpaperTextMode
@@ -50,6 +51,12 @@ data class LauncherActions(
     val openEvent: (ScheduleEvent) -> Unit = {},
     val refreshAgenda: () -> Unit = {},
     val refreshCalendarSources: () -> Unit = {},
+    val requestTasksAccess: () -> Unit = {},
+    val openTasksAccessSettings: () -> Unit = {},
+    val refreshTasks: () -> Unit = {},
+    val openTasks: () -> Unit = {},
+    val getTasks: () -> Unit = {},
+    val openTask: (TaskItem) -> Unit = {},
     val textMode: (WallpaperTextMode) -> Unit = {},
     val themedIcons: (Boolean) -> Unit = {},
     val refreshIconPacks: () -> Unit = {},

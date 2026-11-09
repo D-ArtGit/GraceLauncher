@@ -50,6 +50,7 @@ internal fun LazyListScope.clockRegionSettings(
     onWeatherIcons: () -> Unit,
     onWeatherContent: () -> Unit,
     onAgendaContent: () -> Unit,
+    onTaskContent: () -> Unit,
     onRegionFont: (ClockRegion) -> Unit,
 ) {
     fun group(region: ClockRegion, controls: List<ClockControl>) {
@@ -317,6 +318,59 @@ internal fun LazyListScope.clockRegionSettings(
             index, count, "clock_agenda_latin_letters", enabled) { value -> changeAgenda { it.copy(useLatinLetters = value) } }
     }
     group(ClockRegion.Agenda, agendaControls)
+
+    val tasks = regions.tasks
+    fun changeTasks(transform: (ClockTasks) -> ClockTasks) = onChange { current ->
+        current.copy(tasks = transform(current.tasks))
+    }
+    val taskControls = mutableListOf(ClockControl("contents") { index, count ->
+        SettingsActionItem(stringResource(R.string.clock_task_contents), null,
+            index, count, "clock_task_contents", enabled = enabled, onClick = onTaskContent)
+    })
+    taskControls += ClockControl("task_count") { index, count ->
+        ClockSlider(stringResource(R.string.clock_task_count), tasks.taskCount, 1, 0..9, 1,
+            index, count, "clock_task_count", enabled,
+            valueLabel = if (tasks.taskCount == 0) stringResource(R.string.clock_agenda_unlimited) else tasks.taskCount.toString(),
+            discrete = true) { value -> changeTasks { it.copy(taskCount = value) } }
+    }
+    if (tasks.selected.isNotEmpty()) {
+        val defaults = ClockRowTypography()
+        taskControls += ClockControl("alignment") { index, count ->
+            ClockControlSegment(index, count, "clock_task_alignment") {
+                ClockChoices(ClockAlignment.entries, tasks.alignment, enabled, "clock_task_alignment",
+                    label = { it.label() }, onSelect = { alignment -> changeTasks { it.copy(alignment = alignment) } })
+            }
+        }
+        taskControls += ClockControl("font") { index, count ->
+            SettingsActionItem(stringResource(R.string.settings_font), appFontLabel(tasks.typography.fontId), index, count,
+                "clock_task_font_selector", enabled = enabled) { onRegionFont(ClockRegion.Task) }
+        }
+        taskControls += ClockControl("size") { index, count ->
+            ClockSlider(stringResource(R.string.clock_size), tasks.typography.size, defaults.size, 8..72, 1,
+                index, count, "clock_task_size", enabled) { value ->
+                changeTasks { it.copy(typography = it.typography.copy(size = value)) }
+            }
+        }
+        taskControls += ClockControl("weight") { index, count ->
+            ClockSlider(stringResource(R.string.clock_weight), tasks.typography.weight, defaults.weight, 100..900, 100,
+                index, count, "clock_task_weight", enabled) { value ->
+                changeTasks { it.copy(typography = it.typography.copy(weight = value)) }
+            }
+        }
+        taskControls += ClockControl("shadow") { index, count ->
+            ClockSlider(stringResource(R.string.clock_font_shadow), tasks.typography.fontShadow, defaults.fontShadow, 0..24, 1,
+                index, count, "clock_task_font_shadow", enabled) { value ->
+                changeTasks { it.copy(typography = it.typography.copy(fontShadow = value)) }
+            }
+        }
+    }
+    if (ClockTaskField.DueDate in tasks.selected || ClockTaskField.StartDate in tasks.selected) {
+        taskControls += ClockControl("latin_letters") { index, count ->
+            SettingsToggleItem(stringResource(R.string.clock_use_latin_letters), null, tasks.useLatinLetters,
+                index, count, "clock_task_latin_letters", enabled) { value -> changeTasks { it.copy(useLatinLetters = value) } }
+        }
+    }
+    group(ClockRegion.Task, taskControls)
 
     item("clock_layout_heading") { SettingsHeading(stringResource(R.string.clock_layout_section)) }
     val layoutCount = 5
@@ -591,6 +645,7 @@ internal fun ClockRegion.label(): String = stringResource(when (this) {
     ClockRegion.Secondary -> R.string.clock_secondary_region
     ClockRegion.Tertiary -> R.string.clock_tertiary_region
     ClockRegion.Agenda -> R.string.clock_agenda_region
+    ClockRegion.Task -> R.string.clock_task_region
 })
 
 @Composable

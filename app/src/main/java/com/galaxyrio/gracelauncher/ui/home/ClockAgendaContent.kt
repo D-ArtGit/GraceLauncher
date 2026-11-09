@@ -100,7 +100,8 @@ internal fun ClockAgendaContent(
     val durationText = if (ClockAgendaField.Duration in fields) agendaDuration(event) else ""
     val countdown = if (ClockAgendaField.Countdown in fields) eventRemainingText(event, now) else ""
 
-    AgendaFieldsLayout(fields, modifier.then(if (wrapWidth) Modifier else Modifier.fillMaxWidth())
+    ClockMetadataLayout(fields.map { it == ClockAgendaField.Title || it == ClockAgendaField.Location || it == ClockAgendaField.Calendar },
+        modifier.then(if (wrapWidth) Modifier else Modifier.fillMaxWidth())
         .testTag("schedule_line"), wrapWidth, alignment) {
         fields.forEachIndexed { index, field ->
             key(field) {
@@ -157,8 +158,8 @@ private fun agendaDuration(event: ScheduleEvent): String {
 
 /** Keep short metadata readable first; long titles, places and calendar names take remaining space. */
 @Composable
-private fun AgendaFieldsLayout(
-    fields: List<ClockAgendaField>,
+internal fun ClockMetadataLayout(
+    flexible: List<Boolean>,
     modifier: Modifier,
     wrapWidth: Boolean,
     alignment: ClockAlignment,
@@ -166,14 +167,13 @@ private fun AgendaFieldsLayout(
 ) {
     Layout(content = content, modifier = modifier) { measurables, constraints ->
         val gap = 5.dp.roundToPx()
-        val gaps = gap.toLong() * (fields.size - 1).coerceAtLeast(0)
+        val gaps = gap.toLong() * (flexible.size - 1).coerceAtLeast(0)
         val widths = measurables.map { it.maxIntrinsicWidth(Constraints.Infinity).coerceAtLeast(1) }
         val naturalWidth = widths.sumOf { it.toLong() }
         val layoutWidth = if (wrapWidth) constraints.constrainWidth(
             (naturalWidth + gaps).coerceAtMost(constraints.maxWidth.toLong()).toInt(),
         ) else constraints.maxWidth
         val available = (layoutWidth.toLong() - gaps).coerceAtLeast(0)
-        val flexible = fields.map { it == ClockAgendaField.Title || it == ClockAgendaField.Location || it == ClockAgendaField.Calendar }
         val total = naturalWidth.coerceAtLeast(1)
         val fixed = widths.indices.filterNot { flexible[it] }.sumOf { widths[it].toLong() }
         val flexibleTotal = (total - fixed).coerceAtLeast(1)

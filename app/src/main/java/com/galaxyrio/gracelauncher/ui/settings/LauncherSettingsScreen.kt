@@ -83,7 +83,7 @@ internal enum class SettingsPage {
     GraceButtonAppearance, GraceButtonPosition, AgendaAppearance, SearchAppearance, MediaPlayerAppearance,
     WidgetScreen, WidgetScreenEditor, Homepage, AppList, FeedScreen, StatusScreen, DigitalWellbeing, TabletsFoldables,
     Wallpaper, WallpaperDesigner,
-    AppCategories, CategoryEditor,
+    AppCategories, CategoryEditor, TasksOrg, TaskLists,
 }
 
 /** The window's existing system-bar owner follows the active settings surface. */
@@ -344,9 +344,13 @@ fun LauncherSettingsScreen(
                     SettingsPage.Calendar -> CalendarSettings(uiState, actions, back,
                         onCalendars = { navigate(SettingsPage.CalendarSources) },
                         onCalendarApp = { navigate(SettingsPage.CalendarApp) },
+                        onTasks = { navigate(SettingsPage.TasksOrg) },
                         onAppearance = { navigate(SettingsPage.ClockStyle) })
                     SettingsPage.CalendarSources -> CalendarSourcesSettings(uiState, actions, back)
                     SettingsPage.CalendarApp -> CalendarAppSettings(uiState, actions, back)
+                    SettingsPage.TasksOrg -> TasksSettings(uiState, actions, back,
+                        onLists = { navigate(SettingsPage.TaskLists) }, onAppearance = { navigate(SettingsPage.ClockStyle) })
+                    SettingsPage.TaskLists -> TasksListsSettings(uiState, actions, back)
                     SettingsPage.Advanced -> AdvancedSettings(uiState, actions, back, navigate,
                         onChooseDefaultHome = { if (isCurrent()) actions.requestDefaultHome() })
                     SettingsPage.Language -> LanguageSettings(back)

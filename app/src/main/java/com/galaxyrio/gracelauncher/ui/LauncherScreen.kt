@@ -85,6 +85,7 @@ import androidx.core.net.toUri
 import androidx.core.content.ContextCompat
 import com.galaxyrio.gracelauncher.R
 import com.galaxyrio.gracelauncher.platform.openCalendarEvent
+import com.galaxyrio.gracelauncher.data.tasks.TasksRepository
 import com.galaxyrio.gracelauncher.MainActivity
 import com.galaxyrio.gracelauncher.WidgetSetupActivity
 import com.galaxyrio.gracelauncher.data.LauncherApp
@@ -208,6 +209,9 @@ fun LauncherRoute(
     }
     val homeRoleLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         viewModel.refreshProfiles()
+    }
+    val tasksPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+        viewModel.refreshTasks()
     }
     val mediaAccessLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         viewModel.refreshApps()
@@ -466,6 +470,25 @@ fun LauncherRoute(
         },
         refreshAgenda = viewModel::refreshSchedule,
         refreshCalendarSources = viewModel::refreshCalendarSources,
+        refreshTasks = viewModel::refreshTasks,
+        requestTasksAccess = { tasksPermissionLauncher.launch(TasksRepository.ReadPermission) },
+        openTasksAccessSettings = { openSystemApp(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.fromParts("package", context.packageName, null))) },
+        openTasks = {
+            val intent = context.packageManager.getLaunchIntentForPackage(TasksRepository.Package)
+            if (intent != null) openSystemApp(intent)
+            else Toast.makeText(context, R.string.app_unavailable, Toast.LENGTH_SHORT).show()
+        },
+        getTasks = { openSystemApp(Intent(Intent.ACTION_VIEW, "https://tasks.org".toUri())) },
+        openTask = { task ->
+            val intent = Intent(Intent.ACTION_VIEW).setDataAndType(TasksRepository.taskUri(task.id),
+                "vnd.android.cursor.item/vnd.org.tasks.task").setPackage(TasksRepository.Package)
+            runCatching { context.startActivity(intent) }.onFailure {
+                val home = context.packageManager.getLaunchIntentForPackage(TasksRepository.Package)
+                if (home != null) openSystemApp(home)
+                else Toast.makeText(context, R.string.app_unavailable, Toast.LENGTH_SHORT).show()
+            }
+        },
         textMode = viewModel::setTextMode,
         themedIcons = viewModel::setThemedIcons,
         refreshIconPacks = viewModel::refreshApps,

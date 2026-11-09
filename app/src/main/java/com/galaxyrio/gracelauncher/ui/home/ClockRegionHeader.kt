@@ -77,6 +77,9 @@ import com.galaxyrio.gracelauncher.ui.theme.resolvedFontColor
 import com.galaxyrio.gracelauncher.ui.weather.HomeWeather
 import com.galaxyrio.gracelauncher.ui.weather.hasHomeWeatherContent
 import java.time.Instant
+import com.galaxyrio.gracelauncher.data.tasks.TaskItem
+import com.galaxyrio.gracelauncher.data.tasks.TasksPreferences
+import com.galaxyrio.gracelauncher.data.tasks.visibleTaskItems
 import kotlin.math.roundToInt
 import kotlin.math.ceil
 
@@ -105,8 +108,12 @@ internal fun HomeClockHeader(
     clockActive: Boolean = true,
     deprioritizeAllDay: Boolean = true,
     batteryOverride: LauncherBatteryState? = null,
+    tasks: List<TaskItem> = emptyList(),
+    showTasks: Boolean = false,
+    onTaskClick: (TaskItem) -> Unit = {},
+    taskPreferences: TasksPreferences = TasksPreferences(),
 ) {
-    val regions = clockStyle.regions
+    val regions = clockStyle.regions ?: if (showTasks) clockStyle.resolvedRegions(calendarAboveClock) else null
     if (regions == null) {
         LegacyHomeClockHeader(now, event, onDateClick, onClockClick, showBattery, clockStyle, weather ?: weatherSnapshot?.current,
             modifier, interactive, clockTag, dateTag, onLongClick, onAnchorOffsetChange,
@@ -138,6 +145,9 @@ internal fun HomeClockHeader(
         }
         .let { rows -> if (regions.agenda.eventCount > 0) rows.take(regions.agenda.eventCount) else rows }
         else emptyList()
+    val taskRows = if (showTasks) visibleTaskItems(tasks, taskPreferences, locale = locale).mapNotNull { task ->
+        clockTaskFields(task, regions.tasks.visibleFields).takeIf { it.isNotEmpty() }?.let { task to it }
+    }.let { rows -> if (regions.tasks.taskCount > 0) rows.take(regions.tasks.taskCount) else rows } else emptyList()
     fun isVisible(element: ClockElement): Boolean = when (element) {
         ClockElement.Clock -> showClock
         ClockElement.Weekday, ClockElement.Date -> showCalendar
@@ -307,12 +317,36 @@ internal fun HomeClockHeader(
         }
     }
 
+    @Composable
+    fun taskRegion(inset: Boolean = true, wrapWidth: Boolean = false) {
+        if (taskRows.isEmpty()) return
+        val widthModifier = if (wrapWidth) Modifier else Modifier.fillMaxWidth()
+        Column(widthModifier.testTag("clock_region:Task")) {
+            taskRows.forEach { (task, fields) ->
+                key(task.id) {
+                    val interactions = remember { MutableInteractionSource() }
+                    Box(widthModifier.testTag("home_task:${task.id}")
+                        .then(if (interactive) Modifier.combinedClickable(interactionSource = interactions, indication = null,
+                            role = Role.Button, onClick = { onTaskClick(task) }, onLongClick = onLongClick) else Modifier),
+                        propagateMinConstraints = wrapWidth) {
+                        ClockTaskContent(task, now, fields, regions.tasks, colors.getValue(ClockColorPart.Task),
+                            Modifier.then(if (inset) Modifier.padding(horizontal = LauncherLayout.ContentInset) else Modifier),
+                            animatePositions = !interactive, wrapWidth = wrapWidth)
+                        if (interactive) Box(Modifier.matchParentSize().clip(LauncherLayout.RowShape)
+                            .indication(interactions, ripple(color = colors.getValue(ClockColorPart.Task))))
+                    }
+                }
+            }
+        }
+    }
+
     val visibleRegions = regions.regionOrder.filter { region ->
         when (region) {
             ClockRegion.Primary -> primaryVisible
             ClockRegion.Secondary -> regions.secondary.selected.any(::isVisible)
             ClockRegion.Tertiary -> regions.tertiary.selected.any(::isVisible)
             ClockRegion.Agenda -> agendaRows.isNotEmpty()
+            ClockRegion.Task -> taskRows.isNotEmpty()
         }
     }
     @Composable
@@ -326,6 +360,7 @@ internal fun HomeClockHeader(
                             ClockRegion.Secondary -> rowRegion(regions.secondary, "Secondary", inset, wrapWidth = true)
                             ClockRegion.Tertiary -> rowRegion(regions.tertiary, "Tertiary", inset, wrapWidth = true)
                             ClockRegion.Agenda -> agendaRegion(inset, wrapWidth = true)
+                            ClockRegion.Task -> taskRegion(inset, wrapWidth = true)
                         }
                     }
                 }
@@ -345,6 +380,7 @@ internal fun HomeClockHeader(
                         ClockRegion.Secondary -> rowRegion(regions.secondary, "Secondary", inset, wrapWidth)
                         ClockRegion.Tertiary -> rowRegion(regions.tertiary, "Tertiary", inset, wrapWidth)
                         ClockRegion.Agenda -> agendaRegion(inset, wrapWidth)
+                        ClockRegion.Task -> taskRegion(inset, wrapWidth)
                     }
                 }
             }

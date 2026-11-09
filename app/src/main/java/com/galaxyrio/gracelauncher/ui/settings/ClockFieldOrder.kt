@@ -33,9 +33,23 @@ import androidx.compose.ui.zIndex
 import com.galaxyrio.gracelauncher.R
 import com.galaxyrio.gracelauncher.data.ClockAgendaField
 import com.galaxyrio.gracelauncher.data.ClockWeatherField
+import com.galaxyrio.gracelauncher.data.ClockTaskField
 import com.galaxyrio.gracelauncher.ui.overlays.FavoritesReorderState
 import com.galaxyrio.gracelauncher.ui.overlays.rememberReorderTranslation
 import kotlinx.coroutines.isActive
+
+@Composable
+internal fun ClockTaskField.label(): String = stringResource(when (this) {
+    ClockTaskField.Title -> R.string.clock_task_field_title
+    ClockTaskField.Countdown -> R.string.clock_task_field_countdown
+    ClockTaskField.DueDate -> R.string.clock_task_field_due_date
+    ClockTaskField.DueTime -> R.string.clock_task_field_due_time
+    ClockTaskField.StartDate -> R.string.clock_task_field_start_date
+    ClockTaskField.Priority -> R.string.clock_task_field_priority
+    ClockTaskField.List -> R.string.clock_task_field_list
+    ClockTaskField.Notes -> R.string.clock_task_field_notes
+    ClockTaskField.Color -> R.string.clock_task_field_color
+})
 
 /** Like the color picker, this panel stays below the live preview and edits the current draft. */
 @Composable

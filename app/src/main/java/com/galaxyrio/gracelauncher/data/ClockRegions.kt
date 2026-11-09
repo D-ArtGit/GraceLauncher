@@ -4,7 +4,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 enum class ClockElement { Clock, Weekday, Date, Battery, Weather }
-enum class ClockRegion { Primary, Secondary, Tertiary, Agenda }
+enum class ClockRegion { Primary, Secondary, Tertiary, Agenda, Task }
 enum class ClockAlignment { Left, Center, Right }
 
 data class ClockRowTypography(
@@ -103,6 +103,7 @@ data class ClockRegions(
     val rotateAll: Boolean = false,
     val regionSpacing: Int = 2,
     val agenda: ClockAgenda = ClockAgenda(),
+    val tasks: ClockTasks = ClockTasks(),
     val weather: ClockWeather = ClockWeather(),
     val battery: ClockBattery = ClockBattery(),
 ) {
@@ -117,13 +118,17 @@ data class ClockRegions(
         val primaryItems = setOfNotNull(primary)
         val secondary = secondary.normalized().let { it.copy(selected = it.selected - primaryItems) }
         val tertiary = tertiary.normalized().let { it.copy(selected = it.selected - primaryItems - secondary.selected) }
+        val completedOrder = (regionOrder + ClockRegion.entries.filter { it != ClockRegion.Task }).distinct().toMutableList()
+        // Existing saved orders gain Tasks immediately below Agenda, wherever Agenda was moved.
+        if (ClockRegion.Task !in completedOrder) completedOrder.add(completedOrder.indexOf(ClockRegion.Agenda) + 1, ClockRegion.Task)
         return copy(
             primaryFaces = primaryFaces.mapValues { it.value.normalized() },
             secondary = secondary,
             tertiary = tertiary,
-            regionOrder = (regionOrder + ClockRegion.entries).distinct(),
+            regionOrder = completedOrder,
             regionSpacing = regionSpacing.coerceIn(0, 64),
             agenda = agenda.normalized(),
+            tasks = tasks.normalized(),
             weather = weather.normalized(),
             battery = battery.normalized(),
         )
@@ -132,12 +137,12 @@ data class ClockRegions(
     /** Primary keeps its selection until cleared; the other two regions can exchange elements. */
     fun select(region: ClockRegion, element: ClockElement, selected: Boolean): ClockRegions {
         val current = normalized()
-        if (region == ClockRegion.Agenda) return current
+        if (region == ClockRegion.Agenda || region == ClockRegion.Task) return current
         if (!selected) return when (region) {
             ClockRegion.Primary -> if (current.primary == element) current.copy(primary = null) else current
             ClockRegion.Secondary -> current.copy(secondary = current.secondary.copy(selected = current.secondary.selected - element))
             ClockRegion.Tertiary -> current.copy(tertiary = current.tertiary.copy(selected = current.tertiary.selected - element))
-            ClockRegion.Agenda -> current
+            ClockRegion.Agenda, ClockRegion.Task -> current
         }
         if (region != ClockRegion.Primary && element == current.primary) return current
         return current.copy(
@@ -160,6 +165,7 @@ data class ClockRegions(
             secondary = secondary.copy(typography = secondary.typography.clean()),
             tertiary = tertiary.copy(typography = tertiary.typography.clean()),
             agenda = agenda.copy(typography = agenda.typography.clean()),
+            tasks = tasks.copy(typography = tasks.typography.clean()),
         )
     }
 
@@ -173,6 +179,7 @@ data class ClockRegions(
             put("rotateAll", regions.rotateAll)
             put("regionSpacing", regions.regionSpacing)
             put("agenda", regions.agenda.json())
+            put("tasks", regions.tasks.json())
             put("weather", regions.weather.json())
             put("battery", regions.battery.json())
             put("regionOrder", JSONArray().apply { regions.regionOrder.forEach { put(it.name) } })
@@ -232,15 +239,16 @@ data class ClockRegions(
                 primaryFaces = mapOf(ClockElement.Clock to clockFace, ClockElement.Weekday to weekdayFace),
                 stackedClock = source.layout.stacked,
                 secondary = ClockRegionRow(selected = visible - setOfNotNull(primary)),
-                regionOrder = if (calendarAboveClock) listOf(ClockRegion.Secondary, ClockRegion.Primary, ClockRegion.Tertiary, ClockRegion.Agenda)
+                regionOrder = if (calendarAboveClock) listOf(ClockRegion.Secondary, ClockRegion.Primary, ClockRegion.Tertiary, ClockRegion.Agenda, ClockRegion.Task)
                     else ClockRegion.entries,
             )
         }
 
         /** Complete the existing designs without borrowing content choices from the editor draft. */
         internal fun fromPreset(style: ClockStyle): ClockRegions = fromLegacy(style).copy(
-            regionOrder = listOf(ClockRegion.Primary, ClockRegion.Secondary, ClockRegion.Tertiary, ClockRegion.Agenda),
+            regionOrder = listOf(ClockRegion.Primary, ClockRegion.Secondary, ClockRegion.Tertiary, ClockRegion.Agenda, ClockRegion.Task),
             regionSpacing = 2,
+            tasks = ClockTasks(),
             agenda = ClockAgenda(
                 order = listOf(ClockAgendaField.Title, ClockAgendaField.Countdown, ClockAgendaField.Time,
                     ClockAgendaField.Date, ClockAgendaField.Duration, ClockAgendaField.Location,
@@ -277,6 +285,7 @@ data class ClockRegions(
                     else legacyRotation == "All",
                 regionSpacing = json.optInt("regionSpacing", defaults.regionSpacing),
                 agenda = ClockAgenda.decode(json.optJSONObject("agenda")),
+                tasks = ClockTasks.decode(json.optJSONObject("tasks")),
                 weather = ClockWeather.decode(json.optJSONObject("weather")),
                 battery = ClockBattery.decode(json.optJSONObject("battery")),
                 regionOrder = json.optJSONArray("regionOrder")?.let { array ->
