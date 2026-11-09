@@ -86,6 +86,7 @@ import androidx.core.content.ContextCompat
 import com.galaxyrio.gracelauncher.R
 import com.galaxyrio.gracelauncher.platform.openCalendarEvent
 import com.galaxyrio.gracelauncher.data.tasks.TasksRepository
+import com.galaxyrio.gracelauncher.data.tasks.TaskCompletionResult
 import com.galaxyrio.gracelauncher.MainActivity
 import com.galaxyrio.gracelauncher.WidgetSetupActivity
 import com.galaxyrio.gracelauncher.data.LauncherApp
@@ -212,6 +213,25 @@ fun LauncherRoute(
     }
     val tasksPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
         viewModel.refreshTasks()
+    }
+    fun finishTask(id: Long) {
+        viewModel.completeTask(id) { result ->
+            val message = when (result) {
+                TaskCompletionResult.Success -> null
+                TaskCompletionResult.PermissionRequired -> R.string.tasks_write_permission_required
+                TaskCompletionResult.ReadOnly -> R.string.tasks_read_only
+                TaskCompletionResult.NotFound -> R.string.tasks_task_unavailable
+                TaskCompletionResult.Error -> R.string.tasks_complete_error
+            }
+            if (message != null) Toast.makeText(context.applicationContext, message, Toast.LENGTH_LONG).show()
+        }
+    }
+    var taskAwaitingWritePermission by rememberSaveable { mutableStateOf<Long?>(null) }
+    val tasksWritePermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        val id = taskAwaitingWritePermission
+        taskAwaitingWritePermission = null
+        if (granted && id != null) finishTask(id)
+        else if (!granted) Toast.makeText(context, R.string.tasks_write_permission_required, Toast.LENGTH_LONG).show()
     }
     val mediaAccessLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         viewModel.refreshApps()
@@ -500,6 +520,16 @@ fun LauncherRoute(
                 val home = context.packageManager.getLaunchIntentForPackage(TasksRepository.Package)
                 if (home != null) openSystemApp(home)
                 else Toast.makeText(context, R.string.app_unavailable, Toast.LENGTH_SHORT).show()
+            }
+        },
+        completeTask = { task ->
+            if (taskAwaitingWritePermission == null) {
+                if (ContextCompat.checkSelfPermission(context, TasksRepository.WritePermission) == PackageManager.PERMISSION_GRANTED) {
+                    finishTask(task.id)
+                } else {
+                    taskAwaitingWritePermission = task.id
+                    tasksWritePermissionLauncher.launch(TasksRepository.WritePermission)
+                }
             }
         },
         textMode = viewModel::setTextMode,

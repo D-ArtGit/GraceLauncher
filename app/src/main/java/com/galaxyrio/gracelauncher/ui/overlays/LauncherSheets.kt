@@ -234,13 +234,20 @@ internal fun LauncherOverlays(
         )
         return
     }
-    val maxHeight = panelWindowHeight() * 0.9f
+    val isAgenda = overlay == LauncherOverlay.Agenda
+    val maxHeight = panelWindowHeight() * (if (isAgenda) 1f else 0.9f)
     LauncherPanelTheme {
         val sheetColor = if (overlay == LauncherOverlay.Agenda) MaterialTheme.colorScheme.surfaceContainer
             else MaterialTheme.colorScheme.surface
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = !isAgenda)
+        val statusBarHeight = WindowInsets.statusBars.getTop(LocalDensity.current)
+        val coversStatusBar by remember(sheetState, statusBarHeight) {
+            derivedStateOf { runCatching { sheetState.requireOffset() <= statusBarHeight }.getOrDefault(false) }
+        }
         ModalBottomSheet(
             onDismissRequest = { onChange((overlay as? LauncherOverlay.AppDetails)?.returnTo) },
-            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+            sheetState = sheetState,
+            sheetMaxWidth = if (isAgenda) Dp.Unspecified else BottomSheetDefaults.SheetMaxWidth,
             modifier = Modifier.testTag("launcher_sheet"),
             shape = RoundedCornerShape(topStart = 22.dp, topEnd = 22.dp),
             containerColor = sheetColor,
@@ -248,7 +255,7 @@ internal fun LauncherOverlays(
             scrimColor = Color.Black.copy(alpha = 0.6f),
             dragHandle = null,
             properties = ModalBottomSheetProperties(
-                isAppearanceLightStatusBars = false,
+                isAppearanceLightStatusBars = isAgenda && coversStatusBar && sheetColor.luminance() > 0.5f,
                 isAppearanceLightNavigationBars = sheetColor.luminance() > 0.5f,
             ),
         ) {

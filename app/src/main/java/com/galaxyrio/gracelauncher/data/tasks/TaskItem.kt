@@ -19,11 +19,14 @@ data class TaskItem(
     val listId: Long = 0L,
     val listName: String = "",
     val listColor: Int? = null,
+    val isReadOnly: Boolean = false,
 )
 
 data class TaskList(val id: Long, val title: String, val color: Int?, val accountId: Long, val accountName: String)
 
 enum class TasksStatus { Disabled, Loading, Ready, NotInstalled, PermissionRequired, UpdateRequired, Error }
+
+enum class TaskCompletionResult { Success, PermissionRequired, ReadOnly, NotFound, Error }
 
 data class TasksState(
     val status: TasksStatus = TasksStatus.Disabled,

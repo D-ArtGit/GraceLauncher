@@ -29,6 +29,7 @@ import com.galaxyrio.gracelauncher.data.CalendarSnapshot
 import com.galaxyrio.gracelauncher.data.CalendarQuery
 import com.galaxyrio.gracelauncher.data.CalendarSource
 import com.galaxyrio.gracelauncher.data.tasks.TasksRepository
+import com.galaxyrio.gracelauncher.data.tasks.TaskCompletionResult
 import com.galaxyrio.gracelauncher.data.tasks.TasksSnapshot
 import com.galaxyrio.gracelauncher.data.tasks.TasksState
 import com.galaxyrio.gracelauncher.data.tasks.TasksStatus
@@ -134,6 +135,7 @@ data class LauncherUiState(
     val calendarSources: List<CalendarSource> = emptyList(),
     val calendarSourcesStatus: ScheduleStatus = ScheduleStatus.Loading,
     val tasks: TasksState = TasksState(),
+    val completingTaskIds: Set<Long> = emptySet(),
     val hasShortcutAccess: Boolean = false,
     val categories: Map<String, String> = emptyMap(),
     val textMode: WallpaperTextMode = WallpaperTextMode.Auto,
@@ -1050,6 +1052,34 @@ class LauncherViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun refreshTasks() = updateTasksPolicy()
+
+    fun completeTask(id: Long, onResult: (TaskCompletionResult) -> Unit) {
+        val state = _uiState.value
+        if (state.isLoadingSettings || state.settingsLoadFailed || !state.settings.calendar.tasksOrg.enabled ||
+            id in state.completingTaskIds) return
+        val task = state.tasks.tasks.firstOrNull { it.id == id } ?: return
+        if (task.isReadOnly) {
+            onResult(TaskCompletionResult.ReadOnly)
+            return
+        }
+        _uiState.update { it.copy(completingTaskIds = it.completingTaskIds + id) }
+        viewModelScope.launch {
+            try {
+                val result = tasksRepository.completeTask(id)
+                if (result == TaskCompletionResult.Success || result == TaskCompletionResult.NotFound) {
+                    val current = _uiState.value
+                    if (current.settings.calendar.tasksOrg.enabled && !current.settingsLoadFailed) {
+                        // A recurring task can keep its ID and advance to the next date. Adopt the
+                        // provider result before re-enabling its checkbox, rather than deleting it.
+                        tasksRepository.refresh(current.settings.calendar.tasksOrg.selectedListIds)?.let(::adoptTasksSnapshot)
+                    }
+                }
+                onResult(result)
+            } finally {
+                _uiState.update { it.copy(completingTaskIds = it.completingTaskIds - id) }
+            }
+        }
+    }
 
     private fun adoptTasksSnapshot(snapshot: TasksSnapshot?) {
         val state = _uiState.value

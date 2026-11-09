@@ -297,9 +297,14 @@
     <string name="themed_icons">Themed icons</string>
     <string name="themed_icons_description">For apps with a monochrome icon</string>
     <string name="your_agenda">Your agenda</string>
-    <string name="agenda_undated_tasks">No due date</string>
+    <string name="agenda_undated_tasks">Tasks</string>
     <string name="agenda_days_ago">%1$dd ago</string>
     <string name="tasks_no_unfinished">No unfinished tasks</string>
+    <string name="tasks_mark_complete">Mark %1$s complete</string>
+    <string name="tasks_write_permission_required">Allow task editing in app permissions to mark tasks complete.</string>
+    <string name="tasks_read_only">This task can’t be edited.</string>
+    <string name="tasks_task_unavailable">This task is no longer available.</string>
+    <string name="tasks_complete_error">Couldn’t complete the task. Try again.</string>
     <string name="today">today</string>
     <string name="new_event">New event</string>
     <string name="calendar_permission_description">Connect your calendar to show upcoming events. Your agenda stays on this device.</string>

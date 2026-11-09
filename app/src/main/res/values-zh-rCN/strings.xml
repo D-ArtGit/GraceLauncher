@@ -294,9 +294,14 @@
     <string name="themed_icons">主题图标</string>
     <string name="themed_icons_description">适用于提供单色图标的应用</string>
     <string name="your_agenda">你的日程</string>
-    <string name="agenda_undated_tasks">无截止日期</string>
+    <string name="agenda_undated_tasks">任务</string>
     <string name="agenda_days_ago">%1$d 天前</string>
     <string name="tasks_no_unfinished">没有未完成的任务</string>
+    <string name="tasks_mark_complete">将 %1$s 标记为完成</string>
+    <string name="tasks_write_permission_required">请在应用权限中允许修改任务，以标记任务完成。</string>
+    <string name="tasks_read_only">此任务不可编辑。</string>
+    <string name="tasks_task_unavailable">此任务已不存在。</string>
+    <string name="tasks_complete_error">无法完成任务，请重试。</string>
     <string name="today">今天</string>
     <string name="new_event">新建日程</string>
     <string name="calendar_permission_description">连接日历以显示即将到来的日程。日程数据仅保留在本机。</string>

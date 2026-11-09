@@ -57,6 +57,7 @@ data class LauncherActions(
     val openTasks: () -> Unit = {},
     val getTasks: () -> Unit = {},
     val openTask: (TaskItem) -> Unit = {},
+    val completeTask: (TaskItem) -> Unit = {},
     val textMode: (WallpaperTextMode) -> Unit = {},
     val themedIcons: (Boolean) -> Unit = {},
     val refreshIconPacks: () -> Unit = {},

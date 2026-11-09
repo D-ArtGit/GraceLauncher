@@ -1,5 +1,6 @@
 package com.galaxyrio.gracelauncher.data.tasks
 
+import android.content.ContentValues
 import android.content.Context
 import android.content.pm.PackageManager
 import android.database.ContentObserver
@@ -26,7 +27,7 @@ import kotlinx.coroutines.withContext
 
 data class TasksSnapshot(val listIds: Set<Long>?, val state: TasksState, val refreshedAtNanos: Long)
 
-/** Tasks.org's versioned local API. No provider writes or remote requests are made here. */
+/** Tasks.org's versioned local API. Sync and recurring-task behavior belong to Tasks.org. */
 class TasksRepository(private val context: Context) {
     val snapshots = sharedSnapshots.asStateFlow()
 
@@ -50,7 +51,7 @@ class TasksRepository(private val context: Context) {
     suspend fun refresh(listIds: Set<Long>?): TasksSnapshot? {
         val requestedAt = SystemClock.elapsedRealtimeNanos()
         val requestedGeneration = generation.get()
-        return readMutex.withLock {
+        return providerMutex.withLock {
             if (requestedGeneration != generation.get()) return@withLock null
             sharedSnapshots.value?.takeIf { it.listIds == listIds && it.refreshedAtNanos >= requestedAt }
                 ?.let { return@withLock it }
@@ -61,6 +62,28 @@ class TasksRepository(private val context: Context) {
     }
 
     fun hasReadPermission() = ContextCompat.checkSelfPermission(context, ReadPermission) == PackageManager.PERMISSION_GRANTED
+
+    suspend fun completeTask(id: Long): TaskCompletionResult = providerMutex.withLock {
+        withContext(Dispatchers.IO) {
+            if (ContextCompat.checkSelfPermission(context, WritePermission) != PackageManager.PERMISSION_GRANTED) {
+                return@withContext TaskCompletionResult.PermissionRequired
+            }
+            try {
+                // This is the provider's completion operation, including recurrence and subtasks.
+                val values = ContentValues().apply { put("completed_at", System.currentTimeMillis()) }
+                val changed = context.contentResolver.update(taskUri(id), values, null, null)
+                if (changed > 0) TaskCompletionResult.Success else TaskCompletionResult.NotFound
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (error: SecurityException) {
+                TaskCompletionResult.PermissionRequired
+            } catch (error: UnsupportedOperationException) {
+                TaskCompletionResult.ReadOnly
+            } catch (error: Exception) {
+                TaskCompletionResult.Error
+            }
+        }
+    }
 
     @Suppress("DEPRECATION")
     private suspend fun read(listIds: Set<Long>?): TasksState = withContext(Dispatchers.IO) {
@@ -82,7 +105,7 @@ class TasksRepository(private val context: Context) {
             val byId = lists.associateBy { it.id }
             val tasks = if (listIds != null && listIds.isEmpty()) emptyList() else queryPages(
                 "tasks", arrayOf("_id", "title", "notes", "due_date", "due_all_day", "start_date", "start_all_day",
-                    "priority", "list_id", "completed_at"),
+                    "priority", "list_id", "completed_at", "is_read_only"),
                 parameters = buildList {
                     add("completed" to "0")
                     listIds?.sorted()?.forEach { add("list_id" to it.toString()) }
@@ -97,6 +120,7 @@ class TasksRepository(private val context: Context) {
                         priority = TaskPriority.entries.firstOrNull { it.name.equals(cursor.text("priority"), ignoreCase = true) }
                             ?: TaskPriority.None,
                         listId = listId, listName = byId[listId]?.title.orEmpty(), listColor = byId[listId]?.color,
+                        isReadOnly = cursor.long("is_read_only") == 1L,
                     )
                 }
             }.filterNotNull().distinctBy { it.id }
@@ -147,11 +171,12 @@ class TasksRepository(private val context: Context) {
         const val Authority = "org.tasks.api"
         const val Package = "org.tasks"
         const val ReadPermission = "org.tasks.permission.READ_TASKS"
+        const val WritePermission = "org.tasks.permission.WRITE_TASKS"
         val BaseUri: Uri = Uri.parse("content://$Authority/v0")
         fun taskUri(id: Long): Uri = BaseUri.buildUpon().appendPath("tasks").appendPath(id.toString()).build()
         private const val PageSize = 200
         private val sharedSnapshots = MutableStateFlow<TasksSnapshot?>(null)
         private val generation = AtomicLong()
-        private val readMutex = Mutex()
+        private val providerMutex = Mutex()
     }
 }
