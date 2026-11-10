@@ -1096,4 +1096,6 @@
     <string name="clock_rotate_above_primary">旋转主要区域上方的区域</string>
     <string name="clock_rotate_primary">旋转主要区域</string>
     <string name="clock_rotate_all">旋转所有区域</string>
+    <string name="home_pull_protection">意外滑动保护</string>
+    <string name="home_pull_protection_summary">阻止划动时的意外激活。下划两次以激活。</string>
 </resources>
