@@ -297,7 +297,6 @@
     <string name="themed_icons">Themed icons</string>
     <string name="themed_icons_description">For apps with a monochrome icon</string>
     <string name="your_agenda">Your agenda</string>
-    <string name="agenda_undated_tasks">Tasks</string>
     <string name="agenda_days_ago">%1$dd ago</string>
     <string name="tasks_no_unfinished">No unfinished tasks</string>
     <string name="tasks_mark_complete">Mark %1$s complete</string>

@@ -294,7 +294,6 @@
     <string name="themed_icons">主题图标</string>
     <string name="themed_icons_description">适用于提供单色图标的应用</string>
     <string name="your_agenda">你的日程</string>
-    <string name="agenda_undated_tasks">任务</string>
     <string name="agenda_days_ago">%1$d 天前</string>
     <string name="tasks_no_unfinished">没有未完成的任务</string>
     <string name="tasks_mark_complete">将 %1$s 标记为完成</string>

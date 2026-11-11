@@ -5,7 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -51,14 +53,18 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import kotlinx.coroutines.delay
 
-// Keep a modest indent beneath each date, with one shared column for the plus
-// calendar-color marker, and task checkbox, and another for all agenda text.
+// Keep one compact column for action icons and markers, and one for agenda text.
 private val AgendaItemInset = 4.dp
-private val AgendaLeadingWidth = 48.dp
-private val AgendaContentGap = 8.dp
+private val AgendaLeadingWidth = 28.dp
+private val AgendaContentGap = 4.dp
 
 @Composable
-fun AgendaSheet(uiState: LauncherUiState, actions: LauncherActions, onRequestCalendar: () -> Unit) {
+fun AgendaSheet(
+    uiState: LauncherUiState,
+    actions: LauncherActions,
+    onRequestCalendar: () -> Unit,
+    listState: LazyListState = rememberLazyListState(),
+) {
     val configuration = LocalConfiguration.current
     val locale = configuration.locales[0]
     val zone = ZoneId.systemDefault()
@@ -100,7 +106,8 @@ fun AgendaSheet(uiState: LauncherUiState, actions: LauncherActions, onRequestCal
             (weatherEnabled && uiState.weather.status == WeatherStatus.Loading && weather == null)) {
             LinearProgressIndicator(Modifier.fillMaxWidth())
         }
-        LazyColumn(Modifier.fillMaxWidth().weight(1f, fill = false).testTag("agenda_list"), contentPadding = PaddingValues(bottom = 20.dp)) {
+        LazyColumn(Modifier.fillMaxWidth().weight(1f, fill = false).testTag("agenda_list"), state = listState,
+            contentPadding = PaddingValues(bottom = 20.dp)) {
             groups.forEach { (date, dayEntries) ->
                 item(key = "day:$date") {
                     BoxWithConstraints(Modifier.fillMaxWidth()) {
@@ -147,11 +154,6 @@ fun AgendaSheet(uiState: LauncherUiState, actions: LauncherActions, onRequestCal
                             gadgetbridge = uiState.settings.weatherConnection.mode == WeatherConnectionMode.Gadgetbridge)
                     }
                     if (undatedTasks.isNotEmpty()) {
-                        item(key = "undated_tasks") {
-                            Text(stringResource(R.string.agenda_undated_tasks),
-                                Modifier.fillMaxWidth().padding(top = 6.dp, bottom = 10.dp).testTag("agenda_undated_tasks"),
-                                fontSize = 16.sp, fontWeight = FontWeight.Medium)
-                        }
                         items(undatedTasks, key = { "undated_task:${it.id}" }) { task ->
                             AgendaTask(task, now, completing = task.id in uiState.completingTaskIds,
                                 onComplete = { actions.completeTask(task) }, onClick = { actions.openTask(task) })
@@ -274,23 +276,25 @@ private fun AgendaTask(task: TaskItem, now: Instant, completing: Boolean, onComp
     Row(
         Modifier.fillMaxWidth().heightIn(min = 66.dp).testTag("agenda_task:${task.id}")
             .clip(RoundedCornerShape(16.dp))
-            .clickable(role = Role.Button, onClick = onClick)
-            .padding(horizontal = AgendaItemInset, vertical = 8.dp),
+            .padding(horizontal = AgendaItemInset),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(Modifier.width(AgendaLeadingWidth), contentAlignment = Alignment.Center) {
-            Checkbox(
-                checked = completing,
-                onCheckedChange = { checked -> if (checked) onComplete() },
-                enabled = !completing && !task.isReadOnly,
-                modifier = Modifier.size(48.dp).testTag("agenda_task_complete:${task.id}")
-                    .semantics { contentDescription = completeLabel },
-                colors = CheckboxDefaults.colors(uncheckedColor = task.listColor?.let { Color(it).copy(alpha = 1f) }
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant),
-            )
+            CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 0.dp) {
+                Checkbox(
+                    checked = completing,
+                    onCheckedChange = { checked -> if (checked) onComplete() },
+                    enabled = !completing && !task.isReadOnly,
+                    modifier = Modifier.size(AgendaLeadingWidth).testTag("agenda_task_complete:${task.id}")
+                        .semantics { contentDescription = completeLabel },
+                    colors = CheckboxDefaults.colors(uncheckedColor = task.listColor?.let { Color(it).copy(alpha = 1f) }
+                        ?: MaterialTheme.colorScheme.onSurfaceVariant),
+                )
+            }
         }
         Spacer(Modifier.width(AgendaContentGap))
-        Column(Modifier.weight(1f)) {
+        Column(Modifier.weight(1f).heightIn(min = 66.dp).clickable(role = Role.Button, onClick = onClick).padding(vertical = 8.dp),
+            verticalArrangement = Arrangement.Center) {
             Text(task.title, fontSize = 16.sp)
             Text(details, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
