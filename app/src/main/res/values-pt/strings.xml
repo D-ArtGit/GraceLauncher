@@ -998,4 +998,20 @@
     <string name="lab_popup">Pop-up</string>
     <string name="lab_swipe_dismiss">Deslizar para descartar</string>
     <string name="lab_dismiss_resistance">Resistência do deslize</string>
+    <string name="tasks_refresh_summary">Atualizar nas alterações Tasks.Org e ao retornar a Grace Launcher</string>
+    <string name="calendar_open_events">Eventos em aberto</string>
+    <plurals name="calendar_no_upcoming_events">
+        <item quantity="one">Não existem eventos no próximo %1$d dia</item>
+        <item quantity="many">Não existem eventos nos próximos %1$d dias</item>
+        <item quantity="other">Não existem eventos nos próximos %1$d dias</item>
+    </plurals>
+    <string name="agenda_undated_tasks">Tarefas</string>
+    <string name="agenda_days_ago">%1$d d atrás</string>
+    <string name="tasks_no_unfinished">Não existem tarefas por concluir</string>
+    <string name="tasks_mark_complete">Marcar %1$s como concluída</string>
+    <string name="tasks_write_permission_required">Permita a edição de tarefas nas permissões da aplicação para conseguir marcar tarefas como concluídas.</string>
+    <string name="tasks_read_only">Não foi possível editar a tarefa.</string>
+    <string name="tasks_task_unavailable">Esta tarefa já não está disponível.</string>
+    <string name="tasks_complete_error">Não foi possível concluir a tarefa. Por favor, tente novamente.</string>
+    <string name="settings_allow_screen_rotation_summary">Utilizar definições de rotação do sistema. Desative para manter o ecrã na vertical.</string>
 </resources>
